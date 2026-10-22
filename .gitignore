@@ -1,0 +1,34 @@
+# Build and compiled output
+**/bin/
+**/obj/
+**/dist/
+**/.angular/
+**/node_modules/
+
+# IDE and Editor specific
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backups and Scratch scripts
+*.bak
+*.bak*
+program_backup.cs
+scratch/
+
+# Runtime user uploads (preserve directory structure only)
+CRHDRI.API/uploads/assignments/*
+!CRHDRI.API/uploads/assignments/.gitkeep
+CRHDRI.API/uploads/materials/*
+!CRHDRI.API/uploads/materials/.gitkeep
+
+# Sensitive and secret local files
+*.usersecrets

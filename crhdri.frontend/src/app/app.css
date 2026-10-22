@@ -1,0 +1,46 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-canvas);
+  position: relative;
+}
+
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(32, 40, 36, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 95;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 36px 48px 36px;
+}
+
+.content-wrapper {
+  max-width: 1360px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .main-content-scroll {
+    padding: 20px 18px 40px 18px;
+  }
+}

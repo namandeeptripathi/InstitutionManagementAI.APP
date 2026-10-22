@@ -1,0 +1,434 @@
+/* ==========================================================================
+   CRHDRI STUDIO DESIGN SYSTEM
+   Institutional Academic Identity & Tactile 3D Material Surface
+   ========================================================================== */
+
+:root {
+  /* Color Tokens */
+  --bg-canvas: #F7F5EF;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FFFFFF;
+  --bg-surface-subtle: #F3EFE6;
+  --bg-surface-inset: #ECE8DD;
+  
+  --color-forest: #173F35;
+  --color-forest-dark: #0F2A23;
+  --color-forest-light: #24584B;
+  --color-forest-surface: #EEF5F2;
+  --color-forest-border: #BCD5C9;
+  
+  --color-teal: #4D8277;
+  --color-teal-light: #639C90;
+  --color-teal-surface: #EFF7F5;
+  
+  --color-sage: #DCE8DF;
+  --color-sage-dark: #8CA895;
+  --color-sage-surface: #F2F8F4;
+  
+  --color-amber: #D6A85F;
+  --color-amber-dark: #AD8035;
+  --color-amber-surface: #FDF7EC;
+  --color-amber-border: #E8D3A8;
+  
+  --color-danger: #B84233;
+  --color-danger-surface: #FDF2F0;
+  --color-danger-border: #F3BDB6;
+  
+  --color-success: #206E4E;
+  --color-success-surface: #EDF7F2;
+  --color-success-border: #A9DCBF;
+  
+  /* Text & Ink Tokens */
+  --text-main: #202824;
+  --text-secondary: #4A534D;
+  --text-muted: #737B75;
+  --text-inverse: #F7F5EF;
+  --text-forest: #173F35;
+  
+  /* Border & Outline Tokens */
+  --border-subtle: #E5E4DC;
+  --border-medium: #D6D4C8;
+  --border-strong: #B5B2A1;
+  --border-forest: #173F35;
+  
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-editorial: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+  
+  /* Spacing Scale */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  
+  /* Border Radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+  
+  /* Tactile 3D Shadows */
+  --shadow-subtle: 0 1px 2px rgba(32, 40, 36, 0.04);
+  --shadow-tactile: 0 1px 3px rgba(32, 40, 36, 0.04), 0 8px 24px -4px rgba(32, 40, 36, 0.06), 0 0 0 1px var(--border-subtle);
+  --shadow-tactile-hover: 0 4px 12px rgba(32, 40, 36, 0.06), 0 18px 36px -8px rgba(32, 40, 36, 0.1), 0 0 0 1px var(--border-medium);
+  --shadow-tactile-elevated: 0 12px 32px -4px rgba(23, 63, 53, 0.12), 0 4px 12px rgba(32, 40, 36, 0.04), 0 0 0 1px var(--border-subtle);
+  --shadow-dropdown: 0 10px 30px rgba(32, 40, 36, 0.12), 0 2px 6px rgba(32, 40, 36, 0.06), 0 0 0 1px var(--border-subtle);
+  
+  /* Tactile Button Shadows */
+  --shadow-btn-forest: 0 3px 0 #0F2A23, 0 6px 14px rgba(23, 63, 53, 0.22);
+  --shadow-btn-forest-active: 0 1px 0 #0F2A23, 0 2px 6px rgba(23, 63, 53, 0.2);
+  --shadow-btn-amber: 0 3px 0 #8F6623, 0 6px 14px rgba(214, 168, 95, 0.3);
+  --shadow-btn-amber-active: 0 1px 0 #8F6623, 0 2px 6px rgba(214, 168, 95, 0.2);
+  --shadow-btn-white: 0 2px 0 var(--border-medium), 0 4px 10px rgba(32, 40, 36, 0.05);
+  --shadow-btn-white-active: 0 1px 0 var(--border-medium), 0 1px 3px rgba(32, 40, 36, 0.05);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-tactile: 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-canvas);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Focus Indicator for Accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-forest);
+  outline-offset: 2px;
+}
+
+/* Typography Utilities */
+.font-editorial {
+  font-family: var(--font-editorial);
+  font-feature-settings: 'cv01', 'cv02';
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Tactile 3D Cards */
+.card-tactile {
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-tactile);
+  position: relative;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+
+.card-tactile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0.8;
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-tactile-hover);
+  border-color: var(--border-medium);
+}
+
+/* Dimensional Subtle Hero Frame */
+.hero-frame {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F2 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 2px 6px rgba(32, 40, 36, 0.03), 0 12px 30px -6px rgba(23, 63, 53, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-frame::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(220, 232, 223, 0.45) 0%, rgba(247, 245, 239, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Tactile Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.btn-primary {
+  background-color: var(--color-forest);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-btn-forest);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-forest-light);
+}
+
+.btn-primary:active:not(:disabled) {
+  box-shadow: var(--shadow-btn-forest-active);
+}
+
+.btn-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-btn-white);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-canvas);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:active:not(:disabled) {
+  box-shadow: var(--shadow-btn-white-active);
+}
+
+.btn-amber {
+  background-color: var(--color-amber);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-btn-amber);
+}
+
+.btn-amber:hover:not(:disabled) {
+  background-color: var(--color-amber-dark);
+}
+
+.btn-amber:active:not(:disabled) {
+  box-shadow: var(--shadow-btn-amber-active);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-forest);
+  border: 1px solid var(--color-forest);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--color-forest-surface);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  box-shadow: none;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-surface-subtle);
+  color: var(--text-main);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Badges & Tags */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+}
+
+.badge-forest {
+  background: var(--color-forest-surface);
+  color: var(--color-forest);
+  border-color: var(--color-forest-border);
+}
+
+.badge-sage {
+  background: var(--color-sage-surface);
+  color: var(--color-forest);
+  border-color: var(--color-sage);
+}
+
+.badge-amber {
+  background: var(--color-amber-surface);
+  color: var(--color-amber-dark);
+  border-color: var(--color-amber-border);
+}
+
+.badge-teal {
+  background: var(--color-teal-surface);
+  color: var(--color-teal);
+  border-color: var(--color-sage);
+}
+
+.badge-danger {
+  background: var(--color-danger-surface);
+  color: var(--color-danger);
+  border-color: var(--color-danger-border);
+}
+
+.badge-neutral {
+  background: var(--bg-surface-subtle);
+  color: var(--text-secondary);
+  border-color: var(--border-subtle);
+}
+
+/* Skeleton Loading Shimmer */
+.skeleton {
+  background: linear-gradient(90deg, #EBE8DF 25%, #F4F1E8 37%, #EBE8DF 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* Tactile Input Controls */
+.input-field {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-main);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 1px 2px rgba(32, 40, 36, 0.04);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-forest);
+  box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.12), inset 0 1px 2px rgba(32, 40, 36, 0.04);
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+/* Toast Notification Styles */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-dropdown);
+  min-width: 300px;
+  max-width: 440px;
+  animation: toast-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateY(16px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

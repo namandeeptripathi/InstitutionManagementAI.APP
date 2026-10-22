@@ -1,0 +1,36 @@
+@if (!isAuthRoute() && authService.isAuthenticated()) {
+  <div class="app-layout">
+    <!-- Left Persistent Sidebar -->
+    <app-sidebar 
+      [isOpen]="mobileNavOpen()" 
+      (closeNav)="closeMobileNav()">
+    </app-sidebar>
+
+    <!-- Mobile Overlay Backdrop -->
+    @if (mobileNavOpen()) {
+      <div class="mobile-backdrop" (click)="closeMobileNav()"></div>
+    }
+
+    <!-- Main Viewport Area -->
+    <div class="app-main">
+      <!-- Topbar Navigation -->
+      <app-topbar (toggleNav)="toggleMobileNav()"></app-topbar>
+
+      <!-- Scrollable Main Content -->
+      <main class="main-content-scroll" id="main-content">
+        <div class="content-wrapper">
+          <router-outlet></router-outlet>
+        </div>
+      </main>
+    </div>
+
+    <!-- Global Toast Notifications -->
+    <app-toast-container></app-toast-container>
+  </div>
+} @else {
+  <!-- Standalone Authentication Layout -->
+  <div class="auth-viewport">
+    <router-outlet></router-outlet>
+    <app-toast-container></app-toast-container>
+  </div>
+}

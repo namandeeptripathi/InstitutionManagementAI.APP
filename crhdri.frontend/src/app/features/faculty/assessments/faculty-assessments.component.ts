@@ -30,22 +30,25 @@ interface QuestionDraft {
   template: `
     <div class="assessments-page">
       <!-- Header Bar with Class Selector -->
-      <div class="page-header card-tactile">
-        <div class="header-titles">
+      <div class="faculty-page-header">
+        <div class="faculty-header-titles">
           <div class="badge-row">
-            <span class="badge badge-forest font-mono">STAGE 7 &bull; FACULTY QUIZZES</span>
+            <span class="badge badge-teal badge-sm">
+              <app-icon name="badge-check" [size]="12"></app-icon>
+              FACULTY QUIZZES
+            </span>
             <span class="meta-dot">&bull;</span>
-            <span class="meta-year font-mono">AY 2026-2027</span>
+            <span class="meta-year font-mono text-muted">AY 2026-2027</span>
           </div>
-          <h2 class="page-title font-editorial">Assessments & Quizzes Console</h2>
-          <p class="page-subtitle">
-            Create multiple-choice quizzes, schedule exams, monitor student submissions in real-time, and analyze class performance.
+          <h2 class="faculty-page-title">Assessments & Quizzes Console</h2>
+          <p class="faculty-page-subtitle">
+            Create objective quizzes, schedule term examinations, and analyze student submission scores.
           </p>
         </div>
 
         <!-- Class Picker Tabs -->
         <div class="class-picker-wrap">
-          <label class="picker-label font-mono">ASSIGNED CLASS:</label>
+          <span class="picker-label font-mono">Assigned Class:</span>
           <div class="class-selector-box">
             @for (cls of assignedClasses(); track cls.facultyAssignmentId) {
               <button
@@ -69,47 +72,47 @@ interface QuestionDraft {
           <div class="skeleton body-skeleton"></div>
         </div>
       } @else if (classesError()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Assigned Classes</h3>
             <p class="error-desc">{{ classesError() }}</p>
           </div>
-          <button class="btn btn-primary" (click)="loadClasses()">
-            <app-icon name="refresh" [size]="16"></app-icon>
+          <button class="btn btn-primary btn-sm" (click)="loadClasses()">
+            <app-icon name="refresh" [size]="14"></app-icon>
             Retry Connection
           </button>
         </div>
       } @else if (selectedClass(); as currentClass) {
         <!-- Class Hero Banner -->
-        <section class="class-hero-card card-tactile">
+        <section class="class-hero-card card-modern">
           <div class="hero-left">
             <div class="hero-subject-row">
               <span class="subject-tag font-mono">{{ currentClass.subjectCode }}</span>
-              <h2 class="hero-title font-editorial">{{ currentClass.subjectName }}</h2>
+              <h2 class="hero-title">{{ currentClass.subjectName }}</h2>
             </div>
             <p class="hero-course">
               {{ currentClass.courseName }}
-              <span class="font-mono">({{ currentClass.courseCode }})</span>
+              <span class="font-mono text-muted">({{ currentClass.courseCode }})</span>
             </p>
             <div class="cohort-badges-row">
               <span class="cohort-pill">
                 <strong>Semester {{ currentClass.semester }}</strong> &bull; Section {{ currentClass.section }}
               </span>
-              <span class="cohort-pill font-mono">{{ currentClass.academicYear }}</span>
-              <span class="cohort-pill font-mono">{{ enrolledCount() }} Enrolled Students</span>
+              <span class="cohort-pill font-mono text-muted">{{ currentClass.academicYear }}</span>
+              <span class="cohort-pill font-mono text-teal">{{ enrolledCount() }} Enrolled Students</span>
             </div>
           </div>
 
           <div class="hero-right">
-            <button class="btn btn-primary create-btn" (click)="openCreateModal()">
-              <app-icon name="assessments" [size]="16"></app-icon>
+            <button class="btn btn-primary btn-sm" (click)="openCreateModal()">
+              <app-icon name="plus" [size]="13"></app-icon>
               <span>Create New Quiz</span>
             </button>
-            <button class="btn btn-outline refresh-btn" (click)="loadAssessments()" [disabled]="assessmentsLoading()" title="Refresh List">
-              <app-icon name="refresh" [size]="15" [class.spin-icon]="assessmentsLoading()"></app-icon>
+            <button class="btn btn-secondary btn-sm" (click)="loadAssessments()" [disabled]="assessmentsLoading()" title="Refresh List">
+              <app-icon name="refresh" [size]="13" [class.spin-icon]="assessmentsLoading()"></app-icon>
               <span>Refresh</span>
             </button>
           </div>
@@ -117,55 +120,58 @@ interface QuestionDraft {
 
         <!-- Assessments Section Content -->
         @if (assessmentsLoading()) {
-          <div class="skeleton-container" aria-busy="true">
-            <div class="skeleton table-skeleton"></div>
+          <div class="assessments-skeleton-grid">
+            <div class="skeleton card-skeleton"></div>
+            <div class="skeleton card-skeleton"></div>
           </div>
         } @else if (assessmentsError()) {
-          <div class="error-banner card-tactile" role="alert">
+          <div class="error-banner card-modern" role="alert">
             <div class="error-icon-wrap">
-              <app-icon name="alert" [size]="28"></app-icon>
+              <app-icon name="alert" [size]="24"></app-icon>
             </div>
             <div class="error-text">
               <h3 class="error-title">Error Loading Assessments</h3>
               <p class="error-desc">{{ assessmentsError() }}</p>
             </div>
-            <button class="btn btn-primary" (click)="loadAssessments()">
-              <app-icon name="refresh" [size]="16"></app-icon>
+            <button class="btn btn-primary btn-sm" (click)="loadAssessments()">
+              <app-icon name="refresh" [size]="14"></app-icon>
               Retry
             </button>
           </div>
         } @else if (assessments().length === 0) {
-          <div class="card-tactile empty-state">
-            <app-icon name="assessments" [size]="48" class="empty-icon"></app-icon>
-            <h3 class="empty-title font-editorial">No Assessments Published</h3>
-            <p class="empty-subtitle">
+          <div class="card-modern empty-assessments-card">
+            <div class="empty-icon-wrap large">
+              <app-icon name="assessments" [size]="36"></app-icon>
+            </div>
+            <h3 class="empty-title">No Assessments Published</h3>
+            <p class="empty-desc">
               You have not created any quizzes or examinations for {{ currentClass.subjectName }} yet.
             </p>
-            <button class="btn btn-primary" (click)="openCreateModal()">
-              <app-icon name="assessments" [size]="16"></app-icon>
-              Create First Quiz
+            <button class="btn btn-primary btn-sm" (click)="openCreateModal()">
+              <app-icon name="plus" [size]="13"></app-icon>
+              <span>Create First Quiz</span>
             </button>
           </div>
         } @else {
           <!-- Assessments Grid -->
           <div class="assessments-grid">
             @for (item of assessments(); track item.assessmentId) {
-              <div class="card-tactile assessment-card">
+              <div class="card-modern assessment-card">
                 <!-- Top Tags -->
                 <div class="card-top-row">
                   <div class="type-tag-wrap">
-                    <span class="badge badge-forest font-mono">{{ item.assessmentType }}</span>
-                    <span class="max-marks-pill font-mono">Max: {{ item.maxMarks }} Marks</span>
+                    <span class="badge badge-teal badge-sm font-mono">{{ item.assessmentType }}</span>
+                    <span class="badge badge-neutral badge-sm font-mono">Max: {{ item.maxMarks }} Marks</span>
                   </div>
-                  <div class="date-tag font-mono">
-                    <app-icon name="clock" [size]="13"></app-icon>
+                  <div class="date-tag font-mono text-muted text-xs">
+                    <app-icon name="clock" [size]="12"></app-icon>
                     <span>{{ item.assessmentDate ? (item.assessmentDate | date:'mediumDate') : 'Scheduled' }}</span>
                   </div>
                 </div>
 
                 <!-- Title -->
                 <div class="card-body-content">
-                  <h3 class="quiz-title font-editorial">{{ item.assessmentName }}</h3>
+                  <h3 class="quiz-title">{{ item.assessmentName }}</h3>
                   
                   <!-- Performance Metrics Box -->
                   <div class="stats-metrics-box">
@@ -190,7 +196,7 @@ interface QuestionDraft {
                       <strong>{{ getCompletionPercent(item.attemptCount, enrolledCount()) }}%</strong>
                     </div>
                     <div class="progress-track">
-                      <div class="progress-bar" [style.width.%]="getCompletionPercent(item.attemptCount, enrolledCount())"></div>
+                      <div class="progress-bar-fill" [style.width.%]="getCompletionPercent(item.attemptCount, enrolledCount())"></div>
                     </div>
                   </div>
                 </div>
@@ -198,11 +204,11 @@ interface QuestionDraft {
                 <!-- Footer Actions -->
                 <div class="card-footer-actions">
                   <button 
-                    class="btn btn-secondary btn-sm roster-btn" 
+                    class="btn btn-secondary btn-sm flex-1" 
                     (click)="openSubmissionsDrawer(item)"
                     title="View student scores and answer key"
                   >
-                    <app-icon name="profile" [size]="14"></app-icon>
+                    <app-icon name="profile" [size]="13"></app-icon>
                     <span>Submissions & Answers</span>
                   </button>
 
@@ -212,8 +218,12 @@ interface QuestionDraft {
                     title="Delete assessment"
                     [disabled]="deletingId() === item.assessmentId"
                   >
-                    <app-icon name="close" [size]="14"></app-icon>
-                    <span>{{ deletingId() === item.assessmentId ? 'Deleting...' : 'Delete' }}</span>
+                    @if (deletingId() === item.assessmentId) {
+                      <span class="spin-icon">&#9696;</span>
+                    } @else {
+                      <app-icon name="close" [size]="13"></app-icon>
+                    }
+                    <span>Delete</span>
                   </button>
                 </div>
               </div>
@@ -224,24 +234,24 @@ interface QuestionDraft {
 
       <!-- CREATE ASSESSMENT MODAL -->
       @if (createModalOpen()) {
-        <div class="modal-backdrop" (click)="closeCreateModal()">
-          <div class="modal-dialog card-tactile" (click)="$event.stopPropagation()">
-            <div class="modal-header">
-              <div class="modal-header-meta">
-                <span class="badge badge-forest font-mono">ASSESSMENT BUILDER</span>
-                <h3 class="modal-title font-editorial">Create Multiple-Choice Quiz</h3>
-                <p class="modal-subtitle">
-                  Configure quiz parameters and add objective questions for {{ selectedClass()?.subjectName }}.
-                </p>
+        <div class="modal-overlay" (click)="closeCreateModal()">
+          <div class="modal-dialog-clean create-quiz-dialog" (click)="$event.stopPropagation()">
+            <div class="modal-header-clean">
+              <div class="modal-title-wrap">
+                <span class="badge badge-teal badge-sm font-mono">ASSESSMENT BUILDER</span>
+                <h3 id="quiz-builder-title">Create Multiple-Choice Quiz</h3>
+                <p class="modal-sub">Add questions and correct answer keys for {{ selectedClass()?.subjectName }}</p>
               </div>
-              <button class="dialog-close btn-ghost" (click)="closeCreateModal()" [disabled]="submitting()">✕</button>
+              <button class="btn-ghost" (click)="closeCreateModal()" [disabled]="submitting()">
+                <app-icon name="close" [size]="16"></app-icon>
+              </button>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body-clean scrollable-body">
               <!-- Basic Metadata Grid -->
               <div class="form-grid">
                 <div class="form-group span-2">
-                  <label class="form-label font-mono">ASSESSMENT TITLE *</label>
+                  <label class="form-label font-mono">ASSESSMENT TITLE <span class="text-danger">*</span></label>
                   <input
                     type="text"
                     class="form-control"
@@ -275,23 +285,24 @@ interface QuestionDraft {
               <!-- Questions Builder Header -->
               <div class="questions-section-header">
                 <div>
-                  <h4 class="questions-section-title font-editorial">Multiple-Choice Questions</h4>
-                  <span class="questions-stat font-mono">
+                  <h4 class="questions-section-title">Multiple-Choice Questions</h4>
+                  <span class="questions-stat font-mono text-muted text-xs">
                     {{ draftQuestions.length }} Questions &bull; Total Max Marks: {{ calculateTotalMarks() }}
                   </span>
                 </div>
                 <button type="button" class="btn btn-secondary btn-sm" (click)="addQuestion()">
-                  <span>+ Add Question</span>
+                  <app-icon name="plus" [size]="12"></app-icon>
+                  <span>Add Question</span>
                 </button>
               </div>
 
               <!-- Questions List -->
               <div class="questions-builder-list">
                 @for (q of draftQuestions; track $index; let qIndex = $index) {
-                  <div class="question-builder-card card-tactile">
+                  <div class="question-builder-card">
                     <div class="q-header">
                       <div class="q-badge-wrap">
-                        <span class="q-num-badge font-mono">Question {{ qIndex + 1 }}</span>
+                        <span class="badge badge-teal badge-sm font-mono">Question {{ qIndex + 1 }}</span>
                         <div class="marks-input-wrap">
                           <label class="marks-label font-mono">Marks:</label>
                           <input 
@@ -311,16 +322,17 @@ interface QuestionDraft {
                           (click)="removeQuestion(qIndex)"
                           title="Remove question"
                         >
-                          ✕ Remove
+                          <app-icon name="close" [size]="12"></app-icon>
+                          <span>Remove</span>
                         </button>
                       }
                     </div>
 
                     <!-- Question Prompt -->
                     <div class="form-group">
-                      <label class="form-label font-mono">QUESTION PROMPT *</label>
+                      <label class="form-label font-mono">QUESTION PROMPT <span class="text-danger">*</span></label>
                       <textarea
-                        class="form-control prompt-textarea"
+                        class="form-control"
                         [(ngModel)]="q.questionText"
                         rows="2"
                         placeholder="Enter the question text clearly..."
@@ -387,26 +399,30 @@ interface QuestionDraft {
 
               <!-- Modal Error Banner -->
               @if (createModalError()) {
-                <div class="modal-error-banner">
-                  <app-icon name="alert" [size]="16"></app-icon>
-                  <span>{{ createModalError() }}</span>
+                <div class="modal-error font-mono">
+                  {{ createModalError() }}
                 </div>
               }
             </div>
 
             <!-- Modal Footer -->
-            <div class="modal-footer">
-              <div class="footer-summary font-mono">
+            <div class="modal-footer-clean">
+              <div class="footer-summary font-mono text-muted text-xs">
                 Total: <strong>{{ draftQuestions.length }}</strong> questions &bull; 
                 <strong>{{ calculateTotalMarks() }}</strong> Marks
               </div>
               <div class="footer-btn-group">
-                <button type="button" class="btn btn-secondary" (click)="closeCreateModal()" [disabled]="submitting()">
+                <button type="button" class="btn btn-secondary btn-sm" (click)="closeCreateModal()" [disabled]="submitting()">
                   Cancel
                 </button>
-                <button type="button" class="btn btn-primary" (click)="publishAssessment()" [disabled]="submitting()">
-                  <app-icon name="check" [size]="16"></app-icon>
-                  <span>{{ submitting() ? 'Publishing...' : 'Publish Assessment' }}</span>
+                <button type="button" class="btn btn-primary btn-sm" (click)="publishAssessment()" [disabled]="submitting()">
+                  @if (submitting()) {
+                    <span class="spin-icon">&#9696;</span>
+                    <span>Publishing...</span>
+                  } @else {
+                    <app-icon name="badge-check" [size]="13"></app-icon>
+                    <span>Publish Assessment</span>
+                  }
                 </button>
               </div>
             </div>
@@ -416,22 +432,24 @@ interface QuestionDraft {
 
       <!-- SUBMISSIONS & QUESTION PAPER DRAWER -->
       @if (submissionsDrawerOpen()) {
-        <div class="modal-backdrop" (click)="closeSubmissionsDrawer()">
-          <div class="drawer-dialog card-tactile" (click)="$event.stopPropagation()">
+        <div class="modal-overlay" (click)="closeSubmissionsDrawer()">
+          <div class="modal-dialog-clean drawer-dialog" (click)="$event.stopPropagation()">
             <!-- Drawer Header -->
-            <div class="drawer-header">
-              <div class="drawer-header-meta">
+            <div class="modal-header-clean">
+              <div class="modal-title-wrap">
                 <div class="drawer-badge-row">
-                  <span class="badge badge-forest font-mono">{{ activeSubmissionsData()?.assessment?.assessmentType }}</span>
-                  <span class="subject-tag font-mono">{{ activeSubmissionsData()?.assessment?.subjectCode }}</span>
-                  <span class="max-badge font-mono">Max: {{ activeSubmissionsData()?.assessment?.maxMarks }} Marks</span>
+                  <span class="badge badge-teal badge-sm font-mono">{{ activeSubmissionsData()?.assessment?.assessmentType }}</span>
+                  <span class="badge badge-neutral badge-sm font-mono">{{ activeSubmissionsData()?.assessment?.subjectCode }}</span>
+                  <span class="badge badge-neutral badge-sm font-mono">Max: {{ activeSubmissionsData()?.assessment?.maxMarks }} Marks</span>
                 </div>
-                <h3 class="drawer-title font-editorial">{{ activeSubmissionsData()?.assessment?.assessmentName }}</h3>
-                <p class="drawer-subtitle font-mono">
+                <h3>{{ activeSubmissionsData()?.assessment?.assessmentName }}</h3>
+                <p class="modal-sub font-mono">
                   {{ activeSubmissionsData()?.assessment?.courseName }} &bull; Sem {{ activeSubmissionsData()?.assessment?.semester }} &bull; Sec {{ activeSubmissionsData()?.assessment?.section }}
                 </p>
               </div>
-              <button class="dialog-close btn-ghost" (click)="closeSubmissionsDrawer()">✕</button>
+              <button class="btn-ghost" (click)="closeSubmissionsDrawer()">
+                <app-icon name="close" [size]="16"></app-icon>
+              </button>
             </div>
 
             <!-- Metrics Strip -->
@@ -462,7 +480,7 @@ interface QuestionDraft {
                   [class.active]="drawerTab() === 'roster'"
                   (click)="drawerTab.set('roster')"
                 >
-                  <app-icon name="profile" [size]="14"></app-icon>
+                  <app-icon name="profile" [size]="13"></app-icon>
                   <span>Student Submissions ({{ data.submissions.length }})</span>
                 </button>
                 <button 
@@ -470,47 +488,47 @@ interface QuestionDraft {
                   [class.active]="drawerTab() === 'questions'"
                   (click)="drawerTab.set('questions')"
                 >
-                  <app-icon name="assessments" [size]="14"></app-icon>
-                  <span>Question Paper & Answer Key ({{ data.questions.length }})</span>
+                  <app-icon name="assessments" [size]="13"></app-icon>
+                  <span>Question Paper & Key ({{ data.questions.length }})</span>
                 </button>
               </div>
 
               <!-- Drawer Tab 1: Student Roster -->
               @if (drawerTab() === 'roster') {
                 <div class="drawer-tab-body">
-                  <table class="roster-table">
+                  <table class="table-modern">
                     <thead>
                       <tr>
-                        <th class="font-mono">ROLL NO</th>
+                        <th style="width: 160px;">ROLL NO</th>
                         <th>STUDENT NAME</th>
-                        <th>STATUS</th>
-                        <th class="font-mono">SCORE</th>
-                        <th class="font-mono">SUBMITTED AT</th>
+                        <th style="width: 140px;">STATUS</th>
+                        <th style="width: 130px;">SCORE</th>
+                        <th style="width: 180px;">SUBMITTED AT</th>
                       </tr>
                     </thead>
                     <tbody>
                       @for (s of data.submissions; track s.studentId) {
-                        <tr [class.row-attempted]="s.hasAttempted">
-                          <td class="font-mono roll-cell">{{ s.enrollmentNumber }}</td>
+                        <tr>
+                          <td class="font-mono text-bold">{{ s.enrollmentNumber }}</td>
                           <td>
                             <div class="student-name-text">{{ s.studentName }}</div>
-                            <div class="student-email-text font-mono">{{ s.studentEmail }}</div>
+                            <div class="student-email-text text-muted font-mono">{{ s.studentEmail }}</div>
                           </td>
                           <td>
                             @if (s.hasAttempted) {
-                              <span class="badge badge-forest font-mono">Completed</span>
+                              <span class="badge badge-teal badge-sm font-mono">Completed</span>
                             } @else {
-                              <span class="badge badge-secondary font-mono">Not Attempted</span>
+                              <span class="badge badge-neutral badge-sm font-mono">Not Attempted</span>
                             }
                           </td>
-                          <td class="font-mono score-cell">
+                          <td class="font-mono">
                             @if (s.hasAttempted && s.marksObtained !== null) {
                               <strong>{{ s.marksObtained }} / {{ data.assessment.maxMarks }}</strong>
                             } @else {
                               <span class="text-muted">—</span>
                             }
                           </td>
-                          <td class="font-mono date-cell">
+                          <td class="font-mono text-xs">
                             @if (s.submittedAt) {
                               {{ s.submittedAt | date:'medium' }}
                             } @else {
@@ -528,12 +546,12 @@ interface QuestionDraft {
               @if (drawerTab() === 'questions') {
                 <div class="drawer-tab-body questions-review-pane">
                   @for (q of data.questions; track q.questionId; let i = $index) {
-                    <div class="card-tactile question-review-card">
+                    <div class="question-review-card">
                       <div class="q-review-top">
-                        <span class="badge badge-forest font-mono">Question {{ i + 1 }}</span>
-                        <span class="font-mono max-badge">{{ q.marks }} Marks</span>
+                        <span class="badge badge-teal badge-sm font-mono">Question {{ i + 1 }}</span>
+                        <span class="badge badge-neutral badge-sm font-mono">{{ q.marks }} Marks</span>
                       </div>
-                      <h4 class="q-review-prompt font-editorial">{{ q.questionText }}</h4>
+                      <h4 class="q-review-prompt">{{ q.questionText }}</h4>
                       
                       <div class="q-review-options">
                         @for (opt of getOptionEntries(q.options); track opt.key) {
@@ -544,7 +562,7 @@ interface QuestionDraft {
                             <span class="rev-opt-key font-mono">{{ opt.key }}</span>
                             <span class="rev-opt-label">{{ opt.val }}</span>
                             @if (opt.key.toUpperCase() === q.correctOption.toUpperCase()) {
-                              <span class="correct-badge font-mono">✓ CORRECT ANSWER</span>
+                              <span class="badge badge-teal badge-sm font-mono">✓ CORRECT ANSWER</span>
                             }
                           </div>
                         }
@@ -563,159 +581,153 @@ interface QuestionDraft {
     .assessments-page {
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      padding-bottom: 60px;
+      gap: 20px;
+      padding-bottom: 30px;
     }
 
-    /* Page Header */
-    .page-header {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding: 24px;
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-    }
-    @media (min-width: 900px) {
-      .page-header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
-    }
     .badge-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 8px;
-    }
-    .meta-dot {
-      color: var(--text-tertiary);
-    }
-    .meta-year {
-      font-size: 12px;
-      color: var(--text-tertiary);
-    }
-    .page-title {
-      font-size: 26px;
-      color: var(--text-primary);
-      margin: 0 0 6px 0;
-    }
-    .page-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin: 0;
-      max-width: 650px;
-      line-height: 1.5;
     }
 
-    /* Class Picker Tabs */
-    .class-picker-wrap {
+    .meta-dot {
+      color: var(--border-medium);
+    }
+
+    .text-teal {
+      color: var(--color-teal);
+    }
+
+    .text-danger {
+      color: var(--color-danger);
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    /* Skeleton Loading */
+    .skeleton-container {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 20px;
     }
-    .picker-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: var(--text-tertiary);
+
+    .header-skeleton {
+      height: 90px;
+      border-radius: var(--radius-lg);
     }
-    .class-selector-box {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+
+    .body-skeleton {
+      height: 480px;
+      border-radius: var(--radius-lg);
     }
-    .class-tab-btn {
+
+    .assessments-skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 20px;
+    }
+
+    .card-skeleton {
+      height: 240px;
+      border-radius: var(--radius-lg);
+    }
+
+    /* Error Banner */
+    .error-banner {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: var(--radius-md);
-      background: var(--surface-secondary);
-      border: 1px solid var(--border-color);
+      gap: 16px;
+      padding: 20px 24px;
+      border-left: 4px solid var(--color-danger);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+    }
+
+    .error-text {
+      flex: 1;
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13.5px;
       color: var(--text-secondary);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .class-tab-btn:hover {
-      background: var(--surface-tertiary);
-      border-color: var(--forest);
-      color: var(--text-primary);
-    }
-    .class-tab-btn.active {
-      background: var(--forest-muted);
-      border-color: var(--forest);
-      color: var(--forest);
-      font-weight: 600;
-    }
-    .tab-sec {
-      font-size: 11px;
-      padding: 2px 6px;
-      background: rgba(0, 0, 0, 0.05);
-      border-radius: var(--radius-sm);
     }
 
     /* Class Hero Card */
     .class-hero-card {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      padding: 24px;
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-    }
-    @media (min-width: 900px) {
-      .class-hero-card {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-    .hero-subject-row {
+      padding: 22px 28px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 20px;
       flex-wrap: wrap;
-      margin-bottom: 6px;
     }
-    .subject-tag {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--forest);
-      background: var(--forest-muted);
-      padding: 3px 10px;
-      border-radius: var(--radius-sm);
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
-    .hero-title {
-      font-size: 22px;
-      margin: 0;
-      color: var(--text-primary);
-    }
-    .hero-course {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin: 0 0 10px 0;
-    }
-    .cohort-badges-row {
+
+    .hero-subject-row {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
     }
+
+    .subject-tag {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--color-teal);
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
+      padding: 3px 10px;
+      border-radius: var(--radius-md);
+    }
+
+    .hero-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .hero-course {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+
+    .cohort-badges-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
     .cohort-pill {
       font-size: 12px;
-      color: var(--text-secondary);
-      background: var(--surface-secondary);
-      padding: 4px 10px;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      padding: 3px 10px;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-color);
     }
+
     .hero-right {
       display: flex;
-      gap: 12px;
       align-items: center;
+      gap: 10px;
     }
 
     /* Assessments Grid */
@@ -724,464 +736,384 @@ interface QuestionDraft {
       grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
       gap: 20px;
     }
+
     .assessment-card {
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      padding: 20px;
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
     }
+
     .assessment-card:hover {
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-card-hover);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
     }
+
     .card-top-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      justify-content: space-between;
+      gap: 10px;
     }
+
     .type-tag-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-    .max-marks-pill {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: var(--surface-secondary);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-color);
-    }
-    .date-tag {
-      display: flex;
-      align-items: center;
       gap: 6px;
-      font-size: 12px;
-      color: var(--text-tertiary);
     }
+
+    .date-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-body-content {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
     .quiz-title {
-      font-size: 18px;
-      color: var(--text-primary);
-      margin: 0 0 14px 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
       line-height: 1.35;
     }
 
-    /* Metrics Box */
     .stats-metrics-box {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      padding: 12px;
-      background: var(--surface-secondary);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      margin-bottom: 14px;
+      padding: 10px;
       text-align: center;
     }
-    .metric-val {
-      display: block;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    .metric-lbl {
-      display: block;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-tertiary);
-      margin-top: 2px;
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    /* Progress Track */
-    .progress-container {
-      margin-bottom: 16px;
+    .metric-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
     }
+
+    .metric-lbl {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    .progress-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     .progress-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 11.5px;
       color: var(--text-secondary);
-      margin-bottom: 4px;
     }
+
     .progress-track {
-      width: 100%;
       height: 6px;
-      background: var(--surface-tertiary);
-      border-radius: 999px;
+      background: var(--bg-surface-inset);
+      border-radius: var(--radius-full);
       overflow: hidden;
     }
-    .progress-bar {
+
+    .progress-bar-fill {
       height: 100%;
-      background: var(--forest);
-      border-radius: 999px;
-      transition: width 0.4s ease;
+      background: var(--color-teal);
+      border-radius: var(--radius-full);
+      transition: width var(--transition-normal);
     }
 
-    /* Card Footer Actions */
     .card-footer-actions {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 8px;
       padding-top: 14px;
-      border-top: 1px solid var(--border-color);
-    }
-    .roster-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .delete-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #dc2626;
-      border-color: rgba(220, 38, 38, 0.25);
-    }
-    .delete-btn:hover {
-      background: rgba(220, 38, 38, 0.08);
-      border-color: #dc2626;
+      border-top: 1px solid var(--border-subtle);
     }
 
-    /* Empty States */
-    .empty-state {
+    .delete-btn {
+      color: var(--color-danger);
+    }
+
+    .delete-btn:hover {
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
+    }
+
+    .empty-assessments-card {
       padding: 60px 24px;
       text-align: center;
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-    }
-    .empty-icon {
-      color: var(--forest);
-      margin-bottom: 16px;
-    }
-    .empty-title {
-      font-size: 20px;
-      margin: 0 0 8px 0;
-      color: var(--text-primary);
-    }
-    .empty-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-      max-width: 450px;
-      margin: 0 auto 20px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
 
-    /* Modals & Backdrop */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
+    .empty-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      color: var(--text-muted);
     }
-    .modal-dialog {
-      background: var(--surface);
-      border-radius: var(--radius-xl);
-      width: 100%;
-      max-width: 780px;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+
+    .empty-icon-wrap.large {
+      width: 64px;
+      height: 64px;
     }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-color);
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
     }
-    .modal-title {
-      font-size: 20px;
-      margin: 6px 0 2px 0;
-      color: var(--text-primary);
-    }
-    .modal-subtitle {
-      font-size: 13px;
+
+    .empty-desc {
+      font-size: 13.5px;
       color: var(--text-secondary);
-      margin: 0;
+      max-width: 420px;
     }
-    .dialog-close {
-      font-size: 18px;
-      color: var(--text-tertiary);
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
+
+    /* Modal Form Styling */
+    .create-quiz-dialog {
+      max-width: 720px;
     }
-    .dialog-close:hover {
-      color: var(--text-primary);
-      background: var(--surface-secondary);
+
+    .drawer-dialog {
+      max-width: 840px;
     }
-    .modal-body {
-      padding: 24px;
+
+    .scrollable-body {
+      max-height: 65vh;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
     }
+
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
     }
+
     .span-2 {
       grid-column: span 2;
     }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: var(--text-tertiary);
-    }
-    .form-control {
-      padding: 10px 14px;
-      background: var(--surface-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      color: var(--text-primary);
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-    .form-control:focus {
-      border-color: var(--forest);
-    }
-    .prompt-textarea {
-      resize: vertical;
-      font-family: inherit;
-    }
 
-    /* Questions Section */
     .questions-section-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-color);
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
     }
+
     .questions-section-title {
-      font-size: 16px;
-      margin: 0 0 2px 0;
-      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
     }
-    .questions-stat {
-      font-size: 12px;
-      color: var(--forest);
-      font-weight: 600;
-    }
+
     .questions-builder-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
+
     .question-builder-card {
-      background: var(--surface-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
+
     .q-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
+
     .q-badge-wrap {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
-    .q-num-badge {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--forest);
-      background: var(--forest-muted);
-      padding: 2px 8px;
-      border-radius: var(--radius-sm);
-    }
+
     .marks-input-wrap {
       display: flex;
       align-items: center;
       gap: 6px;
     }
+
     .marks-label {
-      font-size: 11px;
-      color: var(--text-tertiary);
-    }
-    .marks-input {
-      width: 70px;
-      padding: 4px 8px;
-      font-size: 13px;
-    }
-    .remove-q-btn {
-      color: #dc2626;
       font-size: 12px;
-      cursor: pointer;
+      color: var(--text-muted);
     }
 
-    /* Options Builder */
+    .marks-input {
+      width: 60px;
+      padding: 3px 6px;
+      font-size: 12px;
+    }
+
+    .remove-q-btn {
+      color: var(--color-danger);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .options-builder-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
-    @media (max-width: 600px) {
+
+    @media (max-width: 640px) {
       .options-builder-grid {
         grid-template-columns: 1fr;
       }
     }
+
     .option-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border-color);
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 6px 10px;
-      transition: all 0.2s ease;
+      padding: 4px 8px;
+      transition: all var(--transition-fast);
     }
+
     .option-row.is-correct {
-      border-color: var(--forest);
-      background: var(--forest-muted);
+      border-color: var(--color-teal);
+      background: var(--color-teal-surface);
     }
+
     .opt-radio-wrap {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
     }
+
     .opt-key {
       font-size: 12px;
       font-weight: 700;
-      color: var(--text-primary);
-    }
-    .opt-input {
-      flex: 1;
-      padding: 6px 8px;
-      font-size: 13px;
-      border: none;
-      background: transparent;
-    }
-    .opt-input:focus {
-      outline: none;
+      color: var(--text-main);
     }
 
-    /* Modal Error & Footer */
-    .modal-error-banner {
+    .opt-input {
+      border: none;
+      background: transparent;
+      padding: 4px 6px;
+      font-size: 13px;
+    }
+
+    .opt-input:focus {
+      box-shadow: none;
+    }
+
+    .modal-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .modal-sub {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .modal-error {
+      padding: 8px 12px;
+      background: var(--color-danger-surface);
+      border: 1px solid var(--color-danger-border);
+      color: var(--color-danger);
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .footer-btn-group {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 14px;
-      background: rgba(220, 38, 38, 0.1);
-      border: 1px solid rgba(220, 38, 38, 0.3);
-      color: #dc2626;
-      border-radius: var(--radius-md);
-      font-size: 13px;
-    }
-    .modal-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 24px;
-      border-top: 1px solid var(--border-color);
-      background: var(--surface-secondary);
-    }
-    .footer-summary {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-    .footer-btn-group {
-      display: flex;
-      gap: 10px;
     }
 
-    /* Submissions Drawer Dialog */
-    .drawer-dialog {
-      background: var(--surface);
-      border-radius: var(--radius-xl);
-      width: 100%;
-      max-width: 900px;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    }
-    .drawer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border-color);
-    }
+    /* Submissions Drawer Strip */
     .drawer-badge-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      gap: 6px;
     }
-    .drawer-title {
-      font-size: 22px;
-      margin: 0 0 4px 0;
-      color: var(--text-primary);
-    }
-    .drawer-subtitle {
-      font-size: 12px;
-      color: var(--text-tertiary);
-      margin: 0;
-    }
+
     .drawer-metric-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      padding: 16px 24px;
-      background: var(--surface-secondary);
-      border-bottom: 1px solid var(--border-color);
+      gap: 10px;
+      background: var(--bg-surface-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 24px;
       text-align: center;
     }
-    .strip-val {
-      display: block;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    .strip-lbl {
-      display: block;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-tertiary);
-      margin-top: 2px;
+
+    .strip-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
-    /* Drawer Tabs */
+    .strip-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-teal);
+    }
+
+    .strip-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
     .drawer-nav-tabs {
       display: flex;
-      border-bottom: 1px solid var(--border-color);
-      background: var(--surface);
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
       padding: 0 24px;
-    }
-    .drawer-tab-btn {
-      display: flex;
-      align-items: center;
       gap: 8px;
-      padding: 14px 20px;
+    }
+
+    .drawer-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 16px;
       border: none;
       background: transparent;
       color: var(--text-secondary);
@@ -1189,130 +1121,101 @@ interface QuestionDraft {
       font-weight: 600;
       cursor: pointer;
       border-bottom: 2px solid transparent;
-      transition: all 0.2s ease;
+      transition: all var(--transition-fast);
     }
+
     .drawer-tab-btn:hover {
-      color: var(--text-primary);
+      color: var(--text-main);
     }
+
     .drawer-tab-btn.active {
-      color: var(--forest);
-      border-bottom-color: var(--forest);
+      color: var(--color-teal);
+      border-bottom-color: var(--color-teal);
+      font-weight: 700;
     }
+
     .drawer-tab-body {
       padding: 20px 24px;
-      overflow-y: auto;
       max-height: 55vh;
+      overflow-y: auto;
     }
 
-    /* Roster Table */
-    .roster-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    .roster-table th {
-      text-align: left;
-      padding: 10px 14px;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      color: var(--text-tertiary);
-      border-bottom: 1px solid var(--border-color);
-    }
-    .roster-table td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border-color);
-      color: var(--text-primary);
-    }
-    .roll-cell {
-      font-weight: 600;
-      color: var(--forest);
-    }
     .student-name-text {
+      font-size: 13.5px;
       font-weight: 600;
-    }
-    .student-email-text {
-      font-size: 11px;
-      color: var(--text-tertiary);
-    }
-    .score-cell {
-      font-size: 14px;
-    }
-    .date-cell {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-    .text-muted {
-      color: var(--text-tertiary);
+      color: var(--text-main);
     }
 
-    /* Questions Review Pane */
+    .student-email-text {
+      font-size: 11.5px;
+    }
+
     .questions-review-pane {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
+
     .question-review-card {
-      background: var(--surface-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-    }
-    .q-review-top {
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .q-review-prompt {
-      font-size: 16px;
-      color: var(--text-primary);
-      margin: 0 0 14px 0;
-      line-height: 1.4;
-    }
-    .q-review-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      flex-direction: column;
       gap: 10px;
     }
-    @media (max-width: 650px) {
-      .q-review-options {
-        grid-template-columns: 1fr;
-      }
+
+    .q-review-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
+
+    .q-review-prompt {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .q-review-options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     .review-opt-item {
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 8px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border-color);
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       font-size: 13px;
     }
+
     .review-opt-item.opt-correct-highlight {
-      border-color: var(--forest);
-      background: var(--forest-muted);
-      font-weight: 600;
+      background: var(--color-teal-surface);
+      border-color: var(--color-teal);
     }
+
     .rev-opt-key {
       font-weight: 700;
-      color: var(--text-primary);
+      width: 16px;
+      color: var(--color-teal);
     }
+
     .rev-opt-label {
       flex: 1;
-    }
-    .correct-badge {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--forest);
-      background: rgba(34, 197, 94, 0.15);
-      padding: 2px 6px;
-      border-radius: var(--radius-sm);
+      color: var(--text-main);
     }
 
     .spin-icon {
       animation: spin 1s linear infinite;
     }
+
     @keyframes spin {
       100% { transform: rotate(360deg); }
     }
@@ -1368,7 +1271,6 @@ export class FacultyAssessmentsComponent implements OnInit {
         this.classesLoading.set(false);
 
         if (classes.length > 0) {
-          // Check route param if navigated directly with /faculty/assessments/:facultyAssignmentId
           const routeParamId = this.route.snapshot.paramMap.get('facultyAssignmentId');
           const target = routeParamId 
             ? classes.find(c => c.facultyAssignmentId === routeParamId) || classes[0]
@@ -1414,10 +1316,6 @@ export class FacultyAssessmentsComponent implements OnInit {
     return Math.min(100, Math.round((attempts * 100) / enrolled));
   }
 
-  // ==========================================
-  // CREATE MODAL OPERATIONS
-  // ==========================================
-
   openCreateModal(): void {
     this.draftTitle = '';
     this.draftType = 'QUIZ';
@@ -1425,7 +1323,6 @@ export class FacultyAssessmentsComponent implements OnInit {
     this.createModalError.set(null);
     this.submitting.set(false);
 
-    // Initial default question
     this.draftQuestions = [
       {
         questionText: '',
@@ -1482,7 +1379,6 @@ export class FacultyAssessmentsComponent implements OnInit {
       return;
     }
 
-    // Validate each question
     for (let i = 0; i < this.draftQuestions.length; i++) {
       const q = this.draftQuestions[i];
       if (!q.questionText || !q.questionText.trim()) {
@@ -1538,10 +1434,6 @@ export class FacultyAssessmentsComponent implements OnInit {
     });
   }
 
-  // ==========================================
-  // DELETE ASSESSMENT
-  // ==========================================
-
   confirmDeleteAssessment(item: FacultyAssessmentItem): void {
     if (item.attemptCount > 0) {
       this.toast.error(
@@ -1567,10 +1459,6 @@ export class FacultyAssessmentsComponent implements OnInit {
       }
     });
   }
-
-  // ==========================================
-  // SUBMISSIONS & QUESTION DRAWER
-  // ==========================================
 
   openSubmissionsDrawer(item: FacultyAssessmentItem): void {
     this.drawerTab.set('roster');

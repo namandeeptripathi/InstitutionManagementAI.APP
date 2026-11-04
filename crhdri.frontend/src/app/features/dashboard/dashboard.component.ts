@@ -32,17 +32,17 @@ import { Assignment } from '../../core/models/student.models';
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Backend Synchronization Error</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
-            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is running with PostgreSQL.</p>
+            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is active and PostgreSQL is running.</p>
           </div>
-          <button class="btn btn-primary" (click)="loadDashboard()">
-            <app-icon name="refresh" [size]="16"></app-icon>
+          <button class="btn btn-primary btn-sm" (click)="loadDashboard()">
+            <app-icon name="refresh" [size]="15"></app-icon>
             Retry Connection
           </button>
         </div>
@@ -50,189 +50,190 @@ import { Assignment } from '../../core/models/student.models';
 
       <!-- Loaded Dashboard Content -->
       @else if (data()) {
-        <!-- Editorial Hero Greeting Banner -->
-        <section class="hero-frame">
-          <div class="hero-inner">
-            <div class="hero-text-block">
-              <div class="hero-meta-row">
-                <span class="badge badge-sage">
-                  <app-icon name="badge-check" [size]="13"></app-icon>
+        <!-- Welcome Banner (EduMate Inspired Clean Header) -->
+        <section class="welcome-banner card-modern">
+          <div class="banner-inner">
+            <div class="banner-text">
+              <div class="banner-meta-pills">
+                <span class="badge badge-teal">
+                  <app-icon name="badge-check" [size]="12"></app-icon>
                   {{ data()?.profile?.enrollmentStatus || 'ACTIVE' }}
                 </span>
-                <span class="meta-dot">&bull;</span>
-                <span class="meta-item font-mono">{{ data()?.profile?.enrollmentNumber }}</span>
-                <span class="meta-dot">&bull;</span>
-                <span class="meta-item">Sem {{ data()?.profile?.semester }} &bull; Sec {{ data()?.profile?.section }}</span>
-                <span class="meta-dot">&bull;</span>
-                <span class="meta-item">AY {{ data()?.profile?.academicYear }}</span>
+                <span class="meta-separator">&bull;</span>
+                <span class="meta-tag font-mono">{{ data()?.profile?.enrollmentNumber }}</span>
+                <span class="meta-separator">&bull;</span>
+                <span class="meta-tag">Semester {{ data()?.profile?.semester }} &bull; Sec {{ data()?.profile?.section }}</span>
+                <span class="meta-separator">&bull;</span>
+                <span class="meta-tag">AY {{ data()?.profile?.academicYear }}</span>
               </div>
 
-              <h2 class="hero-greeting font-editorial">
-                {{ greeting() }}, <span class="student-highlight">{{ data()?.profile?.fullName }}</span>
+              <h2 class="welcome-title">
+                {{ greeting() }}, <span class="student-name-highlight">{{ data()?.profile?.fullName }}</span>
               </h2>
 
-              <p class="hero-subtext">
+              <p class="welcome-subtext">
                 {{ data()?.profile?.course || data()?.profile?.courseName }}
                 &bull; <span class="dept-text">{{ data()?.profile?.department }}</span>
               </p>
             </div>
 
-            <div class="hero-tactile-widget">
-              <div class="academic-badge-dial" [style.background]="getConicGradient(data()?.summary?.attendancePercentage || 0)">
-                <div class="dial-inner">
-                  <span class="dial-value">{{ data()?.summary?.attendancePercentage || 0 }}%</span>
-                  <span class="dial-label">Attendance</span>
+            <!-- Attendance Circular Dial -->
+            <div class="banner-attendance-widget">
+              <div class="attendance-dial" [style.background]="getConicGradient(data()?.summary?.attendancePercentage || 0)">
+                <div class="dial-cutout">
+                  <span class="dial-number">{{ data()?.summary?.attendancePercentage || 0 }}%</span>
+                  <span class="dial-caption">Attendance</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- 4 Metric Cards -->
+        <!-- 4 Key Academic Metric Cards -->
         <section class="metrics-grid" aria-label="Key Academic Indicators">
-          <!-- Card 1: Courses -->
-          <div class="card-tactile card-interactive metric-card" routerLink="/courses">
-            <div class="metric-header">
-              <span class="metric-icon-box forest-box">
+          <!-- Card 1: Enrolled Courses -->
+          <div class="card-modern card-interactive metric-card" routerLink="/courses">
+            <div class="metric-top">
+              <span class="metric-icon-wrap teal">
                 <app-icon name="courses" [size]="20"></app-icon>
               </span>
-              <span class="metric-tag">Enrolled</span>
+              <span class="badge badge-teal">Enrolled</span>
             </div>
-            <div class="metric-body">
-              <div class="metric-value font-editorial">{{ data()?.summary?.totalCourses || 0 }}</div>
-              <div class="metric-title">Active Courses</div>
-              <div class="metric-caption">Current semester registered subjects</div>
+            <div class="metric-middle">
+              <div class="metric-num">{{ data()?.summary?.totalCourses || 0 }}</div>
+              <div class="metric-lbl">Active Courses</div>
+              <div class="metric-hint">Current semester registered subjects</div>
             </div>
-            <div class="metric-footer">
-              <span class="view-link">View Subjects <app-icon name="chevron-right" [size]="14"></app-icon></span>
+            <div class="metric-bottom">
+              <span class="card-link-text">View Subjects <app-icon name="chevron-right" [size]="14"></app-icon></span>
             </div>
           </div>
 
-          <!-- Card 2: Attendance -->
-          <div class="card-tactile card-interactive metric-card" routerLink="/attendance">
-            <div class="metric-header">
-              <span class="metric-icon-box teal-box">
+          <!-- Card 2: Attendance Rate -->
+          <div class="card-modern card-interactive metric-card" routerLink="/attendance">
+            <div class="metric-top">
+              <span class="metric-icon-wrap" [class.green]="(data()?.summary?.attendancePercentage || 0) >= 75" [class.amber]="(data()?.summary?.attendancePercentage || 0) < 75">
                 <app-icon name="attendance" [size]="20"></app-icon>
               </span>
-              <span class="badge" [class.badge-forest]="(data()?.summary?.attendancePercentage || 0) >= 75" [class.badge-danger]="(data()?.summary?.attendancePercentage || 0) < 75">
-                {{ (data()?.summary?.attendancePercentage || 0) >= 75 ? 'Good Standing' : 'Low Warning' }}
+              <span class="badge" [class.badge-success]="(data()?.summary?.attendancePercentage || 0) >= 75" [class.badge-amber]="(data()?.summary?.attendancePercentage || 0) < 75">
+                {{ (data()?.summary?.attendancePercentage || 0) >= 75 ? 'Good Standing' : 'Low Attendance' }}
               </span>
             </div>
-            <div class="metric-body">
-              <div class="metric-value font-editorial">{{ data()?.summary?.attendancePercentage || 0 }}%</div>
-              <div class="metric-title">Overall Attendance</div>
-              <div class="metric-caption">
-                {{ data()?.summary?.attendedClasses }} attended / {{ data()?.summary?.totalClasses }} sessions
+            <div class="metric-middle">
+              <div class="metric-num">{{ data()?.summary?.attendancePercentage || 0 }}%</div>
+              <div class="metric-lbl">Overall Attendance</div>
+              <div class="metric-hint">
+                {{ data()?.summary?.attendedClasses }} attended of {{ data()?.summary?.totalClasses }} sessions
               </div>
             </div>
-            <div class="metric-footer">
-              <div class="mini-bar-track">
-                <div class="mini-bar-fill" [style.width.%]="data()?.summary?.attendancePercentage || 0"></div>
+            <div class="metric-bottom">
+              <div class="attendance-mini-track">
+                <div class="attendance-mini-fill" [style.width.%]="data()?.summary?.attendancePercentage || 0"></div>
               </div>
             </div>
           </div>
 
           <!-- Card 3: Pending Assignments -->
-          <div class="card-tactile card-interactive metric-card" routerLink="/assignments">
-            <div class="metric-header">
-              <span class="metric-icon-box amber-box">
+          <div class="card-modern card-interactive metric-card" routerLink="/assignments">
+            <div class="metric-top">
+              <span class="metric-icon-wrap amber">
                 <app-icon name="assignments" [size]="20"></app-icon>
               </span>
-              <span class="metric-tag">Submissions</span>
+              <span class="badge badge-amber">Tasks</span>
             </div>
-            <div class="metric-body">
-              <div class="metric-value font-editorial">{{ data()?.summary?.pendingAssignments || 0 }}</div>
-              <div class="metric-title">Pending Assignments</div>
-              <div class="metric-caption">
+            <div class="metric-middle">
+              <div class="metric-num">{{ data()?.summary?.pendingAssignments || 0 }}</div>
+              <div class="metric-lbl">Pending Assignments</div>
+              <div class="metric-hint">
                 {{ (data()?.summary?.pendingAssignments || 0) === 0 ? 'All course assignments submitted' : 'Requires your submission' }}
               </div>
             </div>
-            <div class="metric-footer">
-              <span class="view-link">Review Tasks <app-icon name="chevron-right" [size]="14"></app-icon></span>
+            <div class="metric-bottom">
+              <span class="card-link-text">Review Tasks <app-icon name="chevron-right" [size]="14"></app-icon></span>
             </div>
           </div>
 
           <!-- Card 4: Latest Assessment Result -->
-          <div class="card-tactile card-interactive metric-card" routerLink="/results">
-            <div class="metric-header">
-              <span class="metric-icon-box sage-box">
+          <div class="card-modern card-interactive metric-card" routerLink="/results">
+            <div class="metric-top">
+              <span class="metric-icon-wrap blue">
                 <app-icon name="results" [size]="20"></app-icon>
               </span>
-              <span class="badge badge-forest">Latest Result</span>
+              <span class="badge badge-info">Latest Score</span>
             </div>
-            <div class="metric-body">
+            <div class="metric-middle">
               @if (data()?.latestResult; as res) {
-                <div class="metric-value font-editorial">
-                  {{ res.marksObtained | number:'1.0-1' }} <span class="metric-max">/ {{ res.maxMarks }}</span>
+                <div class="metric-num">
+                  {{ res.marksObtained | number:'1.0-1' }} <span class="metric-max-marks">/ {{ res.maxMarks }}</span>
                 </div>
-                <div class="metric-title text-truncate">{{ res.assessmentName }}</div>
-                <div class="metric-caption font-mono">
+                <div class="metric-lbl text-truncate">{{ res.assessmentName }}</div>
+                <div class="metric-hint font-mono">
                   Recorded {{ res.recordedAt | date:'mediumDate' }}
                 </div>
               } @else {
-                <div class="metric-value font-editorial">&mdash;</div>
-                <div class="metric-title">No results recorded</div>
-                <div class="metric-caption">Assessments are awaiting grading</div>
+                <div class="metric-num">&mdash;</div>
+                <div class="metric-lbl">No results recorded</div>
+                <div class="metric-hint">Assessments awaiting evaluation</div>
               }
             </div>
-            <div class="metric-footer">
-              <span class="view-link">Full Transcripts <app-icon name="chevron-right" [size]="14"></app-icon></span>
+            <div class="metric-bottom">
+              <span class="card-link-text">Full Results <app-icon name="chevron-right" [size]="14"></app-icon></span>
             </div>
           </div>
         </section>
 
         <!-- Main Dashboard Split Content -->
         <div class="content-split">
-          <!-- Left Column: Upcoming Tasks & Quick Actions -->
+          <!-- Left Column: Upcoming Assignments & Quick Actions -->
           <div class="split-col-main">
-            <!-- Upcoming Tasks Card -->
-            <div class="card-tactile section-card">
-              <div class="section-card-header">
+            <!-- Assignments Card -->
+            <div class="card-modern panel-card">
+              <div class="panel-header">
                 <div>
-                  <h3 class="section-card-title font-editorial">Course Assignments & Deadlines</h3>
-                  <p class="section-card-subtitle">Synchronized directly from faculty assignments</p>
+                  <h3 class="panel-title">Course Assignments & Deadlines</h3>
+                  <p class="panel-sub">Synchronized in real-time from faculty course managers</p>
                 </div>
-                <a routerLink="/assignments" class="btn btn-ghost btn-sm">
+                <a routerLink="/assignments" class="btn btn-secondary btn-sm">
                   View All ({{ assignments().length }})
                 </a>
               </div>
 
-              <div class="section-card-body">
+              <div class="panel-body">
                 @if (assignmentsLoading()) {
-                  <div class="skeleton" style="height: 60px; margin-bottom: 8px;"></div>
-                  <div class="skeleton" style="height: 60px;"></div>
+                  <div class="skeleton" style="height: 52px; margin-bottom: 8px;"></div>
+                  <div class="skeleton" style="height: 52px;"></div>
                 } @else if (assignments().length === 0) {
-                  <div class="empty-inline-state">
-                    <app-icon name="check" [size]="24"></app-icon>
-                    <span>No upcoming assignments scheduled.</span>
+                  <div class="empty-tasks-state">
+                    <app-icon name="check" [size]="22"></app-icon>
+                    <span>No upcoming assignments scheduled at this time.</span>
                   </div>
                 } @else {
-                  <div class="assignment-items-list">
+                  <div class="assignment-list">
                     @for (item of assignments().slice(0, 3); track item.assignmentId) {
-                      <div class="assignment-item" routerLink="/assignments">
+                      <div class="assignment-row" routerLink="/assignments">
                         <div class="item-status-icon" [class.is-submitted]="item.submissionStatus === 'SUBMITTED'">
-                          <app-icon [name]="item.submissionStatus === 'SUBMITTED' ? 'check' : 'assignments'" [size]="16"></app-icon>
+                          <app-icon [name]="item.submissionStatus === 'SUBMITTED' ? 'check' : 'assignments'" [size]="15"></app-icon>
                         </div>
-                        <div class="item-content">
-                          <div class="item-title-row">
-                            <span class="item-title">{{ item.title }}</span>
-                            <span class="badge" [class.badge-forest]="item.submissionStatus === 'SUBMITTED'" [class.badge-amber]="item.submissionStatus !== 'SUBMITTED'">
+                        <div class="assignment-info">
+                          <div class="assignment-title-line">
+                            <span class="assignment-name">{{ item.title }}</span>
+                            <span class="badge" [class.badge-success]="item.submissionStatus === 'SUBMITTED'" [class.badge-amber]="item.submissionStatus !== 'SUBMITTED'">
                               {{ item.submissionStatus === 'SUBMITTED' ? 'Submitted' : 'Pending' }}
                             </span>
                           </div>
-                          <div class="item-meta">
-                            <span class="item-date">
+                          <div class="assignment-meta-line">
+                            <span class="meta-date">
                               <app-icon name="clock" [size]="12"></app-icon> Due: {{ item.dueAt | date:'mediumDate' }}
                             </span>
-                            <span class="meta-dot">&bull;</span>
+                            <span class="meta-separator">&bull;</span>
                             <span>Max Marks: {{ item.maxMarks }}</span>
                             @if (item.marksObtained !== null) {
-                              <span class="meta-dot">&bull;</span>
-                              <span class="scored-text">Score: {{ item.marksObtained }} / {{ item.maxMarks }}</span>
+                              <span class="meta-separator">&bull;</span>
+                              <span class="score-highlight">Score: {{ item.marksObtained }} / {{ item.maxMarks }}</span>
                             }
                           </div>
                         </div>
-                        <app-icon name="chevron-right" [size]="16" class="item-arrow"></app-icon>
+                        <app-icon name="chevron-right" [size]="15" class="row-arrow"></app-icon>
                       </div>
                     }
                   </div>
@@ -241,66 +242,70 @@ import { Assignment } from '../../core/models/student.models';
             </div>
 
             <!-- Quick Action Shortcuts -->
-            <div class="quick-actions-bar">
-              <span class="quick-actions-label font-editorial">Quick Shortcuts:</span>
-              <a routerLink="/assignments" class="btn btn-secondary btn-sm">
-                <app-icon name="upload" [size]="15"></app-icon> Submit Assignment
-              </a>
-              <a routerLink="/assessments" class="btn btn-secondary btn-sm">
-                <app-icon name="assessments" [size]="15"></app-icon> Start Quiz
-              </a>
-              <a routerLink="/attendance" class="btn btn-secondary btn-sm">
-                <app-icon name="attendance" [size]="15"></app-icon> View Attendance
-              </a>
-              <a routerLink="/learning-materials" class="btn btn-secondary btn-sm">
-                <app-icon name="materials" [size]="15"></app-icon> Learning Materials
-              </a>
+            <div class="quick-shortcuts-panel card-modern">
+              <span class="shortcuts-heading">Quick Actions:</span>
+              <div class="shortcuts-buttons">
+                <a routerLink="/assignments" class="btn btn-secondary btn-sm">
+                  <app-icon name="upload" [size]="14"></app-icon> Submit Task
+                </a>
+                <a routerLink="/assessments" class="btn btn-secondary btn-sm">
+                  <app-icon name="assessments" [size]="14"></app-icon> Start Quiz
+                </a>
+                <a routerLink="/attendance" class="btn btn-secondary btn-sm">
+                  <app-icon name="attendance" [size]="14"></app-icon> Attendance Log
+                </a>
+                <a routerLink="/learning-materials" class="btn btn-secondary btn-sm">
+                  <app-icon name="materials" [size]="14"></app-icon> Study Materials
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- Right Column: Institutional Overview & Health Status -->
+          <!-- Right Column: Semester Progress & Verified Status -->
           <div class="split-col-side">
-            <!-- Academic Session Card -->
-            <div class="card-tactile session-card">
-              <h3 class="session-card-title font-editorial">Semester Progress</h3>
-              <p class="session-desc">
-                Current enrolled term: Semester {{ data()?.profile?.semester }}, Academic Year {{ data()?.profile?.academicYear }}.
+            <!-- Semester Progress Card -->
+            <div class="card-modern panel-card">
+              <h3 class="panel-title">Semester Timeline</h3>
+              <p class="panel-sub">
+                Enrolled term: Semester {{ data()?.profile?.semester }}, Academic Year {{ data()?.profile?.academicYear }}
               </p>
 
-              <div class="progress-block">
-                <div class="progress-labels">
-                  <span class="progress-title">Semester Timeline</span>
-                  <span class="progress-pct font-mono">Week 8 of 16</span>
+              <div class="timeline-block">
+                <div class="timeline-labels">
+                  <span class="timeline-title">Semester Progress</span>
+                  <span class="timeline-val font-mono">Week 8 of 16</span>
                 </div>
-                <div class="progress-track">
-                  <div class="progress-bar" style="width: 50%;"></div>
+                <div class="timeline-track">
+                  <div class="timeline-fill" style="width: 50%;"></div>
                 </div>
               </div>
 
-              <div class="session-stat-list">
-                <div class="stat-row">
-                  <span class="stat-name">Program</span>
-                  <span class="stat-val">{{ data()?.profile?.course || data()?.profile?.courseName || 'B.Tech (AI & ML)' }}</span>
+              <div class="academic-details-list">
+                <div class="detail-line">
+                  <span class="detail-label">Program</span>
+                  <span class="detail-value">{{ data()?.profile?.course || data()?.profile?.courseName || 'B.Tech (AI & ML)' }}</span>
                 </div>
-                <div class="stat-row">
-                  <span class="stat-name">Institution</span>
-                  <span class="stat-val">CRHDRI Technology Institute</span>
+                <div class="detail-line">
+                  <span class="detail-label">Institution</span>
+                  <span class="detail-value">CRHDRI University</span>
                 </div>
-                <div class="stat-row">
-                  <span class="stat-name">Status</span>
-                  <span class="stat-val"><span class="pill-active">{{ data()?.profile?.enrollmentStatus || 'ACTIVE' }}</span></span>
+                <div class="detail-line">
+                  <span class="detail-label">Status</span>
+                  <span class="detail-value">
+                    <span class="badge badge-success">{{ data()?.profile?.enrollmentStatus || 'ACTIVE' }}</span>
+                  </span>
                 </div>
               </div>
             </div>
 
-            <!-- Verified Backend Notice -->
-            <div class="card-tactile verified-card">
-              <div class="verified-header">
-                <app-icon name="check" [size]="18" class="verified-icon"></app-icon>
-                <span class="verified-title">Real-Time Data Connected</span>
+            <!-- Verified Real Backend Card -->
+            <div class="verified-status-card">
+              <div class="verified-top">
+                <app-icon name="check" [size]="16" class="verified-icon"></app-icon>
+                <span class="verified-heading">Live Academic Sync</span>
               </div>
-              <p class="verified-text">
-                Every metric and course row is fetched live from your ASP.NET Core backend and PostgreSQL database.
+              <p class="verified-caption">
+                Connected to ASP.NET Core API at <code>http://localhost:5083</code> backed by PostgreSQL database <code>crhdri_institution_db</code>.
               </p>
             </div>
           </div>
@@ -312,28 +317,28 @@ import { Assignment } from '../../core/models/student.models';
     .dashboard-page {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
     /* Skeleton Loading */
     .skeleton-container {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
     .hero-skeleton {
-      height: 180px;
+      height: 140px;
       border-radius: var(--radius-xl);
     }
 
     .card-skeleton {
-      height: 140px;
+      height: 130px;
       border-radius: var(--radius-lg);
     }
 
     .panel-skeleton {
-      height: 320px;
+      height: 300px;
       border-radius: var(--radius-lg);
     }
 
@@ -341,8 +346,8 @@ import { Assignment } from '../../core/models/student.models';
     .error-banner {
       display: flex;
       align-items: center;
-      gap: 20px;
-      padding: 24px;
+      gap: 16px;
+      padding: 20px;
       background: var(--color-danger-surface);
       border-color: var(--color-danger-border);
     }
@@ -352,99 +357,97 @@ import { Assignment } from '../../core/models/student.models';
     }
 
     .error-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--color-danger);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .error-desc {
-      font-size: 14px;
+      font-size: 13.5px;
       color: var(--text-main);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .error-hint {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 11.5px;
+      color: var(--text-secondary);
     }
 
-    /* Hero Banner */
-    .hero-frame {
-      padding: 32px 36px;
+    /* Welcome Banner */
+    .welcome-banner {
+      padding: 24px 28px;
     }
 
-    .hero-inner {
+    .banner-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 28px;
+      gap: 24px;
     }
 
-    .hero-text-block {
+    .banner-text {
       flex: 1;
     }
 
-    .hero-meta-row {
+    .banner-meta-pills {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      font-size: 12.5px;
-      color: var(--text-muted);
-    }
-
-    .meta-dot {
-      color: var(--border-strong);
-    }
-
-    .meta-item {
-      font-weight: 600;
-    }
-
-    .hero-greeting {
-      font-size: 32px;
-      font-weight: 600;
-      color: var(--color-forest);
-      line-height: 1.2;
+      gap: 8px;
       margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .meta-separator {
+      color: var(--border-medium);
+    }
+
+    .meta-tag {
+      font-weight: 500;
+    }
+
+    .welcome-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 4px;
       letter-spacing: -0.01em;
     }
 
-    .student-highlight {
-      font-style: italic;
-      color: var(--color-forest-dark);
+    .student-name-highlight {
+      color: var(--color-teal);
     }
 
-    .hero-subtext {
-      font-size: 14.5px;
+    .welcome-subtext {
+      font-size: 13.5px;
       color: var(--text-secondary);
-      line-height: 1.4;
     }
 
     .dept-text {
       font-weight: 600;
-      color: var(--color-forest);
+      color: var(--text-main);
     }
 
-    /* Tactile Dial */
-    .hero-tactile-widget {
+    /* Attendance Dial */
+    .banner-attendance-widget {
       flex-shrink: 0;
     }
 
-    .academic-badge-dial {
-      width: 108px;
-      height: 108px;
+    .attendance-dial {
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
-      background: conic-gradient(var(--color-forest) 0% 100%, var(--border-subtle) 100%);
-      padding: 7px;
-      box-shadow: 0 4px 14px rgba(23, 63, 53, 0.15), 0 1px 3px rgba(32, 40, 36, 0.08);
+      padding: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
     }
 
-    .dial-inner {
+    .dial-cutout {
       width: 100%;
       height: 100%;
       background: var(--bg-surface);
@@ -453,119 +456,60 @@ import { Assignment } from '../../core/models/student.models';
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 2px 4px rgba(32, 40, 36, 0.06);
     }
 
-    .dial-value {
-      font-family: var(--font-editorial);
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--color-forest);
+    .dial-number {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-teal);
       line-height: 1;
     }
 
-    .dial-label {
-      font-size: 10px;
+    .dial-caption {
+      font-size: 9.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       color: var(--text-muted);
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
     /* Metrics Grid */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
+      gap: 16px;
     }
 
     .metric-card {
-      padding: 20px;
+      padding: 16px 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 100%;
     }
 
-    .metric-header {
+    .metric-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    .metric-icon-box {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 5px rgba(32, 40, 36, 0.05);
+    .metric-middle {
+      margin-bottom: 12px;
     }
 
-    .forest-box {
-      background: var(--color-forest-surface);
-      color: var(--color-forest);
-      border: 1px solid var(--color-forest-border);
+    .metric-hint {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.35;
+      margin-top: 2px;
     }
 
-    .teal-box {
-      background: var(--color-teal-surface);
-      color: var(--color-teal);
-      border: 1px solid var(--color-sage);
-    }
-
-    .amber-box {
-      background: var(--color-amber-surface);
-      color: var(--color-amber-dark);
-      border: 1px solid var(--color-amber-border);
-    }
-
-    .sage-box {
-      background: var(--color-sage-surface);
-      color: var(--color-forest);
-      border: 1px solid var(--color-sage);
-    }
-
-    .metric-tag {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-    }
-
-    .metric-body {
-      margin-bottom: 16px;
-    }
-
-    .metric-value {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--text-main);
-      line-height: 1.1;
-      margin-bottom: 4px;
-    }
-
-    .metric-max {
-      font-size: 18px;
+    .metric-max-marks {
+      font-size: 16px;
       color: var(--text-muted);
       font-weight: 400;
-    }
-
-    .metric-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--color-forest);
-      margin-bottom: 2px;
-    }
-
-    .metric-caption {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.3;
     }
 
     .text-truncate {
@@ -574,29 +518,29 @@ import { Assignment } from '../../core/models/student.models';
       text-overflow: ellipsis;
     }
 
-    .metric-footer {
+    .metric-bottom {
       border-top: 1px solid var(--border-subtle);
-      padding-top: 12px;
+      padding-top: 10px;
     }
 
-    .view-link {
+    .card-link-text {
       font-size: 12px;
       font-weight: 600;
-      color: var(--color-forest);
+      color: var(--color-teal);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
     }
 
-    .mini-bar-track {
+    .attendance-mini-track {
       width: 100%;
-      height: 6px;
+      height: 5px;
       background: var(--bg-surface-subtle);
       border-radius: var(--radius-full);
       overflow: hidden;
     }
 
-    .mini-bar-fill {
+    .attendance-mini-fill {
       height: 100%;
       background: var(--color-teal);
       border-radius: var(--radius-full);
@@ -606,81 +550,70 @@ import { Assignment } from '../../core/models/student.models';
     .content-split {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 20px;
-    }
-
-    .split-col-main {
-      display: flex;
-      flex-direction: column;
       gap: 18px;
     }
 
+    .split-col-main,
     .split-col-side {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
-    /* Section Card */
-    .section-card {
-      padding: 24px;
+    .panel-card {
+      padding: 20px 22px;
     }
 
-    .section-card-header {
+    .panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
-    .section-card-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--color-forest);
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
       letter-spacing: -0.01em;
     }
 
-    .section-card-subtitle {
-      font-size: 12.5px;
-      color: var(--text-muted);
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
+    .panel-sub {
       font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 1px;
     }
 
-    /* Assignment Item */
-    .assignment-items-list {
+    .assignment-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .assignment-item {
+    .assignment-row {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 12px 14px;
+      gap: 12px;
+      padding: 10px 12px;
       background: var(--bg-surface-subtle);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       cursor: pointer;
-      transition: background-color var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
+      transition: all var(--transition-fast);
     }
 
-    .assignment-item:hover {
+    .assignment-row:hover {
       background: #FFFFFF;
       border-color: var(--border-medium);
-      transform: translateX(3px);
+      transform: translateX(2px);
     }
 
     .item-status-icon {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: var(--color-amber-surface);
-      color: var(--color-amber-dark);
+      color: var(--color-amber);
       border: 1px solid var(--color-amber-border);
       display: flex;
       align-items: center;
@@ -689,195 +622,179 @@ import { Assignment } from '../../core/models/student.models';
     }
 
     .item-status-icon.is-submitted {
-      background: var(--color-forest-surface);
-      color: var(--color-forest);
-      border-color: var(--color-forest-border);
+      background: var(--color-teal-surface);
+      color: var(--color-teal);
+      border-color: var(--color-teal-border);
     }
 
-    .item-content {
+    .assignment-info {
       flex: 1;
       min-width: 0;
     }
 
-    .item-title-row {
+    .assignment-title-line {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
-    .item-title {
-      font-size: 13.5px;
+    .assignment-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .assignment-meta-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .meta-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .score-highlight {
+      color: var(--color-teal);
+      font-weight: 600;
+    }
+
+    .row-arrow {
+      color: var(--text-muted);
+    }
+
+    .empty-tasks-state {
+      padding: 24px;
+      text-align: center;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+    }
+
+    /* Quick Shortcuts */
+    .quick-shortcuts-panel {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .shortcuts-heading {
+      font-size: 13px;
       font-weight: 700;
       color: var(--text-main);
     }
 
-    .item-meta {
+    .shortcuts-buttons {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    .item-date {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .scored-text {
-      color: var(--color-forest);
-      font-weight: 600;
-    }
-
-    .item-arrow {
-      color: var(--text-muted);
-    }
-
-    .empty-inline-state {
-      padding: 28px;
-      text-align: center;
-      color: var(--text-muted);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    /* Quick Actions */
-    .quick-actions-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       flex-wrap: wrap;
-      padding: 14px 18px;
-      background: var(--bg-surface);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-subtle);
     }
 
-    .quick-actions-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--color-forest);
-      margin-right: 4px;
+    /* Timeline */
+    .timeline-block {
+      margin-top: 14px;
+      margin-bottom: 18px;
     }
 
-    /* Side Cards */
-    .session-card {
-      padding: 22px;
-    }
-
-    .session-card-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--color-forest);
-      margin-bottom: 4px;
-    }
-
-    .session-desc {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      line-height: 1.4;
-    }
-
-    .progress-block {
-      margin-bottom: 20px;
-    }
-
-    .progress-labels {
+    .timeline-labels {
       display: flex;
       justify-content: space-between;
       font-size: 11.5px;
       font-weight: 600;
       color: var(--text-secondary);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
-    .progress-track {
-      height: 8px;
+    .timeline-track {
+      height: 6px;
       background: var(--bg-surface-subtle);
       border-radius: var(--radius-full);
       overflow: hidden;
       border: 1px solid var(--border-subtle);
     }
 
-    .progress-bar {
+    .timeline-fill {
       height: 100%;
-      background: var(--color-forest);
+      background: var(--color-teal);
       border-radius: var(--radius-full);
     }
 
-    .session-stat-list {
+    .academic-details-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       border-top: 1px solid var(--border-subtle);
-      padding-top: 14px;
+      padding-top: 12px;
     }
 
-    .stat-row {
+    .detail-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 12px;
     }
 
-    .stat-name {
-      color: var(--text-muted);
+    .detail-label {
+      color: var(--text-secondary);
     }
 
-    .stat-val {
+    .detail-value {
       font-weight: 600;
       color: var(--text-main);
     }
 
-    .pill-active {
-      display: inline-block;
-      padding: 2px 8px;
-      background: var(--color-forest-surface);
-      color: var(--color-forest);
-      border-radius: var(--radius-full);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
     /* Verified Card */
-    .verified-card {
-      padding: 16px 20px;
-      background: var(--color-forest-surface);
-      border-color: var(--color-forest-border);
+    .verified-status-card {
+      padding: 14px 16px;
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
+      border-radius: var(--radius-lg);
     }
 
-    .verified-header {
+    .verified-top {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      gap: 6px;
+      margin-bottom: 4px;
     }
 
     .verified-icon {
-      color: var(--color-forest);
+      color: var(--color-teal);
     }
 
-    .verified-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--color-forest);
-    }
-
-    .verified-text {
+    .verified-heading {
       font-size: 12px;
+      font-weight: 700;
+      color: var(--color-teal);
+    }
+
+    .verified-caption {
+      font-size: 11.5px;
       color: var(--text-secondary);
       line-height: 1.4;
     }
 
-    /* Responsive */
-    @media (max-width: 1200px) {
+    .verified-caption code {
+      font-size: 10.5px;
+      color: var(--color-teal-dark);
+      background: rgba(15, 118, 110, 0.08);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    @media (max-width: 1100px) {
       .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -890,11 +807,11 @@ import { Assignment } from '../../core/models/student.models';
       .metrics-grid {
         grid-template-columns: 1fr;
       }
-      .hero-inner {
+      .banner-inner {
         flex-direction: column;
         align-items: flex-start;
       }
-      .hero-tactile-widget {
+      .banner-attendance-widget {
         display: none;
       }
     }
@@ -949,7 +866,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getConicGradient(pct: number): string {
-    const color = pct >= 75 ? '#173F35' : '#B84233';
-    return `conic-gradient(${color} 0% ${pct}%, #E5E4DC ${pct}% 100%)`;
+    const color = pct >= 75 ? '#0F766E' : '#B91C1C';
+    return `conic-gradient(${color} 0% ${pct}%, #E2E8F0 ${pct}% 100%)`;
   }
 }

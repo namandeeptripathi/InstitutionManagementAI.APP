@@ -26,22 +26,25 @@ interface GradingState {
   template: `
     <div class="assignments-page">
       <!-- Header Bar with Class Selector -->
-      <div class="page-header card-tactile">
-        <div class="header-titles">
+      <div class="faculty-page-header">
+        <div class="faculty-header-titles">
           <div class="badge-row">
-            <span class="badge badge-sage">GRADING & TASKS</span>
+            <span class="badge badge-teal badge-sm">
+              <app-icon name="badge-check" [size]="12"></app-icon>
+              GRADING & TASKS
+            </span>
             <span class="meta-dot">&bull;</span>
-            <span class="meta-year font-mono">AY 2026-2027</span>
+            <span class="meta-year font-mono text-muted">AY 2026-2027</span>
           </div>
-          <h2 class="page-title font-editorial">Assignments & Grading Console</h2>
-          <p class="page-subtitle">
+          <h2 class="faculty-page-title">Assignments & Grading Console</h2>
+          <p class="faculty-page-subtitle">
             Create course assignments, monitor student submissions in real-time, and publish evaluated grades.
           </p>
         </div>
 
         <!-- Class Picker Tabs -->
         <div class="class-picker-wrap">
-          <label class="picker-label font-mono">ASSIGNED CLASS:</label>
+          <span class="picker-label font-mono">Assigned Class:</span>
           <div class="class-selector-box">
             @for (cls of assignedClasses(); track cls.facultyAssignmentId) {
               <button
@@ -65,16 +68,16 @@ interface GradingState {
           <div class="skeleton body-skeleton"></div>
         </div>
       } @else if (classesError()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Assigned Classes</h3>
             <p class="error-desc">{{ classesError() }}</p>
           </div>
-          <button class="btn btn-primary" (click)="loadClasses()">
-            <app-icon name="refresh" [size]="16"></app-icon>
+          <button class="btn btn-primary btn-sm" (click)="loadClasses()">
+            <app-icon name="refresh" [size]="14"></app-icon>
             Retry Connection
           </button>
         </div>
@@ -83,47 +86,50 @@ interface GradingState {
         <div class="assignments-split-layout">
           <!-- LEFT COLUMN: Tasks List & Create Button -->
           <div class="split-col tasks-col">
-            <div class="card-tactile panel-card">
+            <div class="card-modern panel-card">
               <div class="panel-header">
                 <div class="panel-header-title">
-                  <h3 class="panel-title font-editorial">Course Tasks</h3>
-                  <span class="badge badge-amber badge-sm font-mono">{{ tasks().length }} Published</span>
+                  <h3 class="panel-title">Course Tasks</h3>
+                  <span class="badge badge-teal badge-sm font-mono">{{ tasks().length }} Published</span>
                 </div>
                 <button
-                  class="btn btn-primary btn-sm new-task-btn"
+                  class="btn btn-primary btn-sm"
                   (click)="openCreateModal()"
                   title="Create and publish a new assignment"
                 >
-                  <app-icon name="assignments" [size]="16"></app-icon>
-                  Create Task
+                  <app-icon name="plus" [size]="13"></app-icon>
+                  <span>Create Task</span>
                 </button>
               </div>
 
               <!-- Class Details Summary Pill -->
               <div class="class-meta-bar">
-                <span class="font-mono font-bold">{{ selectedClass()?.subjectCode }}</span>
-                <span>{{ selectedClass()?.subjectName }}</span>
+                <span class="font-mono font-bold text-teal">{{ selectedClass()?.subjectCode }}</span>
+                <span class="meta-subject-name">{{ selectedClass()?.subjectName }}</span>
                 <span class="meta-dot">&bull;</span>
-                <span>{{ selectedClass()?.courseName }} (Sem {{ selectedClass()?.semester }})</span>
+                <span class="text-secondary text-xs">{{ selectedClass()?.courseName }} (Sem {{ selectedClass()?.semester }})</span>
               </div>
 
               @if (tasksLoading()) {
-                <div class="loading-state">
-                  <div class="spinner"></div>
-                  <p>Loading course assignments...</p>
+                <div class="tasks-skeleton-list">
+                  <div class="skeleton item-skeleton"></div>
+                  <div class="skeleton item-skeleton"></div>
+                  <div class="skeleton item-skeleton"></div>
                 </div>
               } @else if (tasksError()) {
-                <div class="alert-box alert-error">
+                <div class="error-sub-banner">
                   <p>{{ tasksError() }}</p>
                   <button class="btn btn-secondary btn-sm" (click)="loadTasks(selectedClass()!.facultyAssignmentId)">
                     Retry
                   </button>
                 </div>
               } @else if (tasks().length === 0) {
-                <div class="empty-state card-tactile">
-                  <app-icon name="assignments" [size]="40"></app-icon>
-                  <h4>No Assignments Published</h4>
-                  <p>Create your first task for {{ selectedClass()?.subjectCode }} to allow students to submit coursework.</p>
+                <div class="empty-tasks-box">
+                  <div class="empty-icon-wrap">
+                    <app-icon name="assignments" [size]="28"></app-icon>
+                  </div>
+                  <h4 class="empty-tasks-title">No Assignments Published</h4>
+                  <p class="empty-tasks-desc">Create your first task for {{ selectedClass()?.subjectCode }} to collect student submissions.</p>
                   <button class="btn btn-primary btn-sm" (click)="openCreateModal()">
                     Publish New Assignment
                   </button>
@@ -132,13 +138,13 @@ interface GradingState {
                 <div class="tasks-scroll-list">
                   @for (task of tasks(); track task.assignmentId) {
                     <div
-                      class="task-card card-tactile"
+                      class="task-card"
                       [class.active]="selectedTask()?.assignmentId === task.assignmentId"
                       (click)="selectTask(task)"
                     >
                       <div class="task-card-header">
                         <h4 class="task-title">{{ task.title }}</h4>
-                        <span class="badge badge-sage font-mono">{{ task.maxMarks }} Marks</span>
+                        <span class="badge badge-teal badge-sm font-mono">{{ task.maxMarks }} Marks</span>
                       </div>
 
                       @if (task.instructions) {
@@ -146,16 +152,16 @@ interface GradingState {
                       }
 
                       <div class="task-stats-row">
-                        <div class="due-info font-mono">
-                          <app-icon name="clock" [size]="13"></app-icon>
+                        <div class="due-info font-mono text-muted">
+                          <app-icon name="clock" [size]="12"></app-icon>
                           <span>Due: {{ formatDueDate(task.dueAt) }}</span>
                         </div>
                         <div class="progress-pill font-mono">
-                          <span [class.text-amber]="task.submittedCount > 0">
-                            {{ task.submittedCount }}/{{ task.totalEnrolled }} Submitted
+                          <span [class.text-amber]="task.submittedCount > 0" class="sub-count">
+                            {{ task.submittedCount }}/{{ task.totalEnrolled }} Submissions
                           </span>
                           <span class="meta-dot">&bull;</span>
-                          <span [class.text-emerald]="task.gradedCount === task.submittedCount && task.submittedCount > 0">
+                          <span [class.text-success]="task.gradedCount === task.submittedCount && task.submittedCount > 0" class="grade-count">
                             {{ task.gradedCount }} Graded
                           </span>
                         </div>
@@ -169,95 +175,100 @@ interface GradingState {
 
           <!-- RIGHT COLUMN: Submissions Review & Grading Console -->
           <div class="split-col submissions-col">
-            <div class="card-tactile panel-card">
+            <div class="card-modern panel-card">
               @if (!selectedTask()) {
-                <div class="empty-state card-tactile select-prompt">
-                  <app-icon name="assignments" [size]="48"></app-icon>
-                  <h4>Select an Assignment</h4>
-                  <p>Choose an assignment task from the left to view enrolled student submissions, download submitted files, and input grades.</p>
+                <div class="empty-select-card">
+                  <div class="empty-icon-wrap large">
+                    <app-icon name="assignments" [size]="36"></app-icon>
+                  </div>
+                  <h3 class="empty-title">Select an Assignment</h3>
+                  <p class="empty-desc">Choose an assignment task from the left list to review student submissions, download submitted files, and assign grades.</p>
                 </div>
               } @else {
                 <!-- Selected Task Header -->
                 <div class="panel-header border-bottom">
                   <div class="panel-header-title">
-                    <div class="badge-row">
-                      <span class="badge badge-amber font-mono">MAX: {{ selectedTask()?.maxMarks }} PTS</span>
+                    <div class="task-meta-pills">
+                      <span class="badge badge-teal badge-sm font-mono">MAX: {{ selectedTask()?.maxMarks }} PTS</span>
                       <span class="meta-dot">&bull;</span>
-                      <span class="due-badge font-mono">Due {{ formatDueDate(selectedTask()?.dueAt) }}</span>
+                      <span class="due-badge font-mono text-muted">Due {{ formatDueDate(selectedTask()?.dueAt) }}</span>
                     </div>
-                    <h3 class="panel-title font-editorial">{{ selectedTask()?.title }}</h3>
+                    <h3 class="panel-title">{{ selectedTask()?.title }}</h3>
                   </div>
                   <div class="header-actions">
                     <button class="btn btn-secondary btn-sm" (click)="loadSubmissions(selectedTask()!.assignmentId)" title="Refresh submissions">
-                      <app-icon name="refresh" [size]="15"></app-icon>
-                      Refresh
+                      <app-icon name="refresh" [size]="13"></app-icon>
+                      <span>Refresh</span>
                     </button>
                   </div>
                 </div>
 
                 @if (selectedTask()?.instructions) {
                   <div class="instructions-banner">
-                    <span class="label font-mono">INSTRUCTIONS & RUBRIC:</span>
-                    <p>{{ selectedTask()?.instructions }}</p>
+                    <span class="instructions-label font-mono">INSTRUCTIONS & RUBRIC:</span>
+                    <p class="instructions-text">{{ selectedTask()?.instructions }}</p>
                   </div>
                 }
 
                 <!-- Submissions Roster -->
                 @if (submissionsLoading()) {
-                  <div class="loading-state">
-                    <div class="spinner"></div>
-                    <p>Loading student submissions...</p>
+                  <div class="submissions-skeleton">
+                    <div class="skeleton row-skeleton"></div>
+                    <div class="skeleton row-skeleton"></div>
+                    <div class="skeleton row-skeleton"></div>
                   </div>
                 } @else if (submissionsError()) {
-                  <div class="alert-box alert-error">
+                  <div class="error-sub-banner">
                     <p>{{ submissionsError() }}</p>
                     <button class="btn btn-secondary btn-sm" (click)="loadSubmissions(selectedTask()!.assignmentId)">
-                      Retry
+                      Retry Connection
                     </button>
                   </div>
                 } @else {
-                  <div class="submissions-table-wrap">
-                    <table class="submissions-table">
+                  <div class="table-responsive">
+                    <table class="table-modern" aria-label="Student Submissions">
                       <thead>
                         <tr>
-                          <th>STUDENT</th>
-                          <th>STATUS</th>
-                          <th>SUBMITTED AT</th>
-                          <th>ATTACHMENT</th>
-                          <th>EVALUATION & MARKS</th>
-                          <th>ACTION</th>
+                          <th scope="col" style="width: 240px;">STUDENT</th>
+                          <th scope="col" style="width: 140px;">STATUS</th>
+                          <th scope="col" style="width: 160px;">SUBMITTED AT</th>
+                          <th scope="col" style="width: 130px;">ATTACHMENT</th>
+                          <th scope="col">EVALUATION & MARKS</th>
+                          <th scope="col" style="width: 110px;">ACTION</th>
                         </tr>
                       </thead>
                       <tbody>
                         @for (sub of submissions(); track sub.studentId) {
                           <tr [class.row-graded]="sub.submissionStatus === 'GRADED'">
                             <!-- Student Info -->
-                            <td class="student-cell">
-                              <div class="student-name font-bold">{{ sub.fullName }}</div>
-                              <div class="student-roll font-mono text-muted">{{ sub.enrollmentNumber }}</div>
+                            <td>
+                              <div class="student-info-cell">
+                                <span class="student-name font-bold">{{ sub.fullName }}</span>
+                                <span class="student-roll font-mono text-muted">{{ sub.enrollmentNumber }}</span>
+                              </div>
                             </td>
 
                             <!-- Status Badge -->
                             <td>
                               @switch (sub.submissionStatus) {
                                 @case ('GRADED') {
-                                  <span class="badge badge-emerald font-mono">GRADED</span>
+                                  <span class="badge badge-teal badge-sm font-mono">GRADED</span>
                                 }
                                 @case ('SUBMITTED') {
-                                  <span class="badge badge-amber font-mono">SUBMITTED</span>
+                                  <span class="badge badge-amber badge-sm font-mono">SUBMITTED</span>
                                 }
                                 @case ('LATE') {
-                                  <span class="badge badge-rose font-mono">LATE</span>
+                                  <span class="badge badge-danger badge-sm font-mono">LATE</span>
                                 }
                                 @default {
-                                  <span class="badge badge-neutral font-mono">NOT SUBMITTED</span>
+                                  <span class="badge badge-neutral badge-sm font-mono">NOT SUBMITTED</span>
                                 }
                               }
                             </td>
 
                             <!-- Submitted At -->
-                            <td class="font-mono text-sm">
-                              {{ sub.submittedAt ? (sub.submittedAt | date:'medium') : '—' }}
+                            <td class="font-mono text-xs">
+                              {{ sub.submittedAt ? (sub.submittedAt | date:'short') : '—' }}
                             </td>
 
                             <!-- File Attachment / Download -->
@@ -266,10 +277,10 @@ interface GradingState {
                                 <a
                                   [href]="getDownloadUrl(sub.submissionId)"
                                   target="_blank"
-                                  class="btn-download"
+                                  class="btn btn-secondary btn-xs"
                                   title="Download student file"
                                 >
-                                  <app-icon name="download" [size]="14"></app-icon>
+                                  <app-icon name="download" [size]="12"></app-icon>
                                   <span>Download</span>
                                 </a>
                               } @else {
@@ -278,7 +289,7 @@ interface GradingState {
                             </td>
 
                             <!-- Evaluation & Marks Inputs -->
-                            <td class="grade-cell">
+                            <td>
                               @if (sub.hasSubmission && sub.submissionId) {
                                 <div class="grade-inputs">
                                   <div class="marks-input-wrap">
@@ -289,17 +300,17 @@ interface GradingState {
                                       [max]="selectedTask()!.maxMarks"
                                       [(ngModel)]="getGradingState(sub.submissionId).marks"
                                       placeholder="0.0"
-                                      class="marks-input font-mono"
+                                      class="form-control marks-input font-mono"
                                       [disabled]="getGradingState(sub.submissionId).saving"
                                     />
-                                    <span class="max-marks-label font-mono">/ {{ selectedTask()!.maxMarks }}</span>
+                                    <span class="max-marks-label font-mono text-muted">/ {{ selectedTask()!.maxMarks }}</span>
                                   </div>
 
                                   <input
                                     type="text"
                                     [(ngModel)]="getGradingState(sub.submissionId).feedback"
                                     placeholder="Add feedback comment..."
-                                    class="feedback-input"
+                                    class="form-control feedback-input"
                                     [disabled]="getGradingState(sub.submissionId).saving"
                                   />
                                 </div>
@@ -320,10 +331,10 @@ interface GradingState {
                                   (click)="submitGrade(sub)"
                                 >
                                   @if (getGradingState(sub.submissionId).saving) {
-                                    <span class="btn-spinner"></span>
+                                    <span class="spin-icon">&#9696;</span>
                                     <span>Saving...</span>
                                   } @else {
-                                    <app-icon name="check" [size]="13"></app-icon>
+                                    <app-icon name="badge-check" [size]="12"></app-icon>
                                     <span>{{ sub.submissionStatus === 'GRADED' ? 'Update' : 'Grade' }}</span>
                                   }
                                 </button>
@@ -343,31 +354,31 @@ interface GradingState {
         </div>
       }
 
-      <!-- CREATE ASSIGNMENT MODAL / DRAWER -->
+      <!-- CREATE ASSIGNMENT MODAL -->
       @if (showCreateModal()) {
-        <div class="modal-backdrop" (click)="closeCreateModal()">
-          <div class="modal-box card-tactile" (click)="$event.stopPropagation()" role="dialog" aria-labelledby="create-modal-title">
-            <div class="modal-header">
+        <div class="modal-overlay" (click)="closeCreateModal()">
+          <div class="modal-dialog-clean" (click)="$event.stopPropagation()" role="dialog" aria-labelledby="create-modal-title">
+            <div class="modal-header-clean">
               <div class="modal-title-wrap">
-                <span class="badge badge-sage font-mono">NEW COURSE TASK</span>
-                <h3 id="create-modal-title" class="modal-title font-editorial">Create Assignment</h3>
-                <p class="modal-subtitle">Publish a graded assignment for {{ selectedClass()?.subjectCode }} - {{ selectedClass()?.subjectName }}</p>
+                <span class="badge badge-teal badge-sm font-mono">NEW COURSE TASK</span>
+                <h3 id="create-modal-title">Create Assignment</h3>
+                <p class="modal-sub">Publish for {{ selectedClass()?.subjectCode }} - {{ selectedClass()?.subjectName }}</p>
               </div>
-              <button class="modal-close-btn" (click)="closeCreateModal()" aria-label="Close dialog">
-                <app-icon name="close" [size]="18"></app-icon>
+              <button class="btn-ghost" (click)="closeCreateModal()" aria-label="Close dialog">
+                <app-icon name="close" [size]="16"></app-icon>
               </button>
             </div>
 
-            <form (ngSubmit)="saveAssignment()" class="modal-form">
+            <form (ngSubmit)="saveAssignment()" class="modal-body-clean">
               <!-- Title Field -->
               <div class="form-group">
-                <label class="form-label font-mono">ASSIGNMENT TITLE <span class="required">*</span></label>
+                <label class="form-label font-mono">ASSIGNMENT TITLE <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   [(ngModel)]="newAssignmentTitle"
                   name="title"
                   placeholder="e.g. Deep Neural Architectures & Case Analysis"
-                  class="form-input"
+                  class="form-control"
                   required
                 />
               </div>
@@ -375,7 +386,7 @@ interface GradingState {
               <!-- Max Marks & Due Date Row -->
               <div class="form-row">
                 <div class="form-group flex-1">
-                  <label class="form-label font-mono">MAXIMUM MARKS <span class="required">*</span></label>
+                  <label class="form-label font-mono">MAXIMUM MARKS <span class="text-danger">*</span></label>
                   <input
                     type="number"
                     step="1"
@@ -383,7 +394,7 @@ interface GradingState {
                     [(ngModel)]="newAssignmentMaxMarks"
                     name="maxMarks"
                     placeholder="e.g. 25"
-                    class="form-input font-mono"
+                    class="form-control font-mono"
                     required
                   />
                 </div>
@@ -394,40 +405,39 @@ interface GradingState {
                     type="datetime-local"
                     [(ngModel)]="newAssignmentDueDate"
                     name="dueDate"
-                    class="form-input font-mono"
+                    class="form-control font-mono"
                   />
                 </div>
               </div>
 
-              <!-- Instructions / Rubric Field -->
+              <!-- Instructions Field -->
               <div class="form-group">
-                <label class="form-label font-mono">INSTRUCTIONS & SUBMISSION RUBRIC</label>
+                <label class="form-label font-mono">INSTRUCTIONS & RUBRIC</label>
                 <textarea
                   [(ngModel)]="newAssignmentInstructions"
                   name="instructions"
                   rows="4"
-                  placeholder="Provide detailed instructions, required file formats (PDF/DOCX), and grading criteria..."
-                  class="form-textarea"
+                  placeholder="Detail the deliverable expectations, guidelines, and grading criteria..."
+                  class="form-control"
                 ></textarea>
               </div>
 
               @if (createError()) {
                 <div class="modal-error font-mono">
-                  <app-icon name="alert" [size]="14"></app-icon>
-                  <span>{{ createError() }}</span>
+                  {{ createError() }}
                 </div>
               }
 
-              <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" (click)="closeCreateModal()" [disabled]="creatingTask()">
+              <div class="modal-footer-clean">
+                <button type="button" class="btn btn-secondary btn-sm" (click)="closeCreateModal()">
                   Cancel
                 </button>
-                <button type="submit" class="btn btn-primary" [disabled]="creatingTask()">
+                <button type="submit" class="btn btn-primary btn-sm" [disabled]="creatingTask()">
                   @if (creatingTask()) {
-                    <span class="btn-spinner"></span>
-                    <span>Publishing Task...</span>
+                    <span class="spin-icon">&#9696;</span>
+                    <span>Publishing...</span>
                   } @else {
-                    <app-icon name="check" [size]="15"></app-icon>
+                    <app-icon name="badge-check" [size]="13"></app-icon>
                     <span>Publish Assignment</span>
                   }
                 </button>
@@ -440,701 +450,387 @@ interface GradingState {
   `,
   styles: [`
     .assignments-page {
-      padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-      max-width: 1560px;
-      margin: 0 auto;
-    }
-
-    .card-tactile {
-      background: var(--surface, #13171f);
-      border: 1px solid var(--border-tactile, rgba(255, 255, 255, 0.08));
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    /* Page Header */
-    .page-header {
-      padding: 1.5rem 1.75rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.25rem;
-      background: linear-gradient(135deg, rgba(26, 32, 44, 0.6) 0%, rgba(15, 20, 28, 0.9) 100%);
+      gap: 20px;
+      padding-bottom: 30px;
     }
 
     .badge-row {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.35rem;
+      gap: 8px;
     }
 
     .meta-dot {
-      color: var(--text-muted, #718096);
-      font-size: 0.85rem;
+      color: var(--border-medium);
     }
 
-    .meta-year {
-      font-size: 0.75rem;
-      color: var(--text-muted, #a0aec0);
-      letter-spacing: 0.05em;
+    .text-teal {
+      color: var(--color-teal);
     }
 
-    .page-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #f7fafc;
-      margin: 0;
-      letter-spacing: -0.01em;
+    .text-amber {
+      color: var(--color-warning);
     }
 
-    .page-subtitle {
-      font-size: 0.875rem;
-      color: var(--text-muted, #94a3b8);
-      margin: 0.25rem 0 0 0;
+    .text-success {
+      color: var(--color-success);
     }
 
-    /* Class Picker */
-    .class-picker-wrap {
+    .text-danger {
+      color: var(--color-danger);
+    }
+
+    /* Skeleton Loading */
+    .skeleton-container {
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 20px;
     }
 
-    .picker-label {
-      font-size: 0.7rem;
-      color: #64748b;
-      letter-spacing: 0.08em;
+    .header-skeleton {
+      height: 90px;
+      border-radius: var(--radius-lg);
     }
 
-    .class-selector-box {
-      display: flex;
-      gap: 0.5rem;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.3rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    .body-skeleton {
+      height: 480px;
+      border-radius: var(--radius-lg);
     }
 
-    .class-tab-btn {
+    /* Error Banner */
+    .error-banner {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem 0.85rem;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 0.825rem;
-      transition: all 0.2s ease;
+      gap: 16px;
+      padding: 20px 24px;
+      border-left: 4px solid var(--color-danger);
     }
 
-    .class-tab-btn:hover {
-      background: rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
+    .error-icon-wrap {
+      color: var(--color-danger);
     }
 
-    .class-tab-btn.active {
-      background: #2563eb;
-      color: #ffffff;
-      border-color: #3b82f6;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    .error-text {
+      flex: 1;
     }
 
-    .tab-code {
+    .error-title {
+      font-size: 15px;
       font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
     }
 
-    .tab-sec {
-      font-size: 0.75rem;
-      opacity: 0.85;
+    .error-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
     }
 
     /* Split Layout */
     .assignments-split-layout {
       display: grid;
-      grid-template-columns: 420px 1fr;
-      gap: 1.5rem;
+      grid-template-columns: 380px 1fr;
+      gap: 20px;
       align-items: start;
     }
 
-    @media (max-width: 1080px) {
+    @media (max-width: 1024px) {
       .assignments-split-layout {
         grid-template-columns: 1fr;
       }
     }
 
     .panel-card {
-      padding: 1.25rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      min-height: 520px;
+      overflow: hidden;
     }
 
     .panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 0.75rem;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    .panel-header.border-bottom {
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    .panel-header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .panel-title {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #f1f5f9;
-      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .class-meta-bar {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--bg-surface-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+      flex-wrap: wrap;
     }
 
-    /* Tasks Scroll List */
+    .meta-subject-name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Tasks List */
     .tasks-scroll-list {
+      max-height: 600px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      overflow-y: auto;
-      max-height: 600px;
-      padding-right: 0.25rem;
     }
 
     .task-card {
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--transition-fast);
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 8px;
     }
 
     .task-card:hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(255, 255, 255, 0.12);
-      transform: translateY(-1px);
+      background-color: #F8FAFC;
     }
 
     .task-card.active {
-      background: rgba(37, 99, 235, 0.08);
-      border-color: #2563eb;
-      box-shadow: 0 0 14px rgba(37, 99, 235, 0.25);
+      background-color: var(--color-teal-surface);
+      border-left: 4px solid var(--color-teal);
     }
 
     .task-card-header {
       display: flex;
-      justify-content: space-between;
       align-items: flex-start;
-      gap: 0.5rem;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .task-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #f8fafc;
-      margin: 0;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
       line-height: 1.3;
     }
 
     .task-snippet {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      margin: 0;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.4;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      line-height: 1.4;
     }
 
     .task-stats-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.75rem;
-      color: #64748b;
-      margin-top: 0.25rem;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11.5px;
+      flex-wrap: wrap;
+      margin-top: 2px;
     }
 
     .due-info {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 4px;
     }
 
     .progress-pill {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      background: rgba(0, 0, 0, 0.25);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
+      gap: 6px;
     }
 
-    .text-amber { color: #f59e0b; }
-    .text-emerald { color: #10b981; }
+    .empty-tasks-box {
+      padding: 40px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
 
-    /* Submissions Console */
+    .empty-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .empty-icon-wrap.large {
+      width: 64px;
+      height: 64px;
+    }
+
+    .empty-tasks-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-tasks-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 300px;
+    }
+
+    .empty-select-card {
+      padding: 60px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      max-width: 400px;
+    }
+
+    /* Submissions Workstation */
+    .task-meta-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .instructions-banner {
-      background: rgba(37, 99, 235, 0.05);
-      border-left: 3px solid #2563eb;
-      padding: 0.75rem 1rem;
-      border-radius: 0 6px 6px 0;
-      font-size: 0.825rem;
-      color: #cbd5e1;
+      padding: 14px 20px;
+      background: var(--bg-surface-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+    }
+
+    .instructions-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .instructions-text {
+      color: var(--text-secondary);
       line-height: 1.5;
     }
 
-    .instructions-banner .label {
-      font-size: 0.675rem;
-      color: #60a5fa;
-      font-weight: 700;
-      display: block;
-      margin-bottom: 0.25rem;
-    }
-
-    .submissions-table-wrap {
-      overflow-x: auto;
-    }
-
-    .submissions-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.85rem;
-    }
-
-    .submissions-table th {
-      padding: 0.75rem 0.85rem;
-      color: #64748b;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      font-family: monospace;
-    }
-
-    .submissions-table td {
-      padding: 0.85rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
-      vertical-align: middle;
-    }
-
-    .submissions-table tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .submissions-table tr.row-graded td {
-      background: rgba(16, 185, 129, 0.02);
+    .student-info-cell {
+      display: flex;
+      flex-direction: column;
     }
 
     .student-name {
-      color: #f8fafc;
-      font-size: 0.9rem;
-    }
-
-    .student-roll {
-      font-size: 0.75rem;
-      margin-top: 0.15rem;
-    }
-
-    .btn-download {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.35rem 0.65rem;
-      background: rgba(37, 99, 235, 0.12);
-      border: 1px solid rgba(37, 99, 235, 0.3);
-      border-radius: 6px;
-      color: #60a5fa;
-      font-size: 0.775rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .btn-download:hover {
-      background: #2563eb;
-      color: #ffffff;
+      font-size: 13.5px;
+      color: var(--text-main);
     }
 
     .grade-inputs {
       display: flex;
-      gap: 0.5rem;
-      align-items: center;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .marks-input-wrap {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      padding: 0 0.4rem;
+      gap: 6px;
     }
 
     .marks-input {
-      width: 55px;
-      padding: 0.35rem 0.2rem;
-      background: transparent;
-      border: none;
-      color: #f8fafc;
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-align: right;
-    }
-
-    .marks-input:focus {
-      outline: none;
-    }
-
-    .max-marks-label {
-      color: #64748b;
-      font-size: 0.75rem;
-      white-space: nowrap;
+      width: 70px;
+      padding: 4px 8px;
+      font-size: 13px;
     }
 
     .feedback-input {
-      flex: 1;
-      min-width: 150px;
-      padding: 0.4rem 0.65rem;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      color: #f8fafc;
-      font-size: 0.8rem;
-    }
-
-    .feedback-input:focus {
-      outline: none;
-      border-color: #2563eb;
+      padding: 4px 8px;
+      font-size: 12.5px;
     }
 
     .field-error {
-      color: #f43f5e;
-      font-size: 0.7rem;
-      margin-top: 0.25rem;
+      font-size: 11px;
+      color: var(--color-danger);
     }
 
-    .save-grade-btn {
-      white-space: nowrap;
+    .row-graded {
+      background-color: rgba(240, 253, 250, 0.4);
     }
 
-    /* Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.2rem 0.55rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    .badge-sage {
-      background: rgba(45, 212, 191, 0.1);
-      color: #2dd4bf;
-      border: 1px solid rgba(45, 212, 191, 0.25);
-    }
-
-    .badge-amber {
-      background: rgba(245, 158, 11, 0.1);
-      color: #f59e0b;
-      border: 1px solid rgba(245, 158, 11, 0.25);
-    }
-
-    .badge-emerald {
-      background: rgba(16, 185, 129, 0.12);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .badge-rose {
-      background: rgba(244, 63, 94, 0.1);
-      color: #f43f5e;
-      border: 1px solid rgba(244, 63, 94, 0.25);
-    }
-
-    .badge-neutral {
-      background: rgba(148, 163, 184, 0.1);
-      color: #94a3b8;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-    }
-
-    .badge-sm {
-      font-size: 0.65rem;
-      padding: 0.15rem 0.4rem;
-    }
-
-    .due-badge {
-      font-size: 0.75rem;
-      color: #94a3b8;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.45rem;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.8rem;
-    }
-
-    .btn-xs {
-      padding: 0.3rem 0.6rem;
-      font-size: 0.75rem;
-    }
-
-    .btn-primary {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: #1d4ed8;
-      transform: translateY(-1px);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #cbd5e1;
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-    }
-
-    .btn-spinner {
-      width: 12px;
-      height: 12px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #ffffff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    /* Empty and Loading States */
-    .empty-state {
-      padding: 3rem 1.5rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      color: #64748b;
-    }
-
-    .empty-state h4 {
-      font-size: 1.1rem;
-      color: #e2e8f0;
-      margin: 0;
-    }
-
-    .empty-state p {
-      font-size: 0.85rem;
-      max-width: 380px;
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    .select-prompt {
-      min-height: 400px;
-      justify-content: center;
-    }
-
-    .loading-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem;
-      gap: 0.75rem;
-      color: #94a3b8;
-      font-size: 0.85rem;
-    }
-
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 3px solid rgba(37, 99, 235, 0.2);
-      border-top-color: #2563eb;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Modal / Drawer */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
+    .error-sub-banner {
+      padding: 16px 20px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 1.5rem;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 540px;
-      background: #11151e;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(8px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
+      gap: 12px;
+      color: var(--color-danger);
+      font-size: 13px;
     }
 
-    .modal-title {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #f8fafc;
-      margin: 0.25rem 0 0 0;
-    }
-
-    .modal-subtitle {
-      font-size: 0.825rem;
-      color: #94a3b8;
-      margin: 0.2rem 0 0 0;
-    }
-
-    .modal-close-btn {
-      background: transparent;
-      border: none;
-      color: #64748b;
-      cursor: pointer;
-      padding: 0.25rem;
-      border-radius: 4px;
-      transition: color 0.15s ease;
-    }
-
-    .modal-close-btn:hover {
-      color: #ffffff;
-    }
-
-    .modal-form {
+    /* Modal Details */
+    .modal-title-wrap {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 2px;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
+    .modal-sub {
+      font-size: 12.5px;
+      color: var(--text-secondary);
     }
 
     .form-row {
       display: flex;
-      gap: 1rem;
+      gap: 12px;
     }
 
     .flex-1 {
       flex: 1;
     }
 
-    .form-label {
-      font-size: 0.725rem;
-      font-weight: 600;
-      color: #94a3b8;
-      letter-spacing: 0.05em;
-    }
-
-    .required {
-      color: #f43f5e;
-    }
-
-    .form-input, .form-textarea {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      padding: 0.55rem 0.85rem;
-      color: #f8fafc;
-      font-size: 0.875rem;
-      transition: border-color 0.15s ease;
-    }
-
-    .form-input:focus, .form-textarea:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-    }
-
     .modal-error {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: #f43f5e;
-      font-size: 0.8rem;
-      background: rgba(244, 63, 94, 0.1);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
+      padding: 8px 12px;
+      background: var(--color-danger-surface);
+      border: 1px solid var(--color-danger-border);
+      color: var(--color-danger);
+      font-size: 12px;
+      border-radius: var(--radius-sm);
     }
 
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
+    .spin-icon {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
     }
   `]
 })
@@ -1157,10 +853,8 @@ export class FacultyAssignmentsComponent implements OnInit {
   readonly submissionsLoading = signal<boolean>(false);
   readonly submissionsError = signal<string | null>(null);
 
-  // Per-submission grading form states keyed by submissionId
   readonly gradingStates = new Map<string, GradingState>();
 
-  // Create Assignment Modal State
   readonly showCreateModal = signal<boolean>(false);
   readonly creatingTask = signal<boolean>(false);
   readonly createError = signal<string | null>(null);
@@ -1184,7 +878,6 @@ export class FacultyAssignmentsComponent implements OnInit {
         this.classesLoading.set(false);
 
         if (classes.length > 0) {
-          // Check route param for target assignment
           const routeFaId = this.route.snapshot.paramMap.get('facultyAssignmentId');
           const matched = classes.find((c) => c.facultyAssignmentId === routeFaId) || classes[0];
           this.selectClass(matched);
@@ -1213,7 +906,6 @@ export class FacultyAssignmentsComponent implements OnInit {
         this.tasks.set(res.assignments);
         this.tasksLoading.set(false);
 
-        // Auto-select first task if available
         if (res.assignments.length > 0) {
           this.selectTask(res.assignments[0]);
         }
@@ -1239,7 +931,6 @@ export class FacultyAssignmentsComponent implements OnInit {
         this.submissions.set(res.submissions);
         this.submissionsLoading.set(false);
 
-        // Initialize local grading states
         for (const sub of res.submissions) {
           if (sub.submissionId) {
             this.gradingStates.set(sub.submissionId, {
@@ -1299,12 +990,10 @@ export class FacultyAssignmentsComponent implements OnInit {
         state.saving = false;
         this.toast.success(`Grade saved for ${sub.fullName}: ${res.marksObtained}/${max}`);
 
-        // Update local item
         sub.submissionStatus = 'GRADED';
         sub.marksObtained = res.marksObtained;
         sub.feedback = res.feedback;
 
-        // Update task gradedCount in tasks list
         const curTask = this.selectedTask();
         if (curTask) {
           curTask.gradedCount = this.submissions().filter(s => s.submissionStatus === 'GRADED').length;
@@ -1333,7 +1022,6 @@ export class FacultyAssignmentsComponent implements OnInit {
     this.newAssignmentMaxMarks = 25;
     this.newAssignmentInstructions = '';
     
-    // Default due date to 7 days in future at 23:59
     const d = new Date();
     d.setDate(d.getDate() + 7);
     d.setHours(23, 59, 0, 0);
@@ -1377,7 +1065,6 @@ export class FacultyAssignmentsComponent implements OnInit {
         this.showCreateModal.set(false);
         this.toast.success(`Assignment "${created.title}" published successfully.`);
         
-        // Refresh tasks and select the new one
         this.loadTasks(cls.facultyAssignmentId);
       },
       error: (err) => {

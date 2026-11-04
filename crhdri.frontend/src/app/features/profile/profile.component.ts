@@ -10,10 +10,10 @@ import { IconComponent } from '../../shared/components/icon.component';
   imports: [CommonModule, IconComponent],
   template: `
     <div class="profile-page">
-      <!-- Header -->
-      <header class="page-header">
+      <!-- Page Header -->
+      <header class="page-header-clean">
         <div>
-          <h2 class="page-title font-editorial">Student Academic Profile</h2>
+          <h2 class="page-title">Student Academic Profile</h2>
           <p class="page-subtitle">Official institutional registration credentials and student record</p>
         </div>
 
@@ -37,34 +37,31 @@ import { IconComponent } from '../../shared/components/icon.component';
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Retrieve Student Profile</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
-            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is running with PostgreSQL.</p>
+            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is active with PostgreSQL.</p>
           </div>
-          <button class="btn btn-primary" (click)="loadProfile()">
-            <app-icon name="refresh" [size]="16"></app-icon>
-            Retry Connection
+          <button class="btn btn-primary btn-sm" (click)="loadProfile()">
+            <app-icon name="refresh" [size]="14"></app-icon> Retry
           </button>
         </div>
       }
 
       <!-- Empty State -->
       @else if (!profile()) {
-        <div class="card-tactile empty-state">
-          <div class="empty-icon-wrap">
-            <app-icon name="profile" [size]="48" class="empty-icon"></app-icon>
-          </div>
-          <h3 class="font-editorial empty-title">No Student Profile Found</h3>
+        <div class="card-modern empty-state-box">
+          <app-icon name="profile" [size]="40" class="empty-icon"></app-icon>
+          <h3 class="empty-title">No Student Profile Found</h3>
           <p class="empty-desc">
             No official student credentials were found for enrollment number 
             <strong>{{ studentService.activeEnrollmentNumber() }}</strong>.
           </p>
-          <button class="btn btn-secondary" (click)="loadProfile()">
+          <button class="btn btn-secondary btn-sm" (click)="loadProfile()">
             <app-icon name="refresh" [size]="14"></app-icon> Check Again
           </button>
         </div>
@@ -73,8 +70,7 @@ import { IconComponent } from '../../shared/components/icon.component';
       <!-- Loaded Profile Card -->
       @else if (profile(); as p) {
         <div class="profile-layout">
-          <!-- Main Identity Card -->
-          <div class="card-tactile identity-card">
+          <div class="card-modern identity-card">
             <!-- Top Identity Banner -->
             <div class="identity-banner">
               <div class="avatar-large" [attr.aria-label]="p.fullName">
@@ -82,9 +78,9 @@ import { IconComponent } from '../../shared/components/icon.component';
               </div>
               <div class="identity-details">
                 <div class="name-status-row">
-                  <h3 class="student-full-name font-editorial">{{ p.fullName }}</h3>
-                  <span class="badge badge-forest">
-                    <app-icon name="badge-check" [size]="13"></app-icon>
+                  <h3 class="student-full-name">{{ p.fullName }}</h3>
+                  <span class="badge badge-success">
+                    <app-icon name="badge-check" [size]="12"></app-icon>
                     {{ p.enrollmentStatus || 'ACTIVE' }}
                   </span>
                 </div>
@@ -98,9 +94,9 @@ import { IconComponent } from '../../shared/components/icon.component';
             <!-- Credentials Section -->
             <div class="credentials-section">
               <div class="section-heading-row">
-                <h4 class="credentials-title font-editorial">Institutional Enrollment Details</h4>
-                <span class="verified-tag">
-                  <app-icon name="check" [size]="12"></app-icon> Registrar Verified
+                <h4 class="credentials-title">Institutional Enrollment Details</h4>
+                <span class="badge badge-success">
+                  <app-icon name="check" [size]="11"></app-icon> Registrar Verified
                 </span>
               </div>
 
@@ -110,14 +106,14 @@ import { IconComponent } from '../../shared/components/icon.component';
                   <span class="cred-value">
                     {{ p.courseName || p.course || 'Degree Program' }}
                     @if (p.courseCode) {
-                      <span class="cred-sub-code">({{ p.courseCode }})</span>
+                      <span class="cred-sub-code font-mono">({{ p.courseCode }})</span>
                     }
                   </span>
                 </div>
 
                 <div class="cred-item">
                   <span class="cred-label">Academic Department</span>
-                  <span class="cred-value">{{ p.department || 'General' }}</span>
+                  <span class="cred-value">{{ p.department || 'General Department' }}</span>
                 </div>
 
                 <div class="cred-item">
@@ -132,12 +128,12 @@ import { IconComponent } from '../../shared/components/icon.component';
 
                 <div class="cred-item">
                   <span class="cred-label">Student System ID</span>
-                  <span class="cred-value font-mono id-hash" [title]="p.studentId">{{ p.studentId || 'Internal UUID' }}</span>
+                  <span class="cred-value font-mono id-hash" [title]="p.studentId">{{ p.studentId || 'Internal ID' }}</span>
                 </div>
 
                 <div class="cred-item">
                   <span class="cred-label">Platform User ID</span>
-                  <span class="cred-value font-mono id-hash" [title]="p.userId">{{ p.userId || 'User UUID' }}</span>
+                  <span class="cred-value font-mono id-hash" [title]="p.userId">{{ p.userId || 'User ID' }}</span>
                 </div>
               </div>
             </div>
@@ -146,7 +142,7 @@ import { IconComponent } from '../../shared/components/icon.component';
             <div class="readonly-notice">
               <app-icon name="assessments" [size]="16" class="notice-icon"></app-icon>
               <span>
-                Academic records are officially verified by the institutional registrar and read-only. For profile corrections, course changes, or contact updates, please submit an official request through the Academic Administration Office.
+                Academic records are officially verified by the university registrar and are read-only. For profile corrections, course changes, or updates, submit a formal request to Academic Administration.
               </span>
             </div>
           </div>
@@ -158,27 +154,28 @@ import { IconComponent } from '../../shared/components/icon.component';
     .profile-page {
       display: flex;
       flex-direction: column;
-      gap: 22px;
-      max-width: 1040px;
+      gap: 20px;
+      max-width: 980px;
     }
 
-    .page-header {
+    .page-header-clean {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
     .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
       letter-spacing: -0.01em;
     }
 
     .page-subtitle {
-      font-size: 13.5px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--text-secondary);
       margin-top: 2px;
     }
 
@@ -186,186 +183,94 @@ import { IconComponent } from '../../shared/components/icon.component';
     .skeleton-layout {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
     .banner-skeleton {
-      height: 180px;
+      height: 140px;
       border-radius: var(--radius-xl);
     }
 
     .grid-skeleton {
-      height: 280px;
+      height: 240px;
       border-radius: var(--radius-lg);
-    }
-
-    /* Error Banner */
-    .error-banner {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 24px 28px;
-      background: linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(255, 255, 255, 0.98));
-      border: 1px solid rgba(220, 38, 38, 0.25);
-      border-left: 5px solid #dc2626;
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
-    }
-
-    .error-icon-wrap {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #fee2e2;
-      color: #dc2626;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .error-text {
-      flex: 1;
-    }
-
-    .error-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #991b1b;
-      margin-bottom: 4px;
-    }
-
-    .error-desc {
-      font-size: 13.5px;
-      color: #7f1d1d;
-      margin-bottom: 4px;
-    }
-
-    .error-hint {
-      font-size: 12px;
-      color: #b91c1c;
-    }
-
-    .error-hint code {
-      background: rgba(220, 38, 38, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-
-    /* Empty State */
-    .empty-state {
-      padding: 56px 24px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .empty-icon-wrap {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: var(--bg-surface-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-    }
-
-    .empty-title {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--color-forest);
-    }
-
-    .empty-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      max-width: 460px;
-      line-height: 1.5;
     }
 
     /* Identity Card */
     .identity-card {
-      padding: 32px;
+      padding: 26px 28px;
       display: flex;
       flex-direction: column;
-      gap: 28px;
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
+      gap: 24px;
     }
 
     .identity-banner {
       display: flex;
       align-items: center;
-      gap: 24px;
-      padding-bottom: 24px;
+      gap: 20px;
+      padding-bottom: 20px;
       border-bottom: 1px solid var(--border-subtle);
       flex-wrap: wrap;
     }
 
     .avatar-large {
-      width: 80px;
-      height: 80px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--color-forest) 0%, #1c5244 100%);
+      background: var(--color-teal);
       color: #FFFFFF;
-      font-family: var(--font-editorial);
-      font-size: 30px;
-      font-weight: 700;
+      font-size: 24px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 20px rgba(23, 63, 53, 0.28);
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
       flex-shrink: 0;
-      letter-spacing: 0.04em;
     }
 
     .identity-details {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
 
     .name-status-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .student-full-name {
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--color-forest);
-      line-height: 1.2;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.25;
     }
 
     .student-email {
-      font-size: 14px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--text-secondary);
     }
 
     .enrollment-pill {
-      margin-top: 6px;
+      margin-top: 4px;
       display: inline-block;
       align-self: flex-start;
-      padding: 4px 12px;
+      padding: 3px 10px;
       background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-medium);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      font-size: 12.5px;
-      color: var(--color-forest);
+      font-size: 11.5px;
+      color: var(--color-teal);
     }
 
     /* Credentials */
     .credentials-section {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .section-heading-row {
@@ -377,47 +282,29 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .credentials-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--color-forest);
-    }
-
-    .verified-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: #15803d;
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .credentials-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 12px;
     }
 
     .cred-item {
-      padding: 16px 18px;
+      padding: 14px 16px;
       background: var(--bg-surface-subtle);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      transition: border-color 0.15s ease;
-    }
-
-    .cred-item:hover {
-      border-color: var(--border-medium);
+      gap: 4px;
     }
 
     .cred-label {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -425,22 +312,19 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .cred-value {
-      font-size: 14.5px;
+      font-size: 13.5px;
       font-weight: 600;
       color: var(--text-main);
-      overflow-wrap: break-word;
     }
 
     .cred-sub-code {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      font-weight: 500;
+      font-size: 11.5px;
+      color: var(--text-secondary);
       margin-left: 4px;
-      white-space: nowrap;
     }
 
     .id-hash {
-      font-size: 12.5px;
+      font-size: 12px;
       color: var(--text-secondary);
       word-break: break-all;
     }
@@ -449,18 +333,77 @@ import { IconComponent } from '../../shared/components/icon.component';
     .readonly-notice {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 14px 18px;
-      background: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
       border-radius: var(--radius-md);
-      font-size: 13px;
-      color: var(--color-forest);
+      font-size: 12px;
+      color: var(--color-teal-dark);
       line-height: 1.45;
     }
 
     .notice-icon {
+      color: var(--color-teal);
       flex-shrink: 0;
+    }
+
+    /* Error and Empty */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .error-hint {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-box {
+      padding: 48px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-icon {
+      color: var(--text-muted);
+    }
+
+    .empty-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 400px;
+      line-height: 1.45;
     }
 
     @media (max-width: 768px) {

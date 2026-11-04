@@ -11,195 +11,139 @@ import { IconComponent } from '../../shared/components/icon.component';
   imports: [CommonModule, RouterLink, RouterLinkActive, IconComponent],
   template: `
     <aside class="sidebar" [class.mobile-open]="isOpen()">
-      <!-- Brand Crest & Header -->
+      <!-- Brand Logo Header -->
       <div class="brand-container">
         <div class="brand-crest">
-          <div class="crest-diamond">
-            <span class="crest-letter">C</span>
+          <div class="crest-icon">
+            <span class="crest-text">CR</span>
           </div>
           <div class="brand-text">
-            <span class="brand-title">CRHDRI<span class="brand-ai">.AI</span></span>
-            <span class="brand-subtitle">{{ isFaculty() ? 'FACULTY STUDIO' : 'STUDENT STUDIO' }}</span>
+            <span class="brand-title">CRHDRI<span class="brand-accent">.AI</span></span>
+            <span class="brand-subtitle">{{ isFaculty() ? 'Faculty Portal' : 'Student Portal' }}</span>
           </div>
         </div>
         <button class="mobile-close-btn" (click)="closeNav.emit()" aria-label="Close navigation menu">
-          <app-icon name="close" [size]="20"></app-icon>
+          <app-icon name="close" [size]="18"></app-icon>
         </button>
       </div>
 
-      <!-- Mini User Profile Card -->
-      <div class="student-mini-card">
-        <div class="student-avatar" [attr.aria-label]="userName()">
+      <!-- Authenticated User Profile Summary -->
+      <div class="user-card-clean">
+        <div class="user-avatar" [class.faculty-avatar]="isFaculty()" [attr.aria-label]="userName()">
           {{ userInitials() }}
         </div>
-        <div class="student-meta">
-          <span class="student-name" [title]="userName()">{{ userName() }}</span>
-          <span class="student-enrollment font-mono">{{ userIdentifier() }}</span>
+        <div class="user-meta">
+          <span class="user-name" [title]="userName()">{{ userName() }}</span>
+          <span class="user-id font-mono">{{ userIdentifier() }}</span>
         </div>
         <div class="status-indicator" [title]="isFaculty() ? 'Active Faculty Session' : 'Active Enrollment Status'">
-          <span class="pulse-dot"></span>
+          <span class="active-dot"></span>
         </div>
       </div>
 
-      <!-- Navigation Section -->
+      <!-- Navigation Menu -->
       <nav class="nav-scroller" aria-label="Main Navigation">
-        <div class="nav-group-label">{{ isFaculty() ? 'FACULTY OPERATIONS' : 'ACADEMIC WORKSPACE' }}</div>
+        <div class="nav-group-label">{{ isFaculty() ? 'FACULTY OPERATIONS' : 'ACADEMIC PORTAL' }}</div>
         <ul class="nav-list">
           @if (isFaculty()) {
-            <!-- Faculty Navigation Items -->
+            <!-- Faculty Menu -->
             <li>
               <a routerLink="/faculty/dashboard" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="dashboard" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="dashboard" [size]="18"></app-icon></span>
                 <span class="nav-label">Faculty Dashboard</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/faculty/classes" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="courses" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="courses" [size]="18"></app-icon></span>
                 <span class="nav-label">My Classes</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/faculty/attendance" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="attendance" [size]="18"></app-icon>
-                </span>
-                <span class="nav-label">Attendance</span>
-                <span class="active-pill"></span>
+                <span class="nav-icon-wrap"><app-icon name="attendance" [size]="18"></app-icon></span>
+                <span class="nav-label">Attendance Manager</span>
               </a>
             </li>
-
             <li>
               <a routerLink="/faculty/materials" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="materials" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="materials" [size]="18"></app-icon></span>
                 <span class="nav-label">Learning Materials</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/faculty/assignments" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="assignments" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="assignments" [size]="18"></app-icon></span>
                 <span class="nav-label">Grading & Tasks</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/faculty/assessments" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="assessments" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="assessments" [size]="18"></app-icon></span>
                 <span class="nav-label">Quiz & Assessments</span>
-                <span class="active-pill"></span>
               </a>
             </li>
           } @else {
-            <!-- Student Navigation Items -->
+            <!-- Student Menu -->
             <li>
               <a routerLink="/dashboard" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="dashboard" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="dashboard" [size]="18"></app-icon></span>
                 <span class="nav-label">Dashboard</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/courses" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="courses" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="courses" [size]="18"></app-icon></span>
                 <span class="nav-label">My Courses</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/attendance" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="attendance" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="attendance" [size]="18"></app-icon></span>
                 <span class="nav-label">Attendance</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/assignments" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="assignments" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="assignments" [size]="18"></app-icon></span>
                 <span class="nav-label">Assignments</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/learning-materials" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="materials" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="materials" [size]="18"></app-icon></span>
                 <span class="nav-label">Learning Materials</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/results" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="results" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="results" [size]="18"></app-icon></span>
                 <span class="nav-label">Results</span>
-                <span class="active-pill"></span>
               </a>
             </li>
-
             <li>
               <a routerLink="/assessments" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="assessments" [size]="18"></app-icon>
-                </span>
-                <span class="nav-label">Quiz / Assessments</span>
-                <span class="active-pill"></span>
+                <span class="nav-icon-wrap"><app-icon name="assessments" [size]="18"></app-icon></span>
+                <span class="nav-label">Quiz & Assessments</span>
               </a>
             </li>
-
             <li>
               <a routerLink="/profile" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
-                <span class="nav-icon-wrap">
-                  <app-icon name="profile" [size]="18"></app-icon>
-                </span>
+                <span class="nav-icon-wrap"><app-icon name="profile" [size]="18"></app-icon></span>
                 <span class="nav-label">My Profile</span>
-                <span class="active-pill"></span>
               </a>
             </li>
           }
         </ul>
 
         @if (!isFaculty()) {
-          <div class="nav-group-label" style="margin-top: 24px;">EXPLORE</div>
+          <div class="nav-group-label" style="margin-top: 20px;">EXPLORE</div>
           <ul class="nav-list">
             <li>
-              <a routerLink="/ai-assistant" routerLinkActive="active" (click)="onLinkClick()" class="nav-link ai-nav-link">
-                <span class="nav-icon-wrap ai-icon-wrap">
-                  <app-icon name="ai" [size]="18"></app-icon>
-                </span>
-                <span class="nav-label">AI Assistant</span>
-                <span class="badge badge-amber badge-sm">Soon</span>
+              <a routerLink="/ai-assistant" routerLinkActive="active" (click)="onLinkClick()" class="nav-link">
+                <span class="nav-icon-wrap ai-icon"><app-icon name="ai" [size]="18"></app-icon></span>
+                <span class="nav-label">AI Academic Copilot</span>
+                <span class="badge badge-info" style="font-size: 10px; padding: 1px 6px;">Spec</span>
               </a>
             </li>
           </ul>
@@ -208,13 +152,13 @@ import { IconComponent } from '../../shared/components/icon.component';
 
       <!-- Sidebar Footer -->
       <div class="sidebar-footer">
-        <button class="sidebar-logout-btn" (click)="logout()" title="Sign Out">
+        <button class="logout-btn-clean" (click)="logout()" title="Sign Out">
           <app-icon name="logout" [size]="16"></app-icon>
           <span>Sign Out</span>
         </button>
-        <div class="footer-system-badge">
-          <span class="system-dot"></span>
-          <span class="system-text">Backend: .NET 10 &bull; PostgreSQL</span>
+        <div class="footer-system-status">
+          <span class="sys-dot"></span>
+          <span class="sys-text">.NET 10 API &bull; PostgreSQL</span>
         </div>
       </div>
     </aside>
@@ -226,7 +170,7 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .sidebar {
-      width: 272px;
+      width: 260px;
       height: 100vh;
       background-color: var(--bg-surface);
       border-right: 1px solid var(--border-subtle);
@@ -239,7 +183,7 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .brand-container {
-      padding: 24px 20px 20px 20px;
+      padding: 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -249,33 +193,25 @@ import { IconComponent } from '../../shared/components/icon.component';
     .brand-crest {
       display: flex;
       align-items: center;
-      gap: 12px;
-      text-decoration: none;
+      gap: 10px;
     }
 
-    .crest-diamond {
-      width: 38px;
-      height: 38px;
-      background: var(--color-forest);
-      border-radius: 9px;
+    .crest-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--color-teal);
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 8px rgba(23, 63, 53, 0.25), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
-      transform: rotate(-3deg);
-      transition: transform 0.2s ease;
+      box-shadow: 0 2px 4px rgba(15, 118, 110, 0.2);
     }
 
-    .crest-diamond:hover {
-      transform: rotate(0deg) scale(1.04);
-    }
-
-    .crest-letter {
-      color: #F7F5EF;
-      font-family: var(--font-editorial);
-      font-size: 20px;
-      font-weight: 600;
-      line-height: 1;
+    .crest-text {
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
     .brand-text {
@@ -284,24 +220,23 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .brand-title {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: -0.02em;
-      color: var(--color-forest);
-      line-height: 1.1;
+      color: var(--text-main);
+      line-height: 1.15;
     }
 
-    .brand-ai {
-      color: var(--color-amber-dark);
-      font-weight: 700;
+    .brand-accent {
+      color: var(--color-teal);
     }
 
     .brand-subtitle {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--text-muted);
-      margin-top: 2px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-top: 1px;
     }
 
     .mobile-close-btn {
@@ -314,54 +249,59 @@ import { IconComponent } from '../../shared/components/icon.component';
       border-radius: var(--radius-sm);
     }
 
-    /* Student Mini Card */
-    .student-mini-card {
-      margin: 16px 16px 12px 16px;
-      padding: 12px;
-      background-color: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
+    /* User Mini Card */
+    .user-card-clean {
+      margin: 14px 14px 8px 14px;
+      padding: 10px 12px;
+      background-color: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
-      gap: 12px;
-      box-shadow: 0 1px 3px rgba(23, 63, 53, 0.04);
+      gap: 10px;
     }
 
-    .student-avatar {
-      width: 36px;
-      height: 36px;
+    .user-avatar {
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: var(--color-forest);
-      color: #FFFFFF;
+      background: var(--color-teal-surface);
+      color: var(--color-teal);
+      border: 1px solid var(--color-teal-border);
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12.5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 4px rgba(23, 63, 53, 0.2);
       flex-shrink: 0;
     }
 
-    .student-meta {
+    .user-avatar.faculty-avatar {
+      background: var(--color-amber-surface);
+      color: var(--color-amber);
+      border-color: var(--color-amber-border);
+    }
+
+    .user-meta {
       flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
     }
 
-    .student-name {
-      font-size: 13px;
+    .user-name {
+      font-size: 12.5px;
       font-weight: 700;
-      color: var(--color-forest);
+      color: var(--text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       line-height: 1.2;
     }
 
-    .student-enrollment {
+    .user-id {
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       margin-top: 2px;
     }
 
@@ -370,72 +310,70 @@ import { IconComponent } from '../../shared/components/icon.component';
       align-items: center;
     }
 
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #28a745;
+    .active-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--color-success);
       border-radius: 50%;
-      box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+      box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2);
     }
 
     /* Nav Scroller */
     .nav-scroller {
       flex: 1;
-      padding: 8px 16px;
+      padding: 8px 12px;
       overflow-y: auto;
     }
 
     .nav-group-label {
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.06em;
       color: var(--text-muted);
-      padding: 8px 12px 4px 12px;
+      padding: 6px 10px 4px 10px;
     }
 
     .nav-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
 
     .nav-link {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 9px 12px;
+      gap: 10px;
+      padding: 8px 12px;
       border-radius: var(--radius-md);
       color: var(--text-secondary);
       text-decoration: none;
       font-size: 13.5px;
-      font-weight: 600;
-      position: relative;
-      transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+      font-weight: 500;
+      transition: all var(--transition-fast);
     }
 
-    .nav-link:hover:not(.disabled-link) {
+    .nav-link:hover {
       background-color: var(--bg-surface-subtle);
       color: var(--text-main);
-      transform: translateX(2px);
     }
 
-    .disabled-link {
-      opacity: 0.65;
-      cursor: not-allowed;
+    .nav-link.active {
+      background-color: var(--color-teal-surface);
+      color: var(--color-teal);
+      font-weight: 600;
     }
 
     .nav-icon-wrap {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-muted);
-      transition: color var(--transition-fast), transform var(--transition-fast);
+      color: var(--text-secondary);
+      transition: color var(--transition-fast);
     }
 
-    .nav-link:hover:not(.disabled-link) .nav-icon-wrap {
-      color: var(--color-forest);
-      transform: scale(1.08);
+    .nav-link.active .nav-icon-wrap {
+      color: var(--color-teal);
     }
 
     .nav-label {
@@ -445,57 +383,29 @@ import { IconComponent } from '../../shared/components/icon.component';
       text-overflow: ellipsis;
     }
 
-    .active-pill {
-      display: none;
-      width: 5px;
-      height: 18px;
-      background-color: var(--color-forest);
-      border-radius: var(--radius-full);
-      box-shadow: 0 1px 4px rgba(23, 63, 53, 0.3);
-    }
-
-    .nav-link.active {
-      background-color: var(--color-forest-surface);
-      color: var(--color-forest);
-      font-weight: 700;
-    }
-
-    .nav-link.active .nav-icon-wrap {
-      color: var(--color-forest);
-    }
-
-    .nav-link.active .active-pill {
-      display: block;
-    }
-
-    .ai-icon-wrap {
-      color: var(--color-amber-dark);
-    }
-
-    .badge-sm {
-      padding: 1px 6px;
-      font-size: 10px;
+    .ai-icon {
+      color: var(--color-info);
     }
 
     /* Footer */
     .sidebar-footer {
-      padding: 12px 16px;
+      padding: 12px 14px;
       border-top: 1px solid var(--border-subtle);
       background-color: var(--bg-surface);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .sidebar-logout-btn {
+    .logout-btn-clean {
       display: flex;
       align-items: center;
       gap: 8px;
       width: 100%;
-      padding: 8px 12px;
+      padding: 7px 10px;
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      background: var(--bg-surface-subtle);
+      background: var(--bg-surface);
       color: var(--text-secondary);
       font-size: 12px;
       font-weight: 600;
@@ -503,28 +413,28 @@ import { IconComponent } from '../../shared/components/icon.component';
       transition: all var(--transition-fast);
     }
 
-    .sidebar-logout-btn:hover {
+    .logout-btn-clean:hover {
       background: var(--color-danger-surface);
       color: var(--color-danger);
       border-color: var(--color-danger-border);
     }
 
-    .footer-system-badge {
+    .footer-system-status {
       display: flex;
       align-items: center;
-      gap: 7px;
-      font-size: 11px;
+      gap: 6px;
+      font-size: 10.5px;
       color: var(--text-muted);
+      padding: 0 4px;
     }
 
-    .system-dot {
+    .sys-dot {
       width: 6px;
       height: 6px;
       background-color: var(--color-teal);
       border-radius: 50%;
     }
 
-    /* Mobile Drawer */
     @media (max-width: 900px) {
       .sidebar {
         position: fixed;
@@ -532,7 +442,7 @@ import { IconComponent } from '../../shared/components/icon.component';
         top: 0;
         bottom: 0;
         transform: translateX(-100%);
-        box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
       }
 
       .sidebar.mobile-open {

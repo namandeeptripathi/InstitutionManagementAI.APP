@@ -13,10 +13,10 @@ import { IconComponent } from '../../shared/components/icon.component';
   imports: [CommonModule, FormsModule, IconComponent],
   template: `
     <div class="assignments-page">
-      <!-- Header -->
-      <div class="page-header">
+      <!-- Page Header -->
+      <div class="page-header-clean">
         <div>
-          <h2 class="page-title font-editorial">Assignments & Project Submissions</h2>
+          <h2 class="page-title">Assignments & Submissions</h2>
           <p class="page-subtitle">Track academic coursework, deadlines, and upload deliverables</p>
         </div>
 
@@ -57,27 +57,26 @@ import { IconComponent } from '../../shared/components/icon.component';
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Course Assignments</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
-            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is running with PostgreSQL.</p>
+            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is active with PostgreSQL.</p>
           </div>
-          <button class="btn btn-primary" (click)="loadAssignments()">
-            <app-icon name="refresh" [size]="16"></app-icon>
-            Retry Connection
+          <button class="btn btn-primary btn-sm" (click)="loadAssignments()">
+            <app-icon name="refresh" [size]="14"></app-icon> Retry
           </button>
         </div>
       }
 
       <!-- Empty State -->
       @else if (filteredAssignments().length === 0) {
-        <div class="card-tactile empty-state">
-          <app-icon name="assignments" [size]="48" class="empty-icon"></app-icon>
-          <h3 class="font-editorial empty-title">No Assignments Found</h3>
+        <div class="card-modern empty-state-box">
+          <app-icon name="assignments" [size]="40" class="empty-icon"></app-icon>
+          <h3 class="empty-title">No Assignments Found</h3>
           <p class="empty-desc">
             @if (filterStatus() !== 'ALL') {
               No assignments found with status "{{ filterStatus() }}".
@@ -86,7 +85,7 @@ import { IconComponent } from '../../shared/components/icon.component';
             }
           </p>
           @if (filterStatus() !== 'ALL') {
-            <button class="btn btn-secondary" (click)="filterStatus.set('ALL')">Show All Assignments</button>
+            <button class="btn btn-secondary btn-sm" (click)="filterStatus.set('ALL')">Show All Assignments</button>
           }
         </div>
       }
@@ -95,10 +94,10 @@ import { IconComponent } from '../../shared/components/icon.component';
       @else {
         <div class="assignments-list">
           @for (item of filteredAssignments(); track item.assignmentId) {
-            <div class="card-tactile assignment-card" [class.is-submitted]="item.submissionStatus === 'SUBMITTED'">
+            <div class="card-modern assignment-card" [class.is-submitted]="item.submissionStatus === 'SUBMITTED'">
               <div class="assignment-header-row">
                 <div class="header-left">
-                  <span class="badge" [class.badge-forest]="item.submissionStatus === 'SUBMITTED'" [class.badge-amber]="item.submissionStatus !== 'SUBMITTED'">
+                  <span class="badge" [class.badge-success]="item.submissionStatus === 'SUBMITTED'" [class.badge-amber]="item.submissionStatus !== 'SUBMITTED'">
                     <app-icon [name]="item.submissionStatus === 'SUBMITTED' ? 'check' : 'clock'" [size]="12"></app-icon>
                     {{ item.submissionStatus === 'SUBMITTED' ? 'Submitted' : 'Pending Submission' }}
                   </span>
@@ -113,7 +112,7 @@ import { IconComponent } from '../../shared/components/icon.component';
               </div>
 
               <div class="assignment-body">
-                <h3 class="assignment-title font-editorial">{{ item.title }}</h3>
+                <h3 class="assignment-title">{{ item.title }}</h3>
                 <p class="assignment-instructions">{{ item.instructions }}</p>
               </div>
 
@@ -149,13 +148,13 @@ import { IconComponent } from '../../shared/components/icon.component';
                 <div class="action-buttons">
                   @if (item.submissionStatus === 'SUBMITTED') {
                     <a [href]="getDownloadUrl(item.assignmentId)" target="_blank" class="btn btn-secondary btn-sm" download>
-                      <app-icon name="download" [size]="14"></app-icon> Download Submission
+                      <app-icon name="download" [size]="13"></app-icon> Download
                     </a>
                   }
 
                   <button class="btn btn-primary btn-sm" (click)="openSubmitModal(item)">
-                    <app-icon name="upload" [size]="14"></app-icon>
-                    {{ item.submissionStatus === 'SUBMITTED' ? 'Update Submission' : 'Submit Assignment' }}
+                    <app-icon name="upload" [size]="13"></app-icon>
+                    {{ item.submissionStatus === 'SUBMITTED' ? 'Update Submission' : 'Submit Task' }}
                   </button>
                 </div>
               </div>
@@ -167,11 +166,11 @@ import { IconComponent } from '../../shared/components/icon.component';
       <!-- Assignment Submission Modal -->
       @if (selectedAssignment(); as assignment) {
         <div class="modal-overlay" (click)="closeModal()">
-          <div class="card-tactile modal-dialog" (click)="$event.stopPropagation()">
+          <div class="card-modern modal-dialog" (click)="$event.stopPropagation()">
             <div class="modal-header">
               <div>
-                <span class="modal-tag">Assignment Submission</span>
-                <h3 class="modal-title font-editorial">{{ assignment.title }}</h3>
+                <span class="modal-tag">Submit Deliverable</span>
+                <h3 class="modal-title">{{ assignment.title }}</h3>
               </div>
               <button class="btn-ghost modal-close" (click)="closeModal()" [disabled]="uploading()">✕</button>
             </div>
@@ -185,12 +184,12 @@ import { IconComponent } from '../../shared/components/icon.component';
                   <app-icon name="alert" [size]="15" class="notice-icon"></app-icon>
                   <div class="notice-content">
                     <strong>Existing Submission on File</strong>
-                    <p>A deliverable was previously submitted on {{ assignment.submittedAt | date:'medium' }}. Uploading a new file will replace your existing submission.</p>
+                    <p>A deliverable was previously submitted on {{ assignment.submittedAt | date:'medium' }}. Uploading a new file will replace your existing file.</p>
                   </div>
                 </div>
               }
 
-              <!-- Upload Area -->
+              <!-- Upload Drop Zone -->
               <div 
                 class="file-drop-zone"
                 [class.has-file]="selectedFile()"
@@ -211,7 +210,7 @@ import { IconComponent } from '../../shared/components/icon.component';
                 @if (selectedFile(); as file) {
                   <div class="file-preview-card">
                     <div class="file-icon-box">
-                      <app-icon name="assignments" [size]="24"></app-icon>
+                      <app-icon name="assignments" [size]="22"></app-icon>
                     </div>
                     <div class="file-info">
                       <strong class="file-name font-mono">{{ file.name }}</strong>
@@ -223,14 +222,14 @@ import { IconComponent } from '../../shared/components/icon.component';
                   </div>
                 } @else {
                   <div class="drop-prompt">
-                    <app-icon name="upload" [size]="32" class="upload-icon"></app-icon>
+                    <app-icon name="upload" [size]="28" class="upload-icon"></app-icon>
                     <p class="drop-title">Click to select document or drag & drop</p>
                     <p class="drop-formats">Allowed formats: <strong>PDF, DOC, DOCX</strong> &bull; Max limit: <strong>10 MB</strong></p>
                   </div>
                 }
               </div>
 
-              <!-- Upload Progress bar if uploading -->
+              <!-- Upload Progress -->
               @if (uploading()) {
                 <div class="upload-progress-container">
                   <div class="progress-bar-track">
@@ -243,28 +242,28 @@ import { IconComponent } from '../../shared/components/icon.component';
                 </div>
               }
 
-              <!-- Upload Error message if any -->
+              <!-- Error Box -->
               @if (uploadError()) {
                 <div class="upload-error-box">
-                  <app-icon name="alert" [size]="15"></app-icon>
+                  <app-icon name="alert" [size]="14"></app-icon>
                   <span>{{ uploadError() }}</span>
                 </div>
               }
             </div>
 
             <div class="modal-footer">
-              <button class="btn btn-secondary" (click)="closeModal()" [disabled]="uploading()">
+              <button class="btn btn-secondary btn-sm" (click)="closeModal()" [disabled]="uploading()">
                 Cancel
               </button>
               <button 
-                class="btn btn-primary" 
+                class="btn btn-primary btn-sm" 
                 [disabled]="!selectedFile() || uploading()"
                 (click)="submitFile()">
                 @if (uploading()) {
-                  <app-icon name="refresh" [size]="15" class="spin"></app-icon>
-                  Uploading Deliverable ({{ uploadProgress() }}%)...
+                  <app-icon name="refresh" [size]="14" class="spin"></app-icon>
+                  Uploading ({{ uploadProgress() }}%)...
                 } @else {
-                  <app-icon name="upload" [size]="15"></app-icon>
+                  <app-icon name="upload" [size]="14"></app-icon>
                   {{ assignment.submissionStatus === 'SUBMITTED' ? 'Replace & Upload' : 'Confirm & Upload' }}
                 }
               </button>
@@ -278,48 +277,49 @@ import { IconComponent } from '../../shared/components/icon.component';
     .assignments-page {
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
-    .page-header {
+    .page-header-clean {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
     }
 
     .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
       letter-spacing: -0.01em;
     }
 
     .page-subtitle {
-      font-size: 13.5px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .status-filters {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-medium);
-      padding: 3px;
+      border: 1px solid var(--border-subtle);
+      padding: 2px;
       border-radius: var(--radius-md);
     }
 
     .filter-pill {
-      padding: 6px 14px;
-      font-size: 12.5px;
+      padding: 5px 12px;
+      font-size: 12px;
       font-weight: 600;
       border: none;
       background: transparent;
@@ -330,108 +330,55 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .filter-pill.active {
-      background: var(--bg-surface);
-      color: var(--color-forest);
-      box-shadow: 0 1px 3px rgba(32, 40, 36, 0.08);
+      background: #FFFFFF;
+      color: var(--color-teal);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
 
     /* Skeleton */
     .skeleton-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .item-skeleton {
-      height: 160px;
+      height: 140px;
       border-radius: var(--radius-lg);
-    }
-
-    /* Error Banner */
-    .error-banner {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 24px 28px;
-      background: linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(255, 255, 255, 0.98));
-      border: 1px solid rgba(220, 38, 38, 0.25);
-      border-left: 5px solid #dc2626;
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
-    }
-
-    .error-icon-wrap {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #fee2e2;
-      color: #dc2626;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .error-text {
-      flex: 1;
-    }
-
-    .error-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #991b1b;
-      margin-bottom: 4px;
-    }
-
-    .error-desc {
-      font-size: 13.5px;
-      color: #7f1d1d;
-      margin-bottom: 4px;
-    }
-
-    .error-hint {
-      font-size: 12px;
-      color: #b91c1c;
-    }
-
-    .error-hint code {
-      background: rgba(220, 38, 38, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
     }
 
     /* Assignments List */
     .assignments-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .assignment-card {
-      padding: 24px;
+      padding: 20px 22px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .assignment-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .due-tag {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 11.5px;
+      color: var(--text-secondary);
       font-weight: 500;
     }
 
@@ -441,32 +388,39 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .marks-badge {
-      font-size: 12.5px;
-      color: var(--color-forest);
-      background: rgba(23, 63, 53, 0.08);
-      border: 1px solid var(--border-subtle);
-      padding: 4px 10px;
+      font-size: 11.5px;
+      color: var(--color-teal);
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
+      padding: 3px 8px;
       border-radius: var(--radius-sm);
     }
 
+    .assignment-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     .assignment-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--color-forest);
-      margin-bottom: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
     }
 
     .assignment-instructions {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--text-secondary);
       line-height: 1.5;
     }
 
+    /* Feedback Box */
     .grading-feedback-box {
-      background: rgba(23, 63, 53, 0.04);
-      border: 1px solid var(--border-subtle);
+      padding: 12px 14px;
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
       border-radius: var(--radius-md);
-      padding: 12px 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -475,68 +429,76 @@ import { IconComponent } from '../../shared/components/icon.component';
     .grading-score {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      font-size: 12.5px;
     }
 
     .grade-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--color-forest);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-weight: 600;
+      color: var(--color-teal);
     }
 
     .grade-value {
-      font-size: 14px;
-      color: var(--color-forest-dark);
+      color: var(--color-teal-dark);
+      font-size: 13.5px;
+    }
+
+    .grading-comment {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12px;
     }
 
     .comment-text {
-      font-size: 13px;
-      color: var(--text-main);
       font-style: italic;
+      color: var(--text-secondary);
     }
 
+    /* Footer */
     .assignment-footer-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-top: 1px solid var(--border-subtle);
-      padding-top: 16px;
+      padding-top: 12px;
       gap: 12px;
       flex-wrap: wrap;
+    }
+
+    .submission-details {
+      font-size: 12px;
+      color: var(--text-secondary);
     }
 
     .submitted-meta {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12.5px;
-      color: var(--color-forest);
+      gap: 5px;
+      color: var(--color-success);
       font-weight: 600;
     }
 
     .submitted-check {
-      color: var(--color-forest);
+      color: var(--color-success);
     }
 
     .pending-meta {
-      font-size: 12.5px;
       color: var(--text-muted);
     }
 
     .action-buttons {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(32, 40, 36, 0.4);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(2px);
       z-index: 1000;
       display: flex;
       align-items: center;
@@ -546,96 +508,95 @@ import { IconComponent } from '../../shared/components/icon.component';
 
     .modal-dialog {
       width: 100%;
-      max-width: 560px;
+      max-width: 520px;
       background: var(--bg-surface);
-      padding: 28px;
+      border-radius: var(--radius-xl);
+      padding: 22px 24px;
+      box-shadow: var(--shadow-modal);
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
     .modal-header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
+      gap: 12px;
     }
 
     .modal-tag {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--color-forest);
+      letter-spacing: 0.05em;
+      color: var(--color-teal);
     }
 
     .modal-title {
-      font-size: 21px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
       margin-top: 2px;
     }
 
     .modal-close {
       font-size: 16px;
+      color: var(--text-muted);
+      cursor: pointer;
       padding: 4px 8px;
     }
 
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
     .modal-instructions {
-      font-size: 13.5px;
+      font-size: 12.5px;
       color: var(--text-secondary);
-      margin-bottom: 16px;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     .resubmit-notice {
       display: flex;
-      gap: 10px;
-      padding: 12px 14px;
-      background: rgba(212, 163, 115, 0.12);
-      border: 1px solid rgba(212, 163, 115, 0.35);
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--color-amber-surface);
+      border: 1px solid var(--color-amber-border);
       border-radius: var(--radius-md);
-      font-size: 12px;
-      color: #7A531C;
-      margin-bottom: 14px;
+      font-size: 11.5px;
+      color: var(--color-amber);
     }
 
-    .notice-icon {
-      flex-shrink: 0;
-      color: #A0641D;
-      margin-top: 2px;
-    }
-
-    .notice-content strong {
+    .resubmit-notice strong {
       display: block;
       margin-bottom: 2px;
     }
 
-    .notice-content p {
-      margin: 0;
-      line-height: 1.4;
+    .notice-icon {
+      color: var(--color-amber);
+      flex-shrink: 0;
+      margin-top: 2px;
     }
 
     /* Drop Zone */
     .file-drop-zone {
       border: 2px dashed var(--border-medium);
       border-radius: var(--radius-lg);
-      padding: 32px 20px;
+      padding: 24px 20px;
       text-align: center;
       cursor: pointer;
-      background: var(--bg-surface-subtle);
       transition: all var(--transition-fast);
+      background: var(--bg-surface-subtle);
     }
 
-    .file-drop-zone:hover, .file-drop-zone.drag-over {
-      border-color: var(--color-forest);
-      background: rgba(23, 63, 53, 0.04);
-    }
-
-    .file-drop-zone.has-file {
-      border-style: solid;
-      border-color: var(--color-forest);
-      background: rgba(23, 63, 53, 0.04);
-      padding: 16px;
+    .file-drop-zone:hover,
+    .file-drop-zone.drag-over {
+      border-color: var(--color-teal);
+      background: var(--color-teal-surface);
     }
 
     .hidden-file-input {
@@ -646,41 +607,39 @@ import { IconComponent } from '../../shared/components/icon.component';
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .upload-icon {
-      color: var(--color-forest);
+      color: var(--color-teal);
     }
 
     .drop-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
-      color: var(--color-forest);
+      color: var(--text-main);
     }
 
     .drop-formats {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
     }
 
     .file-preview-card {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
       text-align: left;
     }
 
     .file-icon-box {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-md);
-      background: var(--color-forest);
-      color: #FFFFFF;
+      color: var(--color-teal);
       display: flex;
       align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
     }
 
     .file-info {
@@ -691,78 +650,75 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .file-name {
-      font-size: 13.5px;
-      color: var(--color-forest);
+      font-size: 12px;
+      color: var(--text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .file-size {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--text-muted);
     }
 
     .file-remove-btn {
       background: transparent;
       border: none;
-      color: var(--color-danger);
-      font-size: 16px;
-      padding: 6px 10px;
+      color: var(--text-muted);
       cursor: pointer;
+      padding: 4px;
+    }
+
+    .file-remove-btn:hover {
+      color: var(--color-danger);
     }
 
     .upload-progress-container {
-      margin-top: 14px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .progress-bar-track {
-      width: 100%;
-      height: 8px;
+      height: 6px;
       background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-full);
       overflow: hidden;
     }
 
     .progress-bar-fill {
       height: 100%;
-      background: var(--color-forest);
+      background: var(--color-teal);
       border-radius: var(--radius-full);
-      transition: width 0.2s ease;
     }
 
     .progress-label-row {
       display: flex;
       justify-content: space-between;
       font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 500;
+      color: var(--text-secondary);
     }
 
     .upload-error-box {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: var(--color-danger);
-      background: rgba(184, 66, 51, 0.08);
-      border: 1px solid rgba(184, 66, 51, 0.2);
-      padding: 10px 14px;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--color-danger-surface);
+      border: 1px solid var(--color-danger-border);
       border-radius: var(--radius-md);
-      font-size: 12.5px;
-      margin-top: 12px;
+      font-size: 11.5px;
+      color: var(--color-danger);
     }
 
     .modal-footer {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 12px;
+      gap: 10px;
       border-top: 1px solid var(--border-subtle);
-      padding-top: 16px;
+      padding-top: 12px;
     }
 
     .spin {
@@ -773,30 +729,62 @@ import { IconComponent } from '../../shared/components/icon.component';
       100% { transform: rotate(360deg); }
     }
 
-    /* Empty */
-    .empty-state {
-      padding: 56px;
+    /* Error and Empty */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .error-hint {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-box {
+      padding: 48px 20px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .empty-icon {
       color: var(--text-muted);
-      opacity: 0.6;
     }
 
     .empty-title {
-      font-size: 22px;
-      color: var(--color-forest);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .empty-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      max-width: 420px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 400px;
+      line-height: 1.45;
     }
   `]
 })
@@ -948,7 +936,6 @@ export class AssignmentsComponent implements OnInit {
           const body = event.body as AssignmentSubmissionResponse;
           this.toast.success(body?.message || 'Assignment submitted successfully!', 'Deliverable Uploaded');
           this.closeModal();
-          // Immediately reload assignments to reflect status and download url
           this.loadAssignments();
         }
       },

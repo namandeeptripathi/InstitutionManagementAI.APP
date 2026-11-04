@@ -12,15 +12,15 @@ import { IconComponent } from '../../shared/components/icon.component';
   template: `
     <div class="courses-page">
       <!-- Page Header -->
-      <div class="page-header">
-        <div>
-          <h2 class="page-title font-editorial">Enrolled Academic Courses</h2>
+      <div class="page-header-clean">
+        <div class="header-titles">
+          <h2 class="page-title">Enrolled Academic Courses</h2>
           <p class="page-subtitle">Subjects registered for current semester curriculum ({{ filteredCourses().length }} subjects)</p>
         </div>
 
-        <div class="header-controls">
-          <div class="search-box">
-            <app-icon name="search" [size]="16" class="search-icon"></app-icon>
+        <div class="header-actions">
+          <div class="search-box-clean">
+            <app-icon name="search" [size]="15" class="search-icon"></app-icon>
             <input 
               type="text" 
               [(ngModel)]="searchQuery" 
@@ -32,11 +32,11 @@ import { IconComponent } from '../../shared/components/icon.component';
             }
           </div>
 
-          <div class="view-toggle">
-            <button class="toggle-btn" [class.active]="viewMode() === 'grid'" (click)="viewMode.set('grid')" title="Grid View">
+          <div class="segmented-control">
+            <button class="segment-btn" [class.active]="viewMode() === 'grid'" (click)="viewMode.set('grid')" title="Grid View">
               ⊞ Grid
             </button>
-            <button class="toggle-btn" [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')" title="List View">
+            <button class="segment-btn" [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')" title="Table View">
               ☰ Table
             </button>
           </div>
@@ -56,27 +56,26 @@ import { IconComponent } from '../../shared/components/icon.component';
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Course Roster</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
-            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is running with PostgreSQL.</p>
+            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is active with PostgreSQL.</p>
           </div>
-          <button class="btn btn-primary" (click)="loadCourses()">
-            <app-icon name="refresh" [size]="16"></app-icon>
-            Retry Connection
+          <button class="btn btn-primary btn-sm" (click)="loadCourses()">
+            <app-icon name="refresh" [size]="14"></app-icon> Retry
           </button>
         </div>
       }
 
       <!-- Empty State -->
       @else if (filteredCourses().length === 0) {
-        <div class="card-tactile empty-state">
-          <app-icon name="courses" [size]="48" class="empty-icon"></app-icon>
-          <h3 class="empty-title font-editorial">No Enrolled Courses Found</h3>
+        <div class="card-modern empty-state-box">
+          <app-icon name="courses" [size]="40" class="empty-icon"></app-icon>
+          <h3 class="empty-title">No Enrolled Courses Found</h3>
           <p class="empty-desc">
             @if (searchQuery()) {
               No course subjects matched "{{ searchQuery() }}". Try adjusting your search query.
@@ -85,7 +84,7 @@ import { IconComponent } from '../../shared/components/icon.component';
             }
           </p>
           @if (searchQuery()) {
-            <button class="btn btn-secondary" (click)="searchQuery.set('')">Clear Search Filter</button>
+            <button class="btn btn-secondary btn-sm" (click)="searchQuery.set('')">Clear Search Filter</button>
           }
         </div>
       }
@@ -94,27 +93,27 @@ import { IconComponent } from '../../shared/components/icon.component';
       @else if (viewMode() === 'grid') {
         <div class="courses-grid">
           @for (course of filteredCourses(); track course.subjectCode) {
-            <div class="card-tactile card-interactive course-card">
+            <div class="card-modern card-interactive course-card">
               <div class="course-card-top">
-                <span class="subject-code-badge font-mono">{{ course.subjectCode }}</span>
-                <span class="badge badge-sage">{{ course.credits }} Credits</span>
+                <span class="subject-badge font-mono">{{ course.subjectCode }}</span>
+                <span class="badge badge-teal">{{ course.credits }} Credits</span>
               </div>
 
-              <div class="course-card-content">
-                <h3 class="subject-name font-editorial">{{ course.subjectName }}</h3>
-                <div class="course-program-row">
-                  <span class="course-code-tag font-mono">{{ course.courseCode }}</span>
-                  <span class="course-program">{{ course.courseName }}</span>
+              <div class="course-card-body">
+                <h3 class="subject-title">{{ course.subjectName }}</h3>
+                <div class="program-tag-row">
+                  <span class="prog-code font-mono">{{ course.courseCode }}</span>
+                  <span class="prog-name">{{ course.courseName }}</span>
                 </div>
               </div>
 
               <div class="course-card-footer">
-                <div class="footer-meta">
-                  <span class="footer-meta-item">Sem {{ course.semester }}</span>
-                  <span class="footer-meta-dot">&bull;</span>
-                  <span class="footer-meta-item">AY {{ course.academicYear }}</span>
+                <div class="meta-row">
+                  <span>Sem {{ course.semester }}</span>
+                  <span class="meta-separator">&bull;</span>
+                  <span>AY {{ course.academicYear }}</span>
                 </div>
-                <span class="badge badge-forest status-pill">{{ course.enrollmentStatus || 'ACTIVE' }}</span>
+                <span class="badge badge-success">{{ course.enrollmentStatus || 'ACTIVE' }}</span>
               </div>
             </div>
           }
@@ -123,8 +122,8 @@ import { IconComponent } from '../../shared/components/icon.component';
 
       <!-- Courses List / Table View -->
       @else {
-        <div class="card-tactile table-container">
-          <table class="courses-table" aria-label="Course Subject List">
+        <div class="table-container-clean">
+          <table class="table-modern" aria-label="Course Subject List">
             <thead>
               <tr>
                 <th scope="col">Subject Code</th>
@@ -140,14 +139,14 @@ import { IconComponent } from '../../shared/components/icon.component';
             <tbody>
               @for (course of filteredCourses(); track course.subjectCode) {
                 <tr>
-                  <td><span class="font-mono code-pill">{{ course.subjectCode }}</span></td>
-                  <td><strong class="subject-title-cell">{{ course.subjectName }}</strong></td>
-                  <td><span class="font-mono code-pill subtle">{{ course.courseCode }}</span></td>
-                  <td class="secondary-cell">{{ course.courseName }}</td>
-                  <td><span class="badge badge-sage">{{ course.credits }} Credits</span></td>
+                  <td><span class="font-mono subject-badge">{{ course.subjectCode }}</span></td>
+                  <td><strong class="subject-row-title">{{ course.subjectName }}</strong></td>
+                  <td><span class="font-mono prog-code">{{ course.courseCode }}</span></td>
+                  <td class="prog-row-name">{{ course.courseName }}</td>
+                  <td><span class="badge badge-teal">{{ course.credits }} Credits</span></td>
                   <td class="font-mono">Semester {{ course.semester }}</td>
                   <td class="font-mono">{{ course.academicYear }}</td>
-                  <td><span class="badge badge-forest">{{ course.enrollmentStatus || 'ACTIVE' }}</span></td>
+                  <td><span class="badge badge-success">{{ course.enrollmentStatus || 'ACTIVE' }}</span></td>
                 </tr>
               }
             </tbody>
@@ -160,36 +159,37 @@ import { IconComponent } from '../../shared/components/icon.component';
     .courses-page {
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
-    .page-header {
+    .page-header-clean {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
     }
 
     .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
       letter-spacing: -0.01em;
     }
 
     .page-subtitle {
-      font-size: 13.5px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
     }
 
-    .header-controls {
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .search-box {
+    .search-box-clean {
       position: relative;
       display: flex;
       align-items: center;
@@ -197,49 +197,49 @@ import { IconComponent } from '../../shared/components/icon.component';
 
     .search-icon {
       position: absolute;
-      left: 12px;
+      left: 11px;
       color: var(--text-muted);
       pointer-events: none;
     }
 
     .search-input {
-      width: 280px;
-      padding: 9px 34px 9px 36px;
-      font-size: 13.5px;
+      width: 260px;
+      padding: 8px 30px 8px 34px;
+      font-size: 13px;
       background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       color: var(--text-main);
-      box-shadow: inset 0 1px 2px rgba(32, 40, 36, 0.04);
-      transition: border-color var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
+      outline: none;
     }
 
     .search-input:focus {
-      outline: none;
-      border-color: var(--color-forest);
-      box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.1);
+      border-color: var(--color-teal);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
     .clear-btn {
       position: absolute;
-      right: 10px;
+      right: 9px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
     }
 
-    .view-toggle {
+    .segmented-control {
       display: flex;
       background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-medium);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 2px;
     }
 
-    .toggle-btn {
-      padding: 6px 12px;
+    .segment-btn {
+      padding: 6px 11px;
       font-size: 12px;
       font-weight: 600;
       border: none;
@@ -250,21 +250,21 @@ import { IconComponent } from '../../shared/components/icon.component';
       transition: all var(--transition-fast);
     }
 
-    .toggle-btn.active {
-      background: var(--bg-surface);
-      color: var(--color-forest);
-      box-shadow: 0 1px 3px rgba(32, 40, 36, 0.08);
+    .segment-btn.active {
+      background: #FFFFFF;
+      color: var(--color-teal);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
 
     /* Skeleton */
     .skeleton-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: 16px;
     }
 
     .course-skeleton {
-      height: 180px;
+      height: 160px;
       border-radius: var(--radius-lg);
     }
 
@@ -272,41 +272,133 @@ import { IconComponent } from '../../shared/components/icon.component';
     .courses-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: 16px;
     }
 
     .course-card {
-      padding: 22px;
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 100%;
     }
 
     .course-card-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
-    .subject-code-badge {
+    .subject-badge {
       display: inline-block;
-      padding: 4px 10px;
-      background: var(--color-forest-surface);
-      color: var(--color-forest);
-      border: 1px solid var(--color-forest-border);
+      padding: 3px 8px;
+      background: var(--color-teal-surface);
+      color: var(--color-teal);
+      border: 1px solid var(--color-teal-border);
       border-radius: var(--radius-sm);
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
     }
 
-    /* Error Banner */
+    .course-card-body {
+      margin-bottom: 14px;
+    }
+
+    .subject-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .program-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .prog-code {
+      display: inline-block;
+      padding: 2px 6px;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .prog-name {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .course-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 12px;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    .meta-separator {
+      color: var(--border-medium);
+    }
+
+    /* Table specifics */
+    .subject-row-title {
+      color: var(--text-main);
+      font-size: 13.5px;
+    }
+
+    .prog-row-name {
+      color: var(--text-secondary);
+      font-size: 12.5px;
+    }
+
+    /* Empty state */
+    .empty-state-box {
+      padding: 48px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-icon {
+      color: var(--text-muted);
+    }
+
+    .empty-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 400px;
+      line-height: 1.45;
+    }
+
+    /* Error banner */
     .error-banner {
       display: flex;
       align-items: center;
-      gap: 20px;
-      padding: 24px;
+      gap: 16px;
+      padding: 18px;
       background: var(--color-danger-surface);
       border-color: var(--color-danger-border);
     }
@@ -316,166 +408,21 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .error-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--color-danger);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .error-desc {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-main);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .error-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .course-card-content {
-      margin-bottom: 20px;
-    }
-
-    .subject-name {
-      font-size: 19px;
-      font-weight: 600;
-      color: var(--color-forest);
-      line-height: 1.3;
-      margin-bottom: 6px;
-    }
-
-    .course-program-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .course-code-tag {
-      display: inline-block;
-      padding: 2px 7px;
-      background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-xs);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--color-forest);
-    }
-
-    .course-program {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .code-pill.subtle {
-      background: var(--bg-surface-subtle);
+      font-size: 11.5px;
       color: var(--text-secondary);
-      border-color: var(--border-medium);
-    }
-
-    .course-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 14px;
-    }
-
-    .footer-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .footer-meta-dot {
-      color: var(--border-strong);
-    }
-
-    /* Table View */
-    .table-container {
-      overflow-x: auto;
-    }
-
-    .courses-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 13.5px;
-    }
-
-    .courses-table th {
-      padding: 14px 18px;
-      background: var(--bg-surface-subtle);
-      color: var(--text-secondary);
-      font-weight: 700;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .courses-table td {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--border-subtle);
-      color: var(--text-main);
-    }
-
-    .courses-table tr:hover td {
-      background-color: var(--bg-surface-subtle);
-    }
-
-    .code-pill {
-      display: inline-block;
-      padding: 3px 8px;
-      background: var(--color-forest-surface);
-      color: var(--color-forest);
-      border: 1px solid var(--color-forest-border);
-      border-radius: var(--radius-xs);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .subject-title-cell {
-      color: var(--color-forest);
-      font-size: 14px;
-    }
-
-    .secondary-cell {
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    /* Empty State */
-    .empty-state {
-      padding: 56px 24px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .empty-icon {
-      color: var(--text-muted);
-      opacity: 0.6;
-    }
-
-    .empty-title {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--color-forest);
-    }
-
-    .empty-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      max-width: 440px;
-      line-height: 1.5;
     }
 
     @media (max-width: 1024px) {
@@ -491,7 +438,7 @@ import { IconComponent } from '../../shared/components/icon.component';
       .search-input {
         width: 100%;
       }
-      .header-controls {
+      .header-actions {
         width: 100%;
         flex-direction: column;
         align-items: stretch;

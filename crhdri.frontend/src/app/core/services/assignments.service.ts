@@ -27,7 +27,9 @@ export class AssignmentsService {
 
   getDownloadUrl(assignmentId: string, enrollment?: string): string {
     const enroll = enrollment || this.studentService.activeEnrollmentNumber();
-    return `${this.baseUrl}/students/${encodeURIComponent(enroll)}/assignments/${assignmentId}/submission/download`;
+    const token = localStorage.getItem('crhdri_auth_token');
+    const base = `${this.baseUrl}/students/${encodeURIComponent(enroll)}/assignments/${assignmentId}/submission/download`;
+    return token ? `${base}?token=${encodeURIComponent(token)}` : base;
   }
 
   submitAssignment(

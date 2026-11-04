@@ -23,6 +23,7 @@ desktop.ini
 *.bak*
 program_backup.cs
 scratch/
+repository_context/
 
 # Runtime user uploads (preserve directory structure only)
 CRHDRI.API/uploads/assignments/*

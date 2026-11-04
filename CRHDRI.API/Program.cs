@@ -21,7 +21,8 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .WithExposedHeaders("Content-Disposition");
     });
 });
 
@@ -52,6 +53,20 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            if (string.IsNullOrEmpty(context.Token) &&
+                context.Request.Query.TryGetValue("token", out var queryToken) &&
+                !string.IsNullOrEmpty(queryToken) &&
+                context.Request.Path.Value?.Contains("/download", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                context.Token = queryToken;
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -1361,6 +1376,19 @@ app.MapPut(
         return Results.BadRequest(new { message = "No student attendance records provided." });
     }
 
+    // Check for duplicate student IDs in submission
+    var seenStudentIds = new HashSet<Guid>();
+    foreach (var rec in records)
+    {
+        if (!seenStudentIds.Add(rec.StudentId))
+        {
+            return Results.BadRequest(new
+            {
+                message = $"Duplicate student ID '{rec.StudentId}' found in attendance submission."
+            });
+        }
+    }
+
     // Validate statuses against PostgreSQL CHECK constraint
     foreach (var rec in records)
     {
@@ -1389,6 +1417,12 @@ app.MapPut(
               AND f.user_id = @userId;
             """;
 
+        Guid courseId;
+        int semester;
+        string section;
+        string academicYear;
+        string sessionStatus;
+
         await using (var checkCmd = new NpgsqlCommand(sessionCheckSql, connection))
         {
             checkCmd.Parameters.AddWithValue("sessionId", sessionId);
@@ -1398,9 +1432,60 @@ app.MapPut(
             {
                 return Results.NotFound(new { message = "Session not found or access denied." });
             }
+
+            sessionStatus = checkReader["session_status"]?.ToString() ?? string.Empty;
+            courseId = (Guid)checkReader["course_id"];
+            semester = Convert.ToInt32(checkReader["semester"]);
+            section = checkReader["section"]?.ToString() ?? string.Empty;
+            academicYear = checkReader["academic_year"]?.ToString() ?? string.Empty;
         }
 
-        // 2. Perform transactional UPSERT for each student record
+        // Reject attendance updates on cancelled sessions
+        if (string.Equals(sessionStatus, "CANCELLED", StringComparison.OrdinalIgnoreCase))
+        {
+            return Results.BadRequest(new { message = "Cannot record or update attendance for a cancelled class session." });
+        }
+
+        // 2. Validate that all submitted student IDs are actively enrolled in this class session
+        const string enrolledStudentsSql = """
+            SELECT s.student_id
+            FROM students s
+            JOIN course_enrollments ce
+                ON ce.student_id = s.student_id
+               AND ce.course_id = s.course_id
+            WHERE s.course_id = @courseId
+              AND s.semester = @semester
+              AND s.section = @section
+              AND ce.academic_year = @academicYear
+              AND ce.enrollment_status = 'ACTIVE';
+            """;
+
+        var enrolledIds = new HashSet<Guid>();
+        await using (var enrollCmd = new NpgsqlCommand(enrolledStudentsSql, connection))
+        {
+            enrollCmd.Parameters.AddWithValue("courseId", courseId);
+            enrollCmd.Parameters.AddWithValue("semester", semester);
+            enrollCmd.Parameters.AddWithValue("section", section);
+            enrollCmd.Parameters.AddWithValue("academicYear", academicYear);
+            await using var enrollReader = await enrollCmd.ExecuteReaderAsync();
+            while (await enrollReader.ReadAsync())
+            {
+                enrolledIds.Add(enrollReader.GetGuid(0));
+            }
+        }
+
+        foreach (var item in records)
+        {
+            if (!enrolledIds.Contains(item.StudentId))
+            {
+                return Results.BadRequest(new
+                {
+                    message = $"Student '{item.StudentId}' is not actively enrolled in this class session and cannot be marked for attendance."
+                });
+            }
+        }
+
+        // 3. Perform transactional UPSERT for each student record
         await using var transaction = await connection.BeginTransactionAsync();
 
         const string upsertSql = """
@@ -4992,7 +5077,9 @@ app.MapGet(
                 sub.subject_name,
                 COALESCE(ar.marks_obtained, sqt.marks_obtained) AS marks_obtained,
                 COALESCE(ar.feedback, CASE WHEN sqt.attempt_id IS NOT NULL THEN 'Auto-graded online quiz submission' ELSE NULL END) AS feedback,
-                COALESCE(ar.evaluated_at, sqt.submitted_at) AS evaluated_at
+                COALESCE(ar.evaluated_at, sqt.submitted_at) AS evaluated_at,
+                sqt.attempt_id AS attempt_id,
+                CASE WHEN sqt.attempt_id IS NOT NULL OR ar.result_id IS NOT NULL THEN true ELSE false END AS is_completed
             FROM students st
             JOIN course_enrollments ce
                 ON ce.student_id = st.student_id
@@ -5055,7 +5142,14 @@ app.MapGet(
                 evaluatedAt =
                     reader["evaluated_at"] is DBNull
                         ? null
-                        : reader["evaluated_at"]
+                        : reader["evaluated_at"],
+
+                attemptId =
+                    reader["attempt_id"] is DBNull
+                        ? null
+                        : reader["attempt_id"],
+
+                isCompleted = Convert.ToBoolean(reader["is_completed"])
             });
         }
 
@@ -5798,6 +5892,291 @@ app.MapPost(
             Console.WriteLine($"QUIZ SUBMISSION DATABASE ERROR: {ex}");
             return Results.Problem(
                 "Could not submit quiz. Check backend logs.");
+        }
+    });
+
+// ======================================================
+// 13. STUDENT QUIZ ATTEMPT REVIEW API
+// GET /api/students/{enrollmentNumber}/assessments/{assessmentId:guid}/review
+// ======================================================
+
+app.MapGet(
+    "/api/students/{enrollmentNumber}/assessments/{assessmentId:guid}/review",
+    async (
+        string enrollmentNumber,
+        Guid assessmentId,
+        IConfiguration configuration) =>
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            return Results.Problem("Database connection string is missing.");
+        }
+
+        try
+        {
+            await using var connection = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            // 1. Verify student exists and get student_id, course_id, semester
+            const string studentSql = """
+                SELECT student_id, course_id, semester
+                FROM public.students
+                WHERE enrollment_number = @enrollmentNumber
+                LIMIT 1;
+                """;
+
+            Guid studentId;
+            Guid courseId;
+            int semester;
+
+            await using (var studentCommand = new NpgsqlCommand(studentSql, connection))
+            {
+                studentCommand.Parameters.AddWithValue("enrollmentNumber", enrollmentNumber);
+                await using var studentReader = await studentCommand.ExecuteReaderAsync();
+                if (!await studentReader.ReadAsync())
+                {
+                    return Results.NotFound(new { message = "Student not found." });
+                }
+                studentId = studentReader.GetGuid(0);
+                courseId = studentReader.GetGuid(1);
+                semester = studentReader.GetInt32(2);
+            }
+
+            // 2. Fetch assessment details and student's attempt / result
+            const string assessSql = """
+                SELECT
+                    a.assessment_id,
+                    a.assessment_name,
+                    a.assessment_type,
+                    a.max_marks,
+                    a.assessment_date,
+                    sub.subject_code,
+                    sub.subject_name,
+                    sqa.attempt_id,
+                    sqa.answers,
+                    sqa.marks_obtained AS attempt_marks,
+                    sqa.submitted_at,
+                    ar.result_id,
+                    ar.marks_obtained AS result_marks,
+                    ar.feedback,
+                    ar.evaluated_at
+                FROM public.assessments a
+                JOIN public.subjects sub ON sub.subject_id = a.subject_id
+                JOIN public.course_enrollments ce ON ce.student_id = @studentId 
+                    AND ce.course_id = sub.course_id 
+                    AND ce.enrollment_status = 'ACTIVE'
+                LEFT JOIN public.student_quiz_attempts sqa
+                    ON sqa.assessment_id = a.assessment_id AND sqa.student_id = @studentId
+                LEFT JOIN public.assessment_results ar
+                    ON ar.assessment_id = a.assessment_id AND ar.student_id = @studentId
+                WHERE a.assessment_id = @assessmentId
+                  AND sub.course_id = @courseId
+                  AND sub.semester = @semester
+                LIMIT 1;
+                """;
+
+            string assessmentName;
+            string assessmentType;
+            decimal maxMarks;
+            string subjectCode;
+            string subjectName;
+            DateTime? evaluatedAt = null;
+            decimal marksObtained = 0m;
+            decimal? attemptMarks = null;
+            string? answersJson = null;
+            Guid? attemptId = null;
+            string? feedback = null;
+
+            await using (var assessCmd = new NpgsqlCommand(assessSql, connection))
+            {
+                assessCmd.Parameters.AddWithValue("assessmentId", assessmentId);
+                assessCmd.Parameters.AddWithValue("studentId", studentId);
+                assessCmd.Parameters.AddWithValue("courseId", courseId);
+                assessCmd.Parameters.AddWithValue("semester", semester);
+
+                await using var reader = await assessCmd.ExecuteReaderAsync();
+                if (!await reader.ReadAsync())
+                {
+                    return Results.NotFound(new { message = "Assessment not found or student is not enrolled in this subject." });
+                }
+
+                // Check if student has completed this assessment
+                var hasAttempt = reader["attempt_id"] is not DBNull;
+                var hasResult = reader["result_id"] is not DBNull;
+
+                if (!hasAttempt && !hasResult)
+                {
+                    return Results.BadRequest(new
+                    {
+                        message = "You have not completed this assessment yet. Answers can only be reviewed after submission."
+                    });
+                }
+
+                assessmentName = reader["assessment_name"].ToString()!;
+                assessmentType = reader["assessment_type"].ToString()!;
+                maxMarks = Convert.ToDecimal(reader["max_marks"]);
+                subjectCode = reader["subject_code"].ToString()!;
+                subjectName = reader["subject_name"].ToString()!;
+
+                decimal? resultMarks = reader["result_marks"] is not DBNull ? Convert.ToDecimal(reader["result_marks"]) : null;
+                attemptMarks = hasAttempt && reader["attempt_marks"] is not DBNull ? Convert.ToDecimal(reader["attempt_marks"]) : null;
+                marksObtained = resultMarks ?? attemptMarks ?? 0m;
+
+                DateTime? resultEvalDate = reader["evaluated_at"] is not DBNull ? (DateTime)reader["evaluated_at"] : null;
+                DateTime? attemptSubmitDate = hasAttempt && reader["submitted_at"] is not DBNull ? (DateTime)reader["submitted_at"] : null;
+                evaluatedAt = resultEvalDate ?? attemptSubmitDate;
+
+                if (hasAttempt)
+                {
+                    attemptId = (Guid)reader["attempt_id"];
+                    answersJson = reader["answers"]?.ToString();
+                }
+
+                if (reader["feedback"] is not DBNull)
+                {
+                    feedback = reader["feedback"].ToString();
+                }
+                else if (hasAttempt)
+                {
+                    feedback = "Auto-graded online quiz submission";
+                }
+            }
+
+            // Parse student answers dictionary
+            var studentAnswers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (!string.IsNullOrWhiteSpace(answersJson))
+            {
+                try
+                {
+                    using var doc = System.Text.Json.JsonDocument.Parse(answersJson);
+                    foreach (var prop in doc.RootElement.EnumerateObject())
+                    {
+                        studentAnswers[prop.Name] = prop.Value.GetString() ?? prop.Value.ToString();
+                    }
+                }
+                catch
+                {
+                    // Fallback if parsing fails
+                }
+            }
+
+            // 3. Fetch questions and answer keys for review
+            const string questionsSql = """
+                SELECT
+                    q.question_id,
+                    q.question_text,
+                    q.options,
+                    q.correct_option,
+                    q.marks
+                FROM public.assessment_questions q
+                WHERE q.assessment_id = @assessmentId
+                ORDER BY q.created_at ASC, q.question_id ASC;
+                """;
+
+            var reviewQuestions = new List<object>();
+            int correctCount = 0;
+            int totalQuestions = 0;
+
+            await using (var qCmd = new NpgsqlCommand(questionsSql, connection))
+            {
+                qCmd.Parameters.AddWithValue("assessmentId", assessmentId);
+                await using var qReader = await qCmd.ExecuteReaderAsync();
+
+                while (await qReader.ReadAsync())
+                {
+                    totalQuestions++;
+                    var qId = qReader.GetGuid(0);
+                    var qText = qReader.GetString(1);
+                    var optionsVal = qReader.GetValue(2);
+                    var correctOpt = qReader.GetString(3);
+                    var qMarks = Convert.ToDecimal(qReader.GetValue(4));
+
+                    var optionsMap = new Dictionary<string, string>();
+                    object? parsedOptions = null;
+
+                    if (optionsVal is string optStr)
+                    {
+                        try
+                        {
+                            using var doc = System.Text.Json.JsonDocument.Parse(optStr);
+                            parsedOptions = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(optStr);
+                            foreach (var p in doc.RootElement.EnumerateObject())
+                            {
+                                optionsMap[p.Name] = p.Value.GetString() ?? p.Value.ToString();
+                            }
+                        }
+                        catch
+                        {
+                            parsedOptions = optStr;
+                        }
+                    }
+                    else if (optionsVal is not DBNull)
+                    {
+                        parsedOptions = optionsVal;
+                    }
+
+                    // Check student answer
+                    studentAnswers.TryGetValue(qId.ToString(), out var selectedOpt);
+                    var isAnswered = !string.IsNullOrWhiteSpace(selectedOpt);
+                    var isCorrect = isAnswered && string.Equals(selectedOpt!.Trim(), correctOpt.Trim(), StringComparison.OrdinalIgnoreCase);
+
+                    if (isCorrect) correctCount++;
+
+                    optionsMap.TryGetValue(correctOpt.Trim(), out var correctText);
+                    string? selectedText = null;
+                    if (isAnswered && selectedOpt != null)
+                    {
+                        optionsMap.TryGetValue(selectedOpt.Trim(), out selectedText);
+                    }
+
+                    reviewQuestions.Add(new
+                    {
+                        questionId = qId,
+                        questionNumber = totalQuestions,
+                        questionText = qText,
+                        options = parsedOptions,
+                        studentAnswer = selectedOpt,
+                        studentAnswerText = selectedText,
+                        correctAnswer = correctOpt,
+                        correctAnswerText = correctText,
+                        isAnswered,
+                        isCorrect,
+                        marks = qMarks,
+                        earnedMarks = isCorrect ? qMarks : 0m
+                    });
+                }
+            }
+
+            var percentage = maxMarks > 0m
+                ? Math.Round(marksObtained * 100m / maxMarks, 2)
+                : 0m;
+
+            return Results.Ok(new
+            {
+                assessmentId,
+                assessmentName,
+                assessmentType,
+                subjectCode,
+                subjectName,
+                maxMarks,
+                marksObtained,
+                attemptMarks,
+                percentage,
+                evaluatedAt,
+                attemptId,
+                feedback,
+                totalQuestions,
+                correctCount,
+                incorrectCount = totalQuestions - correctCount,
+                hasAnswerData = studentAnswers.Count > 0,
+                questions = reviewQuestions
+            });
+        }
+        catch (NpgsqlException ex)
+        {
+            Console.WriteLine($"STUDENT QUIZ REVIEW ERROR: {ex}");
+            return Results.Problem("Could not retrieve quiz review. Check backend logs.");
         }
     });
 

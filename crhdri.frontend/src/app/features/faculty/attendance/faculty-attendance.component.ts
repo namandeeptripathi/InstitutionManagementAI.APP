@@ -30,22 +30,25 @@ interface StudentAttendanceRow {
   template: `
     <div class="attendance-page">
       <!-- Page Header & Class Selector Bar -->
-      <div class="page-header card-tactile">
-        <div class="header-titles">
+      <div class="faculty-page-header">
+        <div class="faculty-header-titles">
           <div class="badge-row">
-            <span class="badge badge-sage">SESSION MANAGER</span>
+            <span class="badge badge-teal badge-sm">
+              <app-icon name="badge-check" [size]="12"></app-icon>
+              SESSION MANAGER
+            </span>
             <span class="meta-dot">&bull;</span>
-            <span class="meta-year font-mono">AY 2026-2027</span>
+            <span class="meta-year font-mono text-muted">AY 2026-2027</span>
           </div>
-          <h2 class="page-title font-editorial">Faculty Attendance Manager</h2>
-          <p class="page-subtitle">
+          <h2 class="faculty-page-title">Faculty Attendance Manager</h2>
+          <p class="faculty-page-subtitle">
             Schedule lecture sessions, verify student rosters, and log institutional attendance records.
           </p>
         </div>
 
         <!-- Class Selection Dropdown/Tabs -->
         <div class="class-picker-wrap">
-          <label class="picker-label font-mono">SELECTED CLASS:</label>
+          <span class="picker-label font-mono">Assigned Class:</span>
           <div class="class-selector-box">
             @for (cls of assignedClasses(); track cls.facultyAssignmentId) {
               <button
@@ -69,16 +72,16 @@ interface StudentAttendanceRow {
           <div class="skeleton body-skeleton"></div>
         </div>
       } @else if (classesError()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Assigned Classes</h3>
             <p class="error-desc">{{ classesError() }}</p>
           </div>
-          <button class="btn btn-primary" (click)="loadClasses()">
-            <app-icon name="refresh" [size]="16"></app-icon>
+          <button class="btn btn-primary btn-sm" (click)="loadClasses()">
+            <app-icon name="refresh" [size]="14"></app-icon>
             Retry Connection
           </button>
         </div>
@@ -86,29 +89,29 @@ interface StudentAttendanceRow {
         <div class="attendance-split-layout">
           <!-- LEFT COLUMN: Class Sessions Log & Creator -->
           <div class="split-col sessions-col">
-            <div class="card-tactile panel-card">
+            <div class="card-modern panel-card">
               <div class="panel-header">
                 <div class="panel-header-title">
-                  <h3 class="panel-title font-editorial">Class Sessions</h3>
-                  <span class="badge badge-amber badge-sm font-mono">{{ sessions().length }} Logged</span>
+                  <h3 class="panel-title">Class Sessions</h3>
+                  <span class="badge badge-teal badge-sm font-mono">{{ sessions().length }} Logged</span>
                 </div>
                 <button
-                  class="btn btn-primary btn-sm new-session-btn"
+                  class="btn btn-primary btn-sm"
                   (click)="toggleCreateSessionModal()"
                   [disabled]="creatingSession()"
                   title="Schedule a new lecture session"
                 >
-                  <app-icon name="plus" [size]="14"></app-icon>
+                  <app-icon name="plus" [size]="13"></app-icon>
                   <span>New Session</span>
                 </button>
               </div>
 
-              <!-- Create Session Form / Dropdown Drawer -->
+              <!-- Create Session Inline Form -->
               @if (showCreateForm()) {
-                <div class="create-session-drawer card-subtle">
+                <div class="create-session-drawer card-modern">
                   <div class="drawer-header">
-                    <span class="drawer-title font-editorial">Schedule Class Session</span>
-                    <button class="close-drawer-btn" (click)="showCreateForm.set(false)" aria-label="Close drawer">
+                    <span class="drawer-title">Schedule Class Session</span>
+                    <button class="close-drawer-btn" (click)="showCreateForm.set(false)" aria-label="Close form">
                       &times;
                     </button>
                   </div>
@@ -121,34 +124,34 @@ interface StudentAttendanceRow {
                         [(ngModel)]="newSessionDate"
                         name="sessionDate"
                         required
-                        class="form-input font-mono"
+                        class="form-control font-mono"
                       />
                     </div>
 
                     <div class="form-row">
-                      <div class="form-group">
+                      <div class="form-group flex-1">
                         <label class="form-label">Start Time</label>
                         <input
                           type="time"
                           [(ngModel)]="newSessionStartTime"
                           name="startTime"
-                          class="form-input font-mono"
+                          class="form-control font-mono"
                         />
                       </div>
-                      <div class="form-group">
+                      <div class="form-group flex-1">
                         <label class="form-label">End Time</label>
                         <input
                           type="time"
                           [(ngModel)]="newSessionEndTime"
                           name="endTime"
-                          class="form-input font-mono"
+                          class="form-control font-mono"
                         />
                       </div>
                     </div>
 
                     <div class="form-group">
                       <label class="form-label">Status</label>
-                      <select [(ngModel)]="newSessionStatus" name="sessionStatus" class="form-select font-mono">
+                      <select [(ngModel)]="newSessionStatus" name="sessionStatus" class="form-control">
                         <option value="CONDUCTED">CONDUCTED (Active Lecture)</option>
                         <option value="SCHEDULED">SCHEDULED (Upcoming)</option>
                       </select>
@@ -161,7 +164,7 @@ interface StudentAttendanceRow {
                     }
 
                     <div class="drawer-actions">
-                      <button type="button" class="btn btn-outline btn-sm" (click)="showCreateForm.set(false)">
+                      <button type="button" class="btn btn-secondary btn-sm" (click)="showCreateForm.set(false)">
                         Cancel
                       </button>
                       <button type="submit" class="btn btn-primary btn-sm" [disabled]="creatingSession()">
@@ -186,7 +189,9 @@ interface StudentAttendanceRow {
                 </div>
               } @else if (sessions().length === 0) {
                 <div class="empty-sessions-box">
-                  <app-icon name="attendance" [size]="32" class="empty-icon"></app-icon>
+                  <div class="empty-icon-wrap">
+                    <app-icon name="attendance" [size]="28"></app-icon>
+                  </div>
                   <p class="empty-text">No lecture sessions recorded for this class yet.</p>
                   <button class="btn btn-outline btn-sm" (click)="showCreateForm.set(true)">
                     Schedule First Session
@@ -196,7 +201,7 @@ interface StudentAttendanceRow {
                 <div class="sessions-scroll-list">
                   @for (s of sessions(); track s.sessionId) {
                     <div
-                      class="session-list-item card-interactive"
+                      class="session-list-item"
                       [class.active]="selectedSession()?.sessionId === s.sessionId"
                       (click)="selectSession(s)"
                     >
@@ -212,7 +217,7 @@ interface StudentAttendanceRow {
                           </span>
                           <span
                             class="badge badge-sm"
-                            [class.badge-forest]="s.sessionStatus === 'CONDUCTED'"
+                            [class.badge-teal]="s.sessionStatus === 'CONDUCTED'"
                             [class.badge-amber]="s.sessionStatus === 'SCHEDULED'"
                             [class.badge-danger]="s.sessionStatus === 'CANCELLED'"
                           >
@@ -229,8 +234,8 @@ interface StudentAttendanceRow {
                             <span class="dot red-dot"></span>
                             <span>{{ s.absentCount }} Absent</span>
                           </span>
-                          <span class="meta-note font-mono">
-                            ({{ s.totalMarked }}/{{ s.totalEnrolled }} Logged)
+                          <span class="meta-note font-mono text-muted">
+                            ({{ s.totalMarked }}/{{ s.totalEnrolled }})
                           </span>
                         </div>
                       </div>
@@ -248,29 +253,29 @@ interface StudentAttendanceRow {
           <!-- RIGHT COLUMN: Session Attendance Workstation -->
           <div class="split-col attendance-col">
             @if (attendanceLoading()) {
-              <div class="card-tactile panel-card">
+              <div class="card-modern panel-card">
                 <div class="skeleton-container" aria-busy="true">
                   <div class="skeleton header-skeleton"></div>
                   <div class="skeleton body-skeleton"></div>
                 </div>
               </div>
             } @else if (selectedSession()) {
-              <div class="card-tactile panel-card workstation-card">
+              <div class="card-modern panel-card workstation-card">
                 <!-- Session Workstation Banner -->
                 <div class="workstation-banner">
                   <div class="banner-titles">
                     <div class="banner-badges">
-                      <span class="badge badge-sage">
+                      <span class="badge badge-teal badge-sm">
                         <app-icon name="badge-check" [size]="12"></app-icon>
                         LECTURE SESSION
                       </span>
                       <span class="meta-dot">&bull;</span>
                       <span class="font-mono text-date">{{ formatDateFull(selectedSession()?.sessionDate) }}</span>
                       <span class="meta-dot">&bull;</span>
-                      <span class="font-mono">{{ selectedSession()?.startTime || '10:00' }} - {{ selectedSession()?.endTime || '11:00' }}</span>
+                      <span class="font-mono text-muted">{{ selectedSession()?.startTime || '10:00' }} - {{ selectedSession()?.endTime || '11:00' }}</span>
                     </div>
 
-                    <h3 class="banner-subject font-editorial">
+                    <h3 class="banner-subject">
                       {{ selectedClass()?.subjectName }}
                       <span class="font-mono subject-code-tag">({{ selectedClass()?.subjectCode }})</span>
                     </h3>
@@ -282,7 +287,7 @@ interface StudentAttendanceRow {
                   <!-- Quick Stats & Dial -->
                   <div class="banner-stats">
                     <div class="stat-dial-card">
-                      <span class="stat-dial-val font-editorial">{{ attendancePercentage() }}%</span>
+                      <span class="stat-dial-val">{{ attendancePercentage() }}%</span>
                       <span class="stat-dial-lbl">Present Rate</span>
                     </div>
 
@@ -298,15 +303,15 @@ interface StudentAttendanceRow {
                 </div>
 
                 <!-- Fast Actions & Controls -->
-                <div class="workstation-actions-bar card-subtle">
+                <div class="workstation-actions-bar">
                   <div class="bulk-actions-group">
                     <span class="group-label">Quick Actions:</span>
-                    <button class="btn btn-outline btn-sm" (click)="markAll('PRESENT')" [disabled]="savingAttendance()">
-                      <app-icon name="badge-check" [size]="14"></app-icon>
+                    <button class="btn btn-secondary btn-sm" (click)="markAll('PRESENT')" [disabled]="savingAttendance()">
+                      <app-icon name="badge-check" [size]="13"></app-icon>
                       <span>Mark All Present</span>
                     </button>
-                    <button class="btn btn-outline btn-sm" (click)="markAll('ABSENT')" [disabled]="savingAttendance()">
-                      <app-icon name="close" [size]="14"></app-icon>
+                    <button class="btn btn-secondary btn-sm" (click)="markAll('ABSENT')" [disabled]="savingAttendance()">
+                      <app-icon name="close" [size]="13"></app-icon>
                       <span>Mark All Absent</span>
                     </button>
                   </div>
@@ -320,20 +325,20 @@ interface StudentAttendanceRow {
                 </div>
 
                 <!-- Student Attendance Table -->
-                <div class="roster-table-wrap">
-                  <table class="roster-table" aria-label="Student Session Attendance">
+                <div class="table-responsive">
+                  <table class="table-modern" aria-label="Student Session Attendance">
                     <thead>
                       <tr>
-                        <th scope="col" class="th-student">Enrolled Student</th>
-                        <th scope="col" class="th-roll">Enrollment No.</th>
-                        <th scope="col" class="th-status text-center">Attendance Verification</th>
+                        <th scope="col" style="width: 320px;">Enrolled Student</th>
+                        <th scope="col" style="width: 180px;">Enrollment No.</th>
+                        <th scope="col" class="text-center" style="width: 220px;">Attendance Verification</th>
                       </tr>
                     </thead>
                     <tbody>
                       @for (row of studentRows(); track row.studentId) {
-                        <tr class="student-row" [class.row-absent]="row.status === 'ABSENT'">
+                        <tr [class.row-absent]="row.status === 'ABSENT'">
                           <!-- Student Info -->
-                          <td class="td-student">
+                          <td>
                             <div class="student-cell">
                               <div class="student-avatar font-mono">
                                 {{ getInitials(row.fullName) }}
@@ -346,12 +351,12 @@ interface StudentAttendanceRow {
                           </td>
 
                           <!-- Enrollment No -->
-                          <td class="td-roll">
-                            <span class="roll-pill font-mono">{{ row.enrollmentNumber }}</span>
+                          <td>
+                            <span class="font-mono text-bold">{{ row.enrollmentNumber }}</span>
                           </td>
 
                           <!-- Attendance Selector Buttons -->
-                          <td class="td-status">
+                          <td class="text-center">
                             <div class="attendance-btn-group">
                               <button
                                 type="button"
@@ -360,7 +365,7 @@ interface StudentAttendanceRow {
                                 (click)="setStudentStatus(row, 'PRESENT')"
                                 [attr.aria-pressed]="row.status === 'PRESENT'"
                               >
-                                <app-icon name="badge-check" [size]="14"></app-icon>
+                                <app-icon name="badge-check" [size]="13"></app-icon>
                                 <span>Present</span>
                               </button>
 
@@ -371,7 +376,7 @@ interface StudentAttendanceRow {
                                 (click)="setStudentStatus(row, 'ABSENT')"
                                 [attr.aria-pressed]="row.status === 'ABSENT'"
                               >
-                                <app-icon name="close" [size]="14"></app-icon>
+                                <app-icon name="close" [size]="13"></app-icon>
                                 <span>Absent</span>
                               </button>
                             </div>
@@ -390,12 +395,12 @@ interface StudentAttendanceRow {
 
                 <!-- Footer Action Bar -->
                 <div class="workstation-footer">
-                  <div class="footer-meta font-mono">
-                    Session: <strong>{{ selectedSession()?.sessionStatus }}</strong> &bull; Total Students: {{ studentRows().length }}
+                  <div class="footer-meta font-mono text-muted">
+                    Session: <strong class="text-main">{{ selectedSession()?.sessionStatus }}</strong> &bull; Total: {{ studentRows().length }}
                   </div>
 
                   <button
-                    class="btn btn-primary save-btn"
+                    class="btn btn-primary"
                     (click)="saveAttendance()"
                     [disabled]="savingAttendance() || studentRows().length === 0"
                   >
@@ -403,7 +408,7 @@ interface StudentAttendanceRow {
                       <span class="spin-icon">&#9696;</span>
                       <span>Saving Records...</span>
                     } @else {
-                      <app-icon name="badge-check" [size]="16"></app-icon>
+                      <app-icon name="badge-check" [size]="15"></app-icon>
                       <span>Save Attendance Records</span>
                     }
                   </button>
@@ -411,9 +416,11 @@ interface StudentAttendanceRow {
               </div>
             } @else {
               <!-- Empty Session Selection Placeholder -->
-              <div class="card-tactile empty-select-card">
-                <app-icon name="attendance" [size]="48" class="empty-icon"></app-icon>
-                <h3 class="empty-title font-editorial">Select a Class Session</h3>
+              <div class="card-modern empty-select-card">
+                <div class="empty-icon-wrap large">
+                  <app-icon name="attendance" [size]="36"></app-icon>
+                </div>
+                <h3 class="empty-title">Select a Class Session</h3>
                 <p class="empty-desc">
                   Choose a lecture session from the left log to view student records and update attendance.
                 </p>
@@ -429,140 +436,80 @@ interface StudentAttendanceRow {
       display: flex;
       flex-direction: column;
       gap: 20px;
-      padding-bottom: 36px;
-    }
-
-    /* Page Header */
-    .page-header {
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
-      padding: 24px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      flex-wrap: wrap;
-    }
-
-    .header-titles {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      padding-bottom: 30px;
     }
 
     .badge-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 11.5px;
     }
 
     .meta-dot {
-      color: var(--border-strong);
+      color: var(--border-medium);
     }
 
-    .meta-year {
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-
-    .page-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--color-forest);
-      margin: 0;
-      line-height: 1.2;
-    }
-
-    .page-subtitle {
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin: 0;
-      max-width: 540px;
-    }
-
-    /* Class Picker */
-    .class-picker-wrap {
+    /* Skeleton Loading */
+    .skeleton-container {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 20px;
     }
 
-    .picker-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-    }
-
-    .class-selector-box {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-surface-subtle);
-      padding: 4px;
+    .header-skeleton {
+      height: 90px;
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
     }
 
-    .class-tab-btn {
+    .body-skeleton {
+      height: 480px;
+      border-radius: var(--radius-lg);
+    }
+
+    /* Error Banner */
+    .error-banner {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 12px;
-      border-radius: var(--radius-md);
-      background: transparent;
-      border: 1px solid transparent;
+      gap: 16px;
+      padding: 20px 24px;
+      border-left: 4px solid var(--color-danger);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+    }
+
+    .error-text {
+      flex: 1;
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13.5px;
       color: var(--text-secondary);
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-
-    .class-tab-btn:hover {
-      background: #FFFFFF;
-      color: var(--color-forest);
-    }
-
-    .class-tab-btn.active {
-      background: #FFFFFF;
-      border-color: var(--color-forest-border);
-      color: var(--color-forest);
-      box-shadow: 0 1px 3px rgba(23, 63, 53, 0.08);
-      font-weight: 700;
-    }
-
-    .tab-code {
-      font-weight: 700;
-    }
-
-    .tab-sec {
-      font-size: 11px;
-      color: var(--text-muted);
     }
 
     /* Split Layout */
     .attendance-split-layout {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 380px 1fr;
       gap: 20px;
       align-items: start;
     }
 
-    .split-col {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    @media (max-width: 1024px) {
+      .attendance-split-layout {
+        grid-template-columns: 1fr;
+      }
     }
 
     .panel-card {
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
       overflow: hidden;
     }
 
@@ -578,44 +525,35 @@ interface StudentAttendanceRow {
     .panel-header-title {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .panel-title {
       font-size: 16px;
       font-weight: 700;
-      color: var(--color-forest);
-      margin: 0;
-    }
-
-    .new-session-btn {
-      font-size: 11.5px;
-      padding: 5px 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      color: var(--text-main);
     }
 
     /* Create Session Drawer */
     .create-session-drawer {
+      margin: 16px;
       padding: 16px;
-      background: var(--color-forest-surface);
-      border-bottom: 1px solid var(--color-forest-border);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
     }
 
     .drawer-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 12px;
     }
 
     .drawer-title {
       font-size: 14px;
       font-weight: 700;
-      color: var(--color-forest);
+      color: var(--text-main);
     }
 
     .close-drawer-btn {
@@ -624,125 +562,96 @@ interface StudentAttendanceRow {
       font-size: 18px;
       color: var(--text-muted);
       cursor: pointer;
-      line-height: 1;
     }
 
     .drawer-form {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      gap: 12px;
     }
 
     .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      display: flex;
+      gap: 10px;
     }
 
-    .form-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-
-    .form-input, .form-select {
-      padding: 7px 10px;
-      font-size: 12px;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      background: #FFFFFF;
-      outline: none;
-      font-family: inherit;
-    }
-
-    .form-input:focus, .form-select:focus {
-      border-color: var(--color-forest);
-      box-shadow: 0 0 0 2px rgba(23, 63, 53, 0.1);
+    .flex-1 {
+      flex: 1;
     }
 
     .drawer-error {
-      font-size: 11px;
-      color: #b91c1c;
-      background: #fef2f2;
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid #fecaca;
+      font-size: 12px;
+      color: var(--color-danger);
     }
 
     .drawer-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     /* Sessions Scroll List */
     .sessions-scroll-list {
-      display: flex;
-      flex-direction: column;
       max-height: 600px;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
 
     .session-list-item {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
       cursor: pointer;
-      transition: background-color var(--transition-fast);
+      transition: all var(--transition-fast);
+      position: relative;
     }
 
     .session-list-item:hover {
-      background-color: var(--bg-surface-subtle);
+      background-color: #F8FAFC;
     }
 
     .session-list-item.active {
-      background-color: var(--color-forest-surface);
-      border-left: 4px solid var(--color-forest);
+      background-color: var(--color-teal-surface);
+      border-left: 4px solid var(--color-teal);
     }
 
     .session-date-col {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-md);
-      background: #FFFFFF;
-      border: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: var(--bg-surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
       flex-shrink: 0;
-      line-height: 1;
     }
 
     .session-list-item.active .session-date-col {
-      background: var(--color-forest);
-      color: #FFFFFF;
-      border-color: var(--color-forest);
+      background: #FFFFFF;
+      border-color: var(--color-teal-border);
+      color: var(--color-teal);
     }
 
     .date-day {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 800;
+      line-height: 1;
     }
 
     .date-month {
-      font-size: 9px;
-      text-transform: uppercase;
+      font-size: 9.5px;
       font-weight: 700;
+      color: var(--text-muted);
     }
 
     .session-info-col {
       flex: 1;
-      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 4px;
@@ -752,12 +661,12 @@ interface StudentAttendanceRow {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 8px;
     }
 
     .session-time {
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 12.5px;
+      font-weight: 600;
       color: var(--text-main);
     }
 
@@ -765,49 +674,81 @@ interface StudentAttendanceRow {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 11px;
+      font-size: 11.5px;
+      flex-wrap: wrap;
     }
 
     .stat-pill {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 4px;
-      color: var(--text-secondary);
     }
 
     .dot {
       width: 6px;
       height: 6px;
-      border-radius: 50%;
+      border-radius: var(--radius-full);
     }
 
-    .green-dot { background-color: #16a34a; }
-    .red-dot { background-color: #dc2626; }
+    .green-dot {
+      background: var(--color-success);
+    }
 
-    .meta-note {
-      color: var(--text-muted);
-      font-size: 10px;
+    .red-dot {
+      background: var(--color-danger);
     }
 
     .session-arrow-col {
       color: var(--text-muted);
     }
 
-    /* Workstation Right Panel */
+    .empty-sessions-box {
+      padding: 36px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .empty-icon-wrap.large {
+      width: 64px;
+      height: 64px;
+    }
+
+    .empty-text {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+
+    /* Workstation Banner */
     .workstation-banner {
-      padding: 22px 28px;
+      padding: 20px 24px;
+      background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      background: linear-gradient(to right, #FFFFFF, var(--bg-surface-subtle));
+      flex-wrap: wrap;
     }
 
     .banner-titles {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
 
     .banner-badges {
@@ -815,70 +756,54 @@ interface StudentAttendanceRow {
       align-items: center;
       gap: 8px;
       font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .text-date {
-      color: var(--color-forest);
-      font-weight: 600;
+      flex-wrap: wrap;
     }
 
     .banner-subject {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--text-main);
-      margin: 2px 0 0 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .subject-code-tag {
-      font-size: 13px;
-      color: var(--color-forest);
-      background: var(--color-forest-surface);
-      padding: 2px 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--color-forest-border);
+      color: var(--color-teal);
+      font-size: 14px;
     }
 
     .banner-course {
-      font-size: 12.5px;
+      font-size: 13px;
       color: var(--text-secondary);
-      margin: 0;
     }
 
     .banner-stats {
       display: flex;
       align-items: center;
       gap: 16px;
-      flex-shrink: 0;
     }
 
     .stat-dial-card {
-      padding: 10px 18px;
-      background: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
-      border-radius: var(--radius-lg);
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
       text-align: center;
     }
 
     .stat-dial-val {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
-      color: var(--color-forest);
+      color: var(--color-teal);
       line-height: 1;
     }
 
     .stat-dial-lbl {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--color-forest-dark);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
       margin-top: 2px;
     }
 
@@ -889,32 +814,33 @@ interface StudentAttendanceRow {
     }
 
     .count-badge {
-      font-size: 11.5px;
+      font-size: 12px;
       padding: 3px 8px;
       border-radius: var(--radius-sm);
     }
 
     .green-badge {
-      background: #f0fdf4;
-      color: #166534;
-      border: 1px solid #bbf7d0;
+      background: var(--color-success-surface);
+      color: var(--color-success);
+      border: 1px solid var(--color-success-border);
     }
 
     .red-badge {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+      background: var(--color-danger-surface);
+      color: var(--color-danger);
+      border: 1px solid var(--color-danger-border);
     }
 
     /* Actions Bar */
     .workstation-actions-bar {
-      padding: 12px 24px;
+      padding: 12px 20px;
+      background: var(--bg-surface-subtle);
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      background: var(--bg-surface-subtle);
+      flex-wrap: wrap;
     }
 
     .bulk-actions-group {
@@ -924,7 +850,7 @@ interface StudentAttendanceRow {
     }
 
     .group-label {
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 600;
       color: var(--text-secondary);
     }
@@ -934,91 +860,56 @@ interface StudentAttendanceRow {
       align-items: center;
       gap: 6px;
       font-size: 11.5px;
-      color: var(--color-amber-dark);
-      background: rgba(217, 119, 6, 0.1);
-      padding: 3px 10px;
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(217, 119, 6, 0.25);
+      color: var(--color-warning);
+      background: var(--color-warning-surface);
+      border: 1px solid var(--color-warning-border);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
     }
 
     .pulse-indicator {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: var(--color-amber-dark);
-      box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.3);
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--color-warning);
+      animation: pulse 1.5s infinite;
     }
 
-    /* Roster Table */
-    .roster-table-wrap {
-      overflow-x: auto;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
     }
 
-    .roster-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    .roster-table th {
-      padding: 12px 24px;
-      background: var(--bg-surface-subtle);
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .student-row {
-      border-bottom: 1px solid var(--border-subtle);
-      transition: background-color var(--transition-fast);
-    }
-
-    .student-row:hover {
-      background-color: rgba(247, 245, 239, 0.4);
-    }
-
-    .student-row.row-absent {
-      background-color: rgba(254, 242, 242, 0.4);
-    }
-
-    .roster-table td {
-      padding: 14px 24px;
-      font-size: 13.5px;
-      vertical-align: middle;
-    }
-
+    /* Table & Roster */
     .student-cell {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .student-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--color-forest);
-      color: #FFFFFF;
-      font-weight: 700;
-      font-size: 13px;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background: var(--color-teal-surface);
+      color: var(--color-teal);
+      border: 1px solid var(--color-teal-border);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 11.5px;
+      font-weight: 700;
       flex-shrink: 0;
     }
 
     .student-text {
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
 
     .student-name {
       font-size: 13.5px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--text-main);
     }
 
@@ -1027,171 +918,93 @@ interface StudentAttendanceRow {
       color: var(--text-muted);
     }
 
-    .roll-pill {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--color-forest);
-      background: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-    }
-
     .attendance-btn-group {
       display: inline-flex;
-      align-items: center;
-      background: var(--bg-surface-subtle);
-      padding: 3px;
-      border-radius: var(--radius-md);
+      background: var(--bg-surface-inset);
       border: 1px solid var(--border-subtle);
-      gap: 4px;
+      border-radius: var(--radius-md);
+      padding: 2px;
+      gap: 2px;
     }
 
     .toggle-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
+      gap: 5px;
+      padding: 5px 12px;
+      border: none;
       background: transparent;
-      font-size: 12.5px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
       font-weight: 600;
+      color: var(--text-secondary);
       cursor: pointer;
-      color: var(--text-muted);
       transition: all var(--transition-fast);
     }
 
-    .toggle-btn:hover {
-      color: var(--text-main);
-    }
-
     .present-btn.active {
-      background: #16a34a;
+      background: var(--color-success);
       color: #FFFFFF;
-      box-shadow: 0 1px 3px rgba(22, 163, 74, 0.3);
+      box-shadow: var(--shadow-sm);
     }
 
     .absent-btn.active {
-      background: #dc2626;
+      background: var(--color-danger);
       color: #FFFFFF;
-      box-shadow: 0 1px 3px rgba(220, 38, 38, 0.3);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Footer Action Bar */
+    .row-absent {
+      background-color: rgba(254, 242, 242, 0.4);
+    }
+
     .workstation-footer {
       padding: 16px 24px;
-      background: #FFFFFF;
       border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      flex-wrap: wrap;
     }
 
-    .footer-meta {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .footer-meta strong {
-      color: var(--color-forest);
-    }
-
-    .save-btn {
-      padding: 9px 20px;
-      font-size: 13.5px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Empty States & Placeholders */
     .empty-select-card {
-      padding: 64px 24px;
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
+      padding: 60px 24px;
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      text-align: center;
       gap: 12px;
     }
 
-    .empty-icon {
-      color: var(--text-muted);
-    }
-
     .empty-title {
-      font-size: 20px;
-      color: var(--color-forest);
-      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .empty-desc {
       font-size: 13.5px;
-      color: var(--text-muted);
-      max-width: 400px;
-      margin: 0;
-    }
-
-    .empty-sessions-box {
-      padding: 36px 16px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Skeletons */
-    .skeleton-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .skeleton {
-      background: linear-gradient(90deg, #f0ede4 25%, #f8f6f0 50%, #f0ede4 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: var(--radius-lg);
-    }
-
-    .header-skeleton { height: 100px; }
-    .body-skeleton { height: 400px; }
-    .item-skeleton { height: 60px; margin: 8px 16px; }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      color: var(--text-secondary);
+      max-width: 380px;
     }
 
     .spin-icon {
-      display: inline-block;
       animation: spin 1s linear infinite;
     }
 
     @keyframes spin {
       100% { transform: rotate(360deg); }
     }
-
-    @media (max-width: 1024px) {
-      .attendance-split-layout {
-        grid-template-columns: 1fr;
-      }
-    }
   `]
 })
 export class FacultyAttendanceComponent implements OnInit {
   private readonly facultyService = inject(FacultyService);
-  private readonly toast = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
 
-  // Assigned Classes
+  // Assigned Classes List
   assignedClasses = signal<FacultyAssignedClass[]>([]);
   selectedClass = signal<FacultyAssignedClass | null>(null);
   classesLoading = signal<boolean>(false);
@@ -1207,7 +1020,7 @@ export class FacultyAttendanceComponent implements OnInit {
   attendanceLoading = signal<boolean>(false);
   savingAttendance = signal<boolean>(false);
 
-  // Create Session Drawer
+  // Create Session Form
   showCreateForm = signal<boolean>(false);
   creatingSession = signal<boolean>(false);
   createError = signal<string | null>(null);
@@ -1249,7 +1062,6 @@ export class FacultyAttendanceComponent implements OnInit {
         this.classesLoading.set(false);
 
         if (list.length > 0) {
-          // Check query or route param for pre-selected class
           const paramId = this.route.snapshot.paramMap.get('facultyAssignmentId') ||
                           this.route.snapshot.queryParamMap.get('assignmentId');
           const matched = list.find(c => c.facultyAssignmentId === paramId) || list[0];
@@ -1303,7 +1115,7 @@ export class FacultyAttendanceComponent implements OnInit {
       next: (res) => {
         const rows: StudentAttendanceRow[] = res.students.map(s => {
           const currentStatus: 'PRESENT' | 'ABSENT' =
-            s.attendanceStatus === 'ABSENT' ? 'ABSENT' : 'PRESENT'; // default to PRESENT if not marked
+            s.attendanceStatus === 'ABSENT' ? 'ABSENT' : 'PRESENT';
           return {
             studentId: s.studentId,
             enrollmentNumber: s.enrollmentNumber,
@@ -1326,7 +1138,6 @@ export class FacultyAttendanceComponent implements OnInit {
 
   setStudentStatus(row: StudentAttendanceRow, status: 'PRESENT' | 'ABSENT'): void {
     row.status = status;
-    // Trigger signal reactivity
     this.studentRows.set([...this.studentRows()]);
   }
 
@@ -1354,11 +1165,9 @@ export class FacultyAttendanceComponent implements OnInit {
         this.savingAttendance.set(false);
         this.toast.success('Attendance records successfully updated and synchronized.', 'Saved');
 
-        // Update originalStatus to current status so unsaved badge disappears
         const rows = this.studentRows().map(r => ({ ...r, originalStatus: r.status }));
         this.studentRows.set(rows);
 
-        // Refresh session counts locally
         const currentSessions = this.sessions().map(s => {
           if (s.sessionId === session.sessionId) {
             return {
@@ -1403,7 +1212,6 @@ export class FacultyAttendanceComponent implements OnInit {
         this.showCreateForm.set(false);
         this.toast.success(`Lecture session on ${res.sessionDate} scheduled successfully.`, 'Session Created');
 
-        // Reload sessions list and select new session
         this.loadSessionsForClass(cls.facultyAssignmentId);
       },
       error: (err) => {
@@ -1413,7 +1221,6 @@ export class FacultyAttendanceComponent implements OnInit {
     });
   }
 
-  // Format Helpers
   formatDay(dateString: string): string {
     try {
       const parts = dateString.split('-');

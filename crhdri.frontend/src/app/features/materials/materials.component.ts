@@ -11,10 +11,10 @@ import { IconComponent } from '../../shared/components/icon.component';
   imports: [CommonModule, FormsModule, IconComponent],
   template: `
     <div class="materials-page">
-      <!-- Header -->
-      <div class="page-header">
+      <!-- Page Header -->
+      <div class="page-header-clean">
         <div>
-          <h2 class="page-title font-editorial">Learning Materials & Repository</h2>
+          <h2 class="page-title">Learning Materials & Repository</h2>
           <p class="page-subtitle">
             Syllabus resources, lecture slides, and academic reference documents
             @if (materials().length > 0) {
@@ -24,8 +24,8 @@ import { IconComponent } from '../../shared/components/icon.component';
         </div>
 
         <div class="header-controls">
-          <div class="search-box">
-            <app-icon name="search" [size]="16" class="search-icon"></app-icon>
+          <div class="search-box-clean">
+            <app-icon name="search" [size]="15" class="search-icon"></app-icon>
             <input 
               type="text" 
               [ngModel]="searchQuery()"
@@ -44,7 +44,7 @@ import { IconComponent } from '../../shared/components/icon.component';
         </div>
       </div>
 
-      <!-- Filter Tabs / Pills (shown if multiple types exist) -->
+      <!-- Type Filter Pills -->
       @if (availableTypes().length > 1) {
         <div class="type-filters">
           <button 
@@ -73,27 +73,26 @@ import { IconComponent } from '../../shared/components/icon.component';
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Learning Materials</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
-            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is running with PostgreSQL.</p>
+            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is active with PostgreSQL.</p>
           </div>
-          <button class="btn btn-primary" (click)="loadMaterials()">
-            <app-icon name="refresh" [size]="16"></app-icon>
-            Retry Connection
+          <button class="btn btn-primary btn-sm" (click)="loadMaterials()">
+            <app-icon name="refresh" [size]="14"></app-icon> Retry
           </button>
         </div>
       }
 
       <!-- Empty State -->
       @else if (filteredMaterials().length === 0) {
-        <div class="card-tactile empty-state">
-          <app-icon name="materials" [size]="48" class="empty-icon"></app-icon>
-          <h3 class="font-editorial empty-title">No Learning Materials Found</h3>
+        <div class="card-modern empty-state-box">
+          <app-icon name="materials" [size]="40" class="empty-icon"></app-icon>
+          <h3 class="empty-title">No Learning Materials Found</h3>
           <p class="empty-desc">
             @if (searchQuery() || selectedType() !== 'ALL') {
               No resources matched your current filter criteria.
@@ -102,9 +101,9 @@ import { IconComponent } from '../../shared/components/icon.component';
             }
           </p>
           @if (searchQuery() || selectedType() !== 'ALL') {
-            <button class="btn btn-secondary" (click)="resetFilters()">Reset All Filters</button>
+            <button class="btn btn-secondary btn-sm" (click)="resetFilters()">Reset Filters</button>
           } @else {
-            <button class="btn btn-secondary" (click)="loadMaterials()">
+            <button class="btn btn-secondary btn-sm" (click)="loadMaterials()">
               <app-icon name="refresh" [size]="14"></app-icon> Check Again
             </button>
           }
@@ -115,8 +114,8 @@ import { IconComponent } from '../../shared/components/icon.component';
       @else {
         <div class="materials-grid">
           @for (item of filteredMaterials(); track item.materialId) {
-            <div class="card-tactile material-card">
-              <div>
+            <div class="card-modern material-card">
+              <div class="material-card-body">
                 <div class="material-card-top">
                   <div class="tag-group">
                     <span class="type-badge font-mono" [class.type-pdf]="item.materialType.toUpperCase() === 'PDF'">
@@ -130,8 +129,8 @@ import { IconComponent } from '../../shared/components/icon.component';
                   </div>
                 </div>
 
-                <div class="material-card-content">
-                  <h3 class="material-title font-editorial">{{ item.title }}</h3>
+                <div class="material-content">
+                  <h3 class="material-title">{{ item.title }}</h3>
                   <span class="subject-name-tag">{{ item.subjectName }}</span>
                   <p class="material-desc">{{ item.description }}</p>
                 </div>
@@ -150,18 +149,24 @@ import { IconComponent } from '../../shared/components/icon.component';
                     rel="noopener noreferrer" 
                     class="btn btn-secondary btn-sm link-btn"
                     title="Open resource in new browser tab">
-                    <app-icon name="external" [size]="14"></app-icon>
-                    Open Resource
+                    <app-icon name="external" [size]="13"></app-icon>
+                    Open Link
                   </a>
                 } @else {
-                  <a 
-                    [href]="getDownloadUrl(item)" 
-                    target="_blank"
+                  <button 
+                    type="button"
+                    (click)="downloadMaterial(item)" 
+                    [disabled]="downloadingId() === item.materialId"
                     class="btn btn-primary btn-sm link-btn"
-                    title="Download course document">
-                    <app-icon name="download" [size]="14"></app-icon>
-                    Download File
-                  </a>
+                    title="Download course document via authenticated session">
+                    @if (downloadingId() === item.materialId) {
+                      <app-icon name="refresh" [size]="13" class="spinning"></app-icon>
+                      <span>Downloading...</span>
+                    } @else {
+                      <app-icon name="download" [size]="13"></app-icon>
+                      <span>Download File</span>
+                    }
+                  </button>
                 }
               </div>
             </div>
@@ -174,43 +179,43 @@ import { IconComponent } from '../../shared/components/icon.component';
     .materials-page {
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
-    .page-header {
+    .page-header-clean {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
     }
 
     .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
       letter-spacing: -0.01em;
     }
 
     .page-subtitle {
-      font-size: 13.5px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--text-secondary);
       margin-top: 2px;
     }
 
     .header-count {
-      color: var(--color-forest);
+      color: var(--color-teal);
       font-weight: 600;
     }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    .search-box {
+    .search-box-clean {
       position: relative;
       display: flex;
       align-items: center;
@@ -218,53 +223,52 @@ import { IconComponent } from '../../shared/components/icon.component';
 
     .search-icon {
       position: absolute;
-      left: 12px;
+      left: 11px;
       color: var(--text-muted);
       pointer-events: none;
     }
 
     .search-input {
-      width: 290px;
-      padding: 9px 34px 9px 36px;
-      font-size: 13.5px;
+      width: 270px;
+      padding: 8px 30px 8px 34px;
+      font-size: 13px;
       background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       color: var(--text-main);
-      box-shadow: inset 0 1px 2px rgba(32, 40, 36, 0.04);
-      transition: border-color var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+      outline: none;
+      transition: all var(--transition-fast);
     }
 
     .search-input:focus {
-      outline: none;
-      border-color: var(--color-forest);
-      box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.1);
+      border-color: var(--color-teal);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
     .clear-btn {
       position: absolute;
-      right: 10px;
+      right: 9px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
     }
 
-    /* Type Filters */
     .type-filters {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-medium);
-      padding: 3px;
+      border: 1px solid var(--border-subtle);
+      padding: 2px;
       border-radius: var(--radius-md);
       width: fit-content;
     }
 
     .filter-pill {
-      padding: 6px 14px;
-      font-size: 12.5px;
+      padding: 5px 12px;
+      font-size: 12px;
       font-weight: 600;
       border: none;
       background: transparent;
@@ -275,165 +279,112 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .filter-pill.active {
-      background: var(--bg-surface);
-      color: var(--color-forest);
-      box-shadow: 0 1px 3px rgba(32, 40, 36, 0.08);
+      background: #FFFFFF;
+      color: var(--color-teal);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
 
-    /* Skeleton */
     .skeleton-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
+      gap: 16px;
     }
 
     .item-skeleton {
-      height: 200px;
+      height: 180px;
       border-radius: var(--radius-lg);
-    }
-
-    /* Error Banner */
-    .error-banner {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 24px 28px;
-      background: linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(255, 255, 255, 0.98));
-      border: 1px solid rgba(220, 38, 38, 0.25);
-      border-left: 5px solid #dc2626;
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
-    }
-
-    .error-icon-wrap {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #fee2e2;
-      color: #dc2626;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .error-text {
-      flex: 1;
-    }
-
-    .error-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #991b1b;
-      margin-bottom: 4px;
-    }
-
-    .error-desc {
-      font-size: 13.5px;
-      color: #7f1d1d;
-      margin-bottom: 4px;
-    }
-
-    .error-hint {
-      font-size: 12px;
-      color: #b91c1c;
-    }
-
-    .error-hint code {
-      background: rgba(220, 38, 38, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
     }
 
     /* Materials Grid */
     .materials-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
+      gap: 16px;
     }
 
     .material-card {
-      padding: 24px;
+      padding: 20px 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 100%;
-      gap: 16px;
+    }
+
+    .material-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .material-card-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .tag-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .type-badge {
       display: inline-block;
-      padding: 3px 9px;
-      border-radius: var(--radius-sm);
-      font-size: 11px;
-      font-weight: 700;
+      padding: 2px 7px;
       background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+      font-size: 10.5px;
+      font-weight: 700;
       color: var(--text-secondary);
-      border: 1px solid var(--border-medium);
-      letter-spacing: 0.04em;
     }
 
     .type-badge.type-pdf {
-      background: rgba(184, 66, 51, 0.08);
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
       color: var(--color-danger);
-      border-color: rgba(184, 66, 51, 0.25);
     }
 
     .subject-badge {
       display: inline-block;
-      font-size: 11px;
+      padding: 2px 7px;
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
+      border-radius: var(--radius-xs);
+      font-size: 10.5px;
       font-weight: 700;
-      color: var(--color-forest);
-      background: rgba(23, 63, 53, 0.08);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
+      color: var(--color-teal);
     }
 
     .academic-meta {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--text-muted);
     }
 
-    .material-card-content {
-      margin-bottom: 12px;
+    .material-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .material-title {
-      font-size: 19px;
-      font-weight: 600;
-      color: var(--color-forest);
-      margin-bottom: 4px;
-      line-height: 1.35;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
     }
 
     .subject-name-tag {
-      display: inline-block;
       font-size: 12px;
-      color: var(--color-sage);
       font-weight: 600;
-      margin-bottom: 10px;
+      color: var(--color-teal);
     }
 
     .material-desc {
-      font-size: 13.5px;
+      font-size: 12.5px;
       color: var(--text-secondary);
-      line-height: 1.55;
+      line-height: 1.45;
+      margin-top: 4px;
     }
 
     .material-card-footer {
@@ -441,61 +392,91 @@ import { IconComponent } from '../../shared/components/icon.component';
       align-items: center;
       justify-content: space-between;
       border-top: 1px solid var(--border-subtle);
-      padding-top: 16px;
-      gap: 12px;
-      flex-wrap: wrap;
+      padding-top: 12px;
+      margin-top: 14px;
+      gap: 10px;
     }
 
     .footer-date {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
+      gap: 4px;
+      font-size: 11.5px;
       color: var(--text-muted);
     }
 
     .link-btn {
-      text-decoration: none;
+      white-space: nowrap;
     }
 
-    .resource-missing-label {
+    .spinning {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Error and Empty */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .error-hint {
       font-size: 11.5px;
-      color: var(--text-muted);
-      font-style: italic;
+      color: var(--text-secondary);
     }
 
-    /* Empty */
-    .empty-state {
-      padding: 56px 32px;
+    .empty-state-box {
+      padding: 48px 20px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
     }
 
     .empty-icon {
       color: var(--text-muted);
-      opacity: 0.7;
     }
 
     .empty-title {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .empty-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      max-width: 440px;
-      line-height: 1.5;
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 400px;
+      line-height: 1.45;
     }
 
     @media (max-width: 900px) {
-      .materials-grid {
-        grid-template-columns: 1fr;
-      }
+      .materials-grid,
       .skeleton-grid {
         grid-template-columns: 1fr;
       }
@@ -514,6 +495,7 @@ export class LearningMaterialsComponent implements OnInit {
   materials = signal<LearningMaterial[]>([]);
   loading = signal<boolean>(true);
   errorMessage = signal<string | null>(null);
+  downloadingId = signal<string | null>(null);
 
   searchQuery = signal<string>('');
   selectedType = signal<string>('ALL');
@@ -584,5 +566,66 @@ export class LearningMaterialsComponent implements OnInit {
 
   getDownloadUrl(item: LearningMaterial): string {
     return this.materialsService.getMaterialDownloadUrl(item.materialId);
+  }
+
+  downloadMaterial(item: LearningMaterial): void {
+    if (this.downloadingId()) return;
+    this.downloadingId.set(item.materialId);
+
+    this.materialsService.downloadMaterial(item.materialId).subscribe({
+      next: (response) => {
+        this.downloadingId.set(null);
+        const blob = response.body;
+        if (!blob) {
+          this.errorMessage.set('Downloaded file was empty.');
+          return;
+        }
+
+        // Determine filename from Content-Disposition header if available
+        let filename = '';
+        const disposition = response.headers.get('content-disposition');
+        if (disposition) {
+          const match = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?/i.exec(disposition);
+          if (match && match[1]) {
+            filename = decodeURIComponent(match[1].trim());
+          }
+        }
+
+        if (!filename) {
+          filename = item.title?.trim() || 'learning-material';
+          if (!filename.toLowerCase().endsWith('.pdf') && item.materialType?.toUpperCase() === 'PDF') {
+            filename += '.pdf';
+          }
+        }
+
+        // Trigger browser download via object URL
+        const objectUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(objectUrl);
+      },
+      error: async (err) => {
+        this.downloadingId.set(null);
+        let errorMsg = 'Failed to download learning material.';
+        if (err.error instanceof Blob) {
+          try {
+            const text = await err.error.text();
+            const json = JSON.parse(text);
+            errorMsg = json.message || errorMsg;
+          } catch {
+            // Error was not JSON
+          }
+        } else if (err.error?.message) {
+          errorMsg = err.error.message;
+        } else if (err.message) {
+          errorMsg = err.message;
+        }
+        this.errorMessage.set(errorMsg);
+      }
+    });
   }
 }

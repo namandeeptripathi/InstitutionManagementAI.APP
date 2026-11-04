@@ -16,18 +16,18 @@ import { UserRole } from '../../core/models/auth.models';
         <!-- Brand Header -->
         <div class="brand-header">
           <div class="brand-crest">
-            <span class="crest-letter font-editorial">C</span>
+            <span class="crest-text">CR</span>
           </div>
           <div class="brand-titles">
-            <h1 class="brand-name font-editorial">CRHDRI<span>.AI</span></h1>
+            <h1 class="brand-name">CRHDRI<span class="brand-accent">.AI</span></h1>
             <span class="brand-sub">
-              {{ activeRole() === 'FACULTY' ? 'FACULTY PORTAL • ACADEMIC OPERATIONS' : 'STUDENT PORTAL • INSTITUTION STUDIO' }}
+              {{ activeRole() === 'FACULTY' ? 'FACULTY PORTAL • ACADEMIC MANAGEMENT' : 'STUDENT PORTAL • ACADEMIC DASHBOARD' }}
             </span>
           </div>
         </div>
 
-        <!-- Main Login Tactile Card -->
-        <div class="card-tactile login-card">
+        <!-- Main Card -->
+        <div class="login-card">
           <!-- Role Switcher Tabs -->
           <div class="role-selector" role="tablist" aria-label="Portal Selection">
             <button
@@ -58,10 +58,10 @@ import { UserRole } from '../../core/models/auth.models';
           <!-- Card Header Block -->
           <div class="card-header-block">
             <div class="auth-icon-badge" [class.faculty-badge]="activeRole() === 'FACULTY'">
-              <app-icon [name]="activeRole() === 'FACULTY' ? 'profile' : 'lock'" [size]="22"></app-icon>
+              <app-icon [name]="activeRole() === 'FACULTY' ? 'profile' : 'lock'" [size]="20"></app-icon>
             </div>
-            <h2 class="auth-title font-editorial">
-              {{ activeRole() === 'FACULTY' ? 'Faculty Authentication' : 'Student Authentication' }}
+            <h2 class="auth-title">
+              {{ activeRole() === 'FACULTY' ? 'Faculty Sign In' : 'Student Sign In' }}
             </h2>
             <p class="auth-subtitle">
               @if (activeRole() === 'FACULTY') {
@@ -75,7 +75,7 @@ import { UserRole } from '../../core/models/auth.models';
           <!-- Error Alert Banner -->
           @if (errorMessage()) {
             <div class="error-banner" role="alert">
-              <app-icon name="alert" [size]="18" class="error-icon"></app-icon>
+              <app-icon name="alert" [size]="16" class="error-icon"></app-icon>
               <div class="error-text">{{ errorMessage() }}</div>
             </div>
           }
@@ -158,7 +158,7 @@ import { UserRole } from '../../core/models/auth.models';
               <span class="hint-title">
                 {{ activeRole() === 'FACULTY' ? 'Default Faculty Identity' : 'Default Student Identity' }}
               </span>
-              <span class="auto-fill-tag">(Click to fill)</span>
+              <span class="auto-fill-tag">Click to auto-fill</span>
             </div>
             <div class="hint-body">
               @if (activeRole() === 'FACULTY') {
@@ -172,7 +172,7 @@ import { UserRole } from '../../core/models/auth.models';
 
         <!-- Footer Notice -->
         <footer class="login-footer">
-          <p>Verified institutional system &bull; All access is monitored and logged in compliance with university academic security guidelines.</p>
+          <p>Verified institutional system &bull; All access is monitored in compliance with university academic security standards.</p>
         </footer>
       </div>
     </div>
@@ -183,41 +183,41 @@ import { UserRole } from '../../core/models/auth.models';
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
-      background: var(--bg-surface-subtle);
+      padding: 32px 18px;
+      background: var(--bg-canvas);
     }
 
     .login-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
-    /* Brand Header */
     .brand-header {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .brand-crest {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: var(--radius-md);
-      background: var(--color-forest);
+      background: var(--color-teal);
       color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(23, 63, 53, 0.2);
+      box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);
     }
 
-    .crest-letter {
-      font-size: 24px;
-      font-weight: 700;
+    .crest-text {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
 
     .brand-titles {
@@ -226,55 +226,54 @@ import { UserRole } from '../../core/models/auth.models';
     }
 
     .brand-name {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--color-forest);
-      letter-spacing: -0.01em;
-      line-height: 1.1;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
     }
 
-    .brand-name span {
-      color: var(--color-amber);
+    .brand-accent {
+      color: var(--color-teal);
     }
 
     .brand-sub {
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
       margin-top: 2px;
     }
 
-    /* Login Card */
     .login-card {
-      padding: 32px 32px;
-      background: #FFFFFF;
+      padding: 28px 28px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-tactile);
+      box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
-    /* Role Selector Tabs */
     .role-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      padding: 4px;
+      gap: 4px;
+      padding: 3px;
       background: var(--bg-surface-subtle);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-md);
     }
 
     .role-tab {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 9px 12px;
+      gap: 7px;
+      padding: 8px 10px;
       border: none;
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       background: transparent;
       color: var(--text-secondary);
       font-size: 13px;
@@ -284,13 +283,13 @@ import { UserRole } from '../../core/models/auth.models';
     }
 
     .role-tab:hover {
-      color: var(--color-forest);
+      color: var(--color-teal);
     }
 
     .role-tab.active {
       background: #FFFFFF;
-      color: var(--color-forest);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      color: var(--color-teal);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
       font-weight: 700;
     }
 
@@ -299,58 +298,57 @@ import { UserRole } from '../../core/models/auth.models';
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .auth-icon-badge {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: var(--color-forest-surface);
-      color: var(--color-forest);
-      border: 1px solid var(--color-forest-border);
+      background: var(--color-teal-surface);
+      color: var(--color-teal);
+      border: 1px solid var(--color-teal-border);
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 2px;
-      transition: all var(--transition-normal);
     }
 
     .auth-icon-badge.faculty-badge {
-      background: rgba(180, 83, 9, 0.1);
-      color: var(--color-amber-dark);
-      border-color: rgba(180, 83, 9, 0.25);
+      background: var(--color-amber-surface);
+      color: var(--color-amber);
+      border-color: var(--color-amber-border);
     }
 
     .auth-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
     }
 
     .auth-subtitle {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--text-secondary);
       line-height: 1.45;
+      max-width: 380px;
     }
 
-    /* Error Banner */
     .error-banner {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 12px 16px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-left: 4px solid #dc2626;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--color-danger-surface);
+      border: 1px solid var(--color-danger-border);
       border-radius: var(--radius-md);
-      font-size: 13px;
-      color: #991b1b;
+      font-size: 12.5px;
+      color: var(--color-danger);
       line-height: 1.4;
     }
 
     .error-icon {
-      color: #dc2626;
+      color: var(--color-danger);
       flex-shrink: 0;
       margin-top: 1px;
     }
@@ -359,11 +357,10 @@ import { UserRole } from '../../core/models/auth.models';
       flex: 1;
     }
 
-    /* Form */
     .login-form {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
     .form-group {
@@ -380,10 +377,8 @@ import { UserRole } from '../../core/models/auth.models';
 
     .form-label {
       font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--color-forest);
+      font-weight: 600;
+      color: var(--text-main);
     }
 
     .input-wrap {
@@ -394,28 +389,28 @@ import { UserRole } from '../../core/models/auth.models';
 
     .input-icon {
       position: absolute;
-      left: 14px;
+      left: 12px;
       color: var(--text-muted);
       pointer-events: none;
     }
 
     .form-control {
       width: 100%;
-      padding: 12px 14px 12px 42px;
-      font-size: 14px;
+      padding: 10px 14px 10px 38px;
+      font-size: 13.5px;
       color: var(--text-main);
-      background: var(--bg-surface-subtle);
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
       transition: all 0.15s ease;
       outline: none;
       font-family: inherit;
     }
 
     .form-control:focus {
-      background: #FFFFFF;
-      border-color: var(--color-forest);
-      box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.1);
+      border-color: var(--color-teal);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
     .form-control:disabled {
@@ -425,7 +420,7 @@ import { UserRole } from '../../core/models/auth.models';
 
     .password-toggle-btn {
       position: absolute;
-      right: 12px;
+      right: 10px;
       background: none;
       border: none;
       color: var(--text-muted);
@@ -435,18 +430,17 @@ import { UserRole } from '../../core/models/auth.models';
       justify-content: center;
       padding: 4px;
       border-radius: var(--radius-sm);
-      transition: color 0.15s ease;
     }
 
     .password-toggle-btn:hover {
-      color: var(--color-forest);
+      color: var(--color-teal);
     }
 
     .submit-btn {
-      margin-top: 6px;
+      margin-top: 4px;
       width: 100%;
-      height: 44px;
-      font-size: 14.5px;
+      height: 42px;
+      font-size: 14px;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -462,75 +456,75 @@ import { UserRole } from '../../core/models/auth.models';
       100% { transform: rotate(360deg); }
     }
 
-    /* Hint Box */
     .institutional-hint {
-      padding: 14px 16px;
-      background: #fffbeb;
-      border: 1px solid #fde68a;
+      padding: 12px 14px;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       font-size: 12px;
-      color: #92400e;
+      color: var(--text-secondary);
       cursor: pointer;
-      transition: background-color var(--transition-fast), border-color var(--transition-fast);
+      transition: all var(--transition-fast);
     }
 
     .institutional-hint:hover {
-      background: #fef3c7;
-      border-color: #f59e0b;
+      background: var(--color-teal-surface);
+      border-color: var(--color-teal-border);
     }
 
     .auto-fill-tag {
       font-size: 11px;
-      color: #b45309;
-      font-weight: 500;
+      color: var(--color-teal);
+      font-weight: 600;
       margin-left: auto;
     }
 
     .hint-header {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .hint-badge {
       font-size: 10px;
       font-weight: 700;
-      color: #92400e;
-      background: rgba(146, 64, 14, 0.12);
+      color: var(--color-teal);
+      background: var(--color-teal-surface);
       padding: 1px 6px;
       border-radius: 4px;
-      text-transform: uppercase;
+      border: 1px solid var(--color-teal-border);
     }
 
     .hint-title {
       font-weight: 600;
+      color: var(--text-main);
     }
 
     .hint-body {
-      color: #78350f;
+      color: var(--text-secondary);
     }
 
     .hint-body code {
-      background: rgba(146, 64, 14, 0.08);
+      background: rgba(15, 23, 42, 0.05);
       padding: 2px 5px;
       border-radius: 3px;
-      font-size: 11.5px;
+      font-size: 11px;
+      color: var(--text-main);
     }
 
     .sub-hint {
       font-size: 11px;
-      opacity: 0.9;
+      color: var(--text-muted);
     }
 
-    /* Footer */
     .login-footer {
       text-align: center;
       font-size: 11.5px;
       color: var(--text-muted);
-      line-height: 1.45;
+      line-height: 1.4;
     }
   `]
 })

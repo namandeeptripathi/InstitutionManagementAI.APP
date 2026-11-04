@@ -216,7 +216,9 @@ export class FacultyService {
    * Get direct download endpoint URL for a student submission file
    */
   getSubmissionDownloadUrl(submissionId: string): string {
-    return `${this.baseUrl}/faculty/submissions/${submissionId}/download`;
+    const token = localStorage.getItem('crhdri_auth_token');
+    const base = `${this.baseUrl}/faculty/submissions/${submissionId}/download`;
+    return token ? `${base}?token=${encodeURIComponent(token)}` : base;
   }
 
   /**
@@ -264,7 +266,9 @@ export class FacultyService {
    * Get direct download endpoint URL for a faculty learning material file
    */
   getMaterialDownloadUrl(materialId: string): string {
-    return `${this.baseUrl}/faculty/materials/${materialId}/download`;
+    const token = localStorage.getItem('crhdri_auth_token');
+    const base = `${this.baseUrl}/faculty/materials/${materialId}/download`;
+    return token ? `${base}?token=${encodeURIComponent(token)}` : base;
   }
 
   // ======================================================

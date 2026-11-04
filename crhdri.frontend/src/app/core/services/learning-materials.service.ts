@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LearningMaterialsResponse } from '../models/student.models';
@@ -27,7 +27,18 @@ export class LearningMaterialsService {
 
   getMaterialDownloadUrl(materialId: string, enrollment?: string): string {
     const enroll = enrollment || this.studentService.activeEnrollmentNumber();
-    return `${this.baseUrl}/students/${encodeURIComponent(enroll)}/learning-materials/${materialId}/download`;
+    const token = localStorage.getItem('crhdri_auth_token');
+    const base = `${this.baseUrl}/students/${encodeURIComponent(enroll)}/learning-materials/${materialId}/download`;
+    return token ? `${base}?token=${encodeURIComponent(token)}` : base;
+  }
+
+  downloadMaterial(materialId: string, enrollment?: string): Observable<HttpResponse<Blob>> {
+    const enroll = enrollment || this.studentService.activeEnrollmentNumber();
+    const url = `${this.baseUrl}/students/${encodeURIComponent(enroll)}/learning-materials/${materialId}/download`;
+    return this.http.get(url, {
+      responseType: 'blob',
+      observe: 'response'
+    });
   }
 }
 

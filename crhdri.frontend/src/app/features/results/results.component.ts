@@ -11,21 +11,21 @@ import { IconComponent } from '../../shared/components/icon.component';
   imports: [CommonModule, FormsModule, IconComponent],
   template: `
     <div class="results-page">
-      <!-- Header -->
-      <div class="page-header">
+      <!-- Page Header -->
+      <div class="page-header-clean">
         <div>
-          <h2 class="page-title font-editorial">Academic Results & Performance Records</h2>
+          <h2 class="page-title">Academic Results & Performance Records</h2>
           <p class="page-subtitle">
-            Evaluated assessments, quizzes, and official academic scores
+            Evaluated assessments, quizzes, and official academic scorecards
             @if (data() && data()!.totalResults > 0) {
-              <span class="header-count font-mono">&bull; {{ data()!.totalResults }} records recorded</span>
+              <span class="header-count font-mono">&bull; {{ data()!.totalResults }} records</span>
             }
           </p>
         </div>
 
-        <div class="header-controls">
-          <div class="search-box">
-            <app-icon name="search" [size]="16" class="search-icon"></app-icon>
+        <div class="header-actions">
+          <div class="search-box-clean">
+            <app-icon name="search" [size]="15" class="search-icon"></app-icon>
             <input 
               type="text" 
               [ngModel]="searchQuery()" 
@@ -54,31 +54,30 @@ import { IconComponent } from '../../shared/components/icon.component';
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Academic Results</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
-            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is running with PostgreSQL.</p>
+            <p class="error-hint">Ensure the backend API at <code>http://localhost:5083</code> is active with PostgreSQL.</p>
           </div>
-          <button class="btn btn-primary" (click)="loadResults()">
-            <app-icon name="refresh" [size]="16"></app-icon>
-            Retry Connection
+          <button class="btn btn-primary btn-sm" (click)="loadResults()">
+            <app-icon name="refresh" [size]="14"></app-icon> Retry
           </button>
         </div>
       }
 
       <!-- Empty State -->
       @else if (!data() || data()?.results?.length === 0) {
-        <div class="card-tactile empty-state">
-          <app-icon name="results" [size]="48" class="empty-icon"></app-icon>
-          <h3 class="font-editorial empty-title">No Examination Records Found</h3>
+        <div class="card-modern empty-state-box">
+          <app-icon name="results" [size]="40" class="empty-icon"></app-icon>
+          <h3 class="empty-title">No Examination Records Found</h3>
           <p class="empty-desc">
             No graded assessment or quiz scorecards have been recorded for your enrollment profile yet.
           </p>
-          <button class="btn btn-secondary" (click)="loadResults()">
+          <button class="btn btn-secondary btn-sm" (click)="loadResults()">
             <app-icon name="refresh" [size]="14"></app-icon> Check Again
           </button>
         </div>
@@ -87,14 +86,14 @@ import { IconComponent } from '../../shared/components/icon.component';
       <!-- Loaded Results -->
       @else if (data(); as res) {
         <!-- Overall Summary Card -->
-        <section class="card-tactile overall-results-card">
+        <section class="card-modern overall-results-card">
           <div class="summary-meta">
             <div class="badge-row">
-              <span class="badge badge-forest">Official Academic Record</span>
+              <span class="badge badge-teal">Academic Record</span>
               <span class="enroll-badge font-mono">{{ res.enrollmentNumber }}</span>
             </div>
 
-            <h3 class="summary-score-headline font-editorial">
+            <h3 class="summary-score-headline">
               Aggregate Academic Score: <span class="score-highlight">{{ res.overallPercentage }}%</span>
             </h3>
 
@@ -109,11 +108,11 @@ import { IconComponent } from '../../shared/components/icon.component';
                 <span class="pill-num font-mono">{{ res.totalMarksObtained }}</span>
               </div>
               <div class="stat-pill-mini">
-                <span class="pill-label">Maximum Marks</span>
+                <span class="pill-label">Max Marks</span>
                 <span class="pill-num font-mono">{{ res.totalMaximumMarks }}</span>
               </div>
               <div class="stat-pill-mini">
-                <span class="pill-label">Records Evaluated</span>
+                <span class="pill-label">Evaluated Records</span>
                 <span class="pill-num font-mono">{{ res.totalResults }}</span>
               </div>
             </div>
@@ -122,14 +121,14 @@ import { IconComponent } from '../../shared/components/icon.component';
           <div class="summary-dial-container">
             <div class="overall-ring" [style.background]="getConicGradient(res.overallPercentage)">
               <div class="ring-core">
-                <span class="ring-pct font-editorial">{{ res.overallPercentage }}%</span>
+                <span class="ring-pct">{{ res.overallPercentage }}%</span>
                 <span class="ring-sub">Aggregate</span>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Filter Pills if multiple result sources exist -->
+        <!-- Source Filter Pills if multiple sources exist -->
         @if (hasMultipleSources()) {
           <div class="source-filters">
             <button 
@@ -155,18 +154,18 @@ import { IconComponent } from '../../shared/components/icon.component';
 
         <!-- Filtered Empty State -->
         @if (filteredResults().length === 0) {
-          <div class="card-tactile empty-state">
-            <app-icon name="search" [size]="40" class="empty-icon"></app-icon>
-            <h3 class="font-editorial empty-title">No Matching Results</h3>
+          <div class="card-modern empty-state-box">
+            <app-icon name="search" [size]="36" class="empty-icon"></app-icon>
+            <h3 class="empty-title">No Matching Results</h3>
             <p class="empty-desc">No assessment records matched your search filter criteria.</p>
-            <button class="btn btn-secondary" (click)="resetFilters()">Clear Filters</button>
+            <button class="btn btn-secondary btn-sm" (click)="resetFilters()">Clear Filters</button>
           </div>
         }
 
         <!-- Results Table -->
         @else {
-          <div class="card-tactile table-container">
-            <table class="results-table" aria-label="Student Results Table">
+          <div class="table-container-clean">
+            <table class="table-modern" aria-label="Student Results Table">
               <thead>
                 <tr>
                   <th scope="col">Assessment</th>
@@ -175,8 +174,8 @@ import { IconComponent } from '../../shared/components/icon.component';
                   <th scope="col">Source</th>
                   <th scope="col">Score</th>
                   <th scope="col">Percentage</th>
-                  <th scope="col">Recorded Date</th>
-                  <th scope="col">Faculty Feedback</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Feedback</th>
                 </tr>
               </thead>
               <tbody>
@@ -184,22 +183,24 @@ import { IconComponent } from '../../shared/components/icon.component';
                   <tr>
                     <td>
                       <div class="assessment-cell">
-                        <strong class="assessment-title font-editorial">{{ row.assessmentName }}</strong>
+                        <strong class="assessment-title">{{ row.assessmentName }}</strong>
                         @if (row.assessmentDate) {
                           <span class="assessment-date font-mono">Date: {{ row.assessmentDate | date:'mediumDate' }}</span>
                         }
                       </div>
                     </td>
                     <td>
-                      <span class="subject-code font-mono">{{ row.subjectCode }}</span>
-                      <span class="subject-name">{{ row.subjectName }}</span>
+                      <div class="subject-col">
+                        <span class="subject-code font-mono">{{ row.subjectCode }}</span>
+                        <span class="subject-name">{{ row.subjectName }}</span>
+                      </div>
                     </td>
                     <td>
-                      <span class="badge badge-sage font-mono">{{ row.assessmentType }}</span>
+                      <span class="badge badge-teal font-mono">{{ row.assessmentType }}</span>
                     </td>
                     <td>
-                      <span class="badge badge-neutral font-mono source-tag" [class.source-eval]="row.resultSource === 'EVALUATED_RESULT'">
-                        {{ row.resultSource === 'EVALUATED_RESULT' ? 'Evaluated' : 'Quiz Attempt' }}
+                      <span class="badge" [class.badge-success]="row.resultSource === 'EVALUATED_RESULT'" [class.badge-neutral]="row.resultSource !== 'EVALUATED_RESULT'">
+                        {{ row.resultSource === 'EVALUATED_RESULT' ? 'Evaluated' : 'Quiz' }}
                       </span>
                     </td>
                     <td class="score-cell font-mono">
@@ -207,7 +208,7 @@ import { IconComponent } from '../../shared/components/icon.component';
                     </td>
                     <td>
                       @if (safePercentage(row) !== null) {
-                        <span class="pct-pill font-mono" [class.high-pct]="safePercentage(row)! >= 75" [class.low-pct]="safePercentage(row)! < 50">
+                        <span class="badge font-mono" [class.badge-success]="safePercentage(row)! >= 75" [class.badge-amber]="safePercentage(row)! >= 50 && safePercentage(row)! < 75" [class.badge-danger]="safePercentage(row)! < 50">
                           {{ safePercentage(row) }}%
                         </span>
                       } @else {
@@ -237,43 +238,43 @@ import { IconComponent } from '../../shared/components/icon.component';
     .results-page {
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
-    .page-header {
+    .page-header-clean {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 14px;
     }
 
     .page-title {
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
       letter-spacing: -0.01em;
     }
 
     .page-subtitle {
-      font-size: 13.5px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--text-secondary);
       margin-top: 2px;
     }
 
     .header-count {
-      color: var(--color-forest);
+      color: var(--color-teal);
       font-weight: 600;
     }
 
-    .header-controls {
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    .search-box {
+    .search-box-clean {
       position: relative;
       display: flex;
       align-items: center;
@@ -281,37 +282,37 @@ import { IconComponent } from '../../shared/components/icon.component';
 
     .search-icon {
       position: absolute;
-      left: 12px;
+      left: 11px;
       color: var(--text-muted);
       pointer-events: none;
     }
 
     .search-input {
-      width: 280px;
-      padding: 9px 34px 9px 36px;
-      font-size: 13.5px;
+      width: 260px;
+      padding: 8px 30px 8px 34px;
+      font-size: 13px;
       background: var(--bg-surface);
-      border: 1px solid var(--border-medium);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       color: var(--text-main);
-      box-shadow: inset 0 1px 2px rgba(32, 40, 36, 0.04);
-      transition: border-color var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+      outline: none;
+      transition: all var(--transition-fast);
     }
 
     .search-input:focus {
-      outline: none;
-      border-color: var(--color-forest);
-      box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.1);
+      border-color: var(--color-teal);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
     .clear-btn {
       position: absolute;
-      right: 10px;
+      right: 9px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
     }
 
     /* Skeleton Loading */
@@ -322,7 +323,7 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .banner-skeleton {
-      height: 180px;
+      height: 150px;
       border-radius: var(--radius-xl);
     }
 
@@ -331,64 +332,9 @@ import { IconComponent } from '../../shared/components/icon.component';
       border-radius: var(--radius-lg);
     }
 
-    /* Error Banner */
-    .error-banner {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 24px 28px;
-      background: linear-gradient(135deg, rgba(254, 242, 242, 0.95), rgba(255, 255, 255, 0.98));
-      border: 1px solid rgba(220, 38, 38, 0.25);
-      border-left: 5px solid #dc2626;
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
-    }
-
-    .error-icon-wrap {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #fee2e2;
-      color: #dc2626;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .error-text {
-      flex: 1;
-    }
-
-    .error-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #991b1b;
-      margin-bottom: 4px;
-    }
-
-    .error-desc {
-      font-size: 13.5px;
-      color: #7f1d1d;
-      margin-bottom: 4px;
-    }
-
-    .error-hint {
-      font-size: 12px;
-      color: #b91c1c;
-    }
-
-    .error-hint code {
-      background: rgba(220, 38, 38, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-
-    /* Summary Card */
+    /* Overall Summary Card */
     .overall-results-card {
-      padding: 28px 32px;
-      background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F2 100%);
+      padding: 24px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -398,49 +344,47 @@ import { IconComponent } from '../../shared/components/icon.component';
     .summary-meta {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       flex: 1;
     }
 
     .badge-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .enroll-badge {
       font-size: 11px;
       font-weight: 600;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: var(--radius-sm);
       background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-medium);
-      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
     }
 
     .summary-score-headline {
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
       line-height: 1.25;
       letter-spacing: -0.01em;
     }
 
     .score-highlight {
-      color: var(--color-forest-dark);
-      font-weight: 700;
+      color: var(--color-teal);
     }
 
     .summary-breakdown {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--text-secondary);
-      line-height: 1.4;
     }
 
     .summary-chips-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       margin-top: 4px;
     }
 
@@ -448,37 +392,36 @@ import { IconComponent } from '../../shared/components/icon.component';
       display: flex;
       flex-direction: column;
       padding: 6px 12px;
-      background: var(--bg-surface);
+      background: var(--bg-surface-subtle);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
-      box-shadow: 0 1px 3px rgba(32, 40, 36, 0.04);
     }
 
     .pill-label {
       font-size: 9.5px;
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-muted);
       letter-spacing: 0.04em;
     }
 
     .pill-num {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
-      color: var(--color-forest);
+      color: var(--text-main);
     }
 
-    /* Radial Dial */
+    /* Overall Radial Dial */
     .summary-dial-container {
       flex-shrink: 0;
     }
 
     .overall-ring {
-      width: 120px;
-      height: 120px;
+      width: 104px;
+      height: 104px;
       border-radius: 50%;
-      padding: 10px;
-      box-shadow: 0 4px 16px rgba(23, 63, 53, 0.14);
+      padding: 8px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -494,13 +437,12 @@ import { IconComponent } from '../../shared/components/icon.component';
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 2px 6px rgba(32, 40, 36, 0.08);
     }
 
     .ring-pct {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--color-forest);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-teal);
       line-height: 1;
     }
 
@@ -508,25 +450,25 @@ import { IconComponent } from '../../shared/components/icon.component';
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     /* Source Filters */
     .source-filters {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-medium);
-      padding: 3px;
+      border: 1px solid var(--border-subtle);
+      padding: 2px;
       border-radius: var(--radius-md);
       width: fit-content;
     }
 
     .filter-pill {
-      padding: 6px 14px;
-      font-size: 12.5px;
+      padding: 5px 12px;
+      font-size: 12px;
       font-weight: 600;
       border: none;
       background: transparent;
@@ -537,54 +479,22 @@ import { IconComponent } from '../../shared/components/icon.component';
     }
 
     .filter-pill.active {
-      background: var(--bg-surface);
-      color: var(--color-forest);
-      box-shadow: 0 1px 3px rgba(32, 40, 36, 0.08);
+      background: #FFFFFF;
+      color: var(--color-teal);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
 
-    /* Table */
-    .table-container {
-      overflow-x: auto;
-    }
-
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 13.5px;
-    }
-
-    .results-table th {
-      padding: 14px 18px;
-      background: var(--bg-surface-subtle);
-      color: var(--text-secondary);
-      font-weight: 700;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .results-table td {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--border-subtle);
-      color: var(--text-main);
-    }
-
-    .results-table tr:hover td {
-      background-color: var(--bg-surface-subtle);
-    }
-
+    /* Table cells */
     .assessment-cell {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
 
     .assessment-title {
-      color: var(--color-forest);
-      font-size: 14.5px;
-      font-weight: 600;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .assessment-date {
@@ -592,93 +502,103 @@ import { IconComponent } from '../../shared/components/icon.component';
       color: var(--text-muted);
     }
 
+    .subject-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
     .subject-code {
-      display: block;
       font-size: 11px;
-      color: var(--color-forest);
       font-weight: 700;
+      color: var(--color-teal);
     }
 
     .subject-name {
-      font-size: 13px;
+      font-size: 12.5px;
       color: var(--text-secondary);
-    }
-
-    .source-tag {
-      font-size: 10.5px;
-      padding: 2px 7px;
-    }
-
-    .source-tag.source-eval {
-      background: rgba(23, 63, 53, 0.08);
-      color: var(--color-forest);
     }
 
     .score-cell {
-      font-size: 13.5px;
-    }
-
-    .pct-pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: var(--radius-xs);
-      font-size: 12px;
-      font-weight: 700;
-      background: var(--bg-surface-subtle);
-      color: var(--text-main);
-    }
-
-    .pct-pill.high-pct {
-      background: rgba(23, 63, 53, 0.1);
-      color: var(--color-forest);
-    }
-
-    .pct-pill.low-pct {
-      background: rgba(184, 66, 51, 0.1);
-      color: var(--color-danger);
+      font-size: 13px;
     }
 
     .date-cell {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 11.5px;
+      color: var(--text-secondary);
     }
 
     .feedback-text {
-      font-size: 12.5px;
+      font-size: 12px;
       font-style: italic;
       color: var(--text-secondary);
+      max-width: 220px;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .empty-dash {
       color: var(--text-muted);
     }
 
-    /* Empty */
-    .empty-state {
-      padding: 56px 32px;
+    /* Error and Empty */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .error-hint {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-box {
+      padding: 48px 20px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
     }
 
     .empty-icon {
       color: var(--text-muted);
-      opacity: 0.7;
     }
 
     .empty-title {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--color-forest);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .empty-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      max-width: 440px;
-      line-height: 1.5;
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 400px;
+      line-height: 1.45;
     }
 
     @media (max-width: 768px) {
@@ -692,7 +612,7 @@ import { IconComponent } from '../../shared/components/icon.component';
       .search-input {
         width: 100%;
       }
-      .header-controls {
+      .header-actions {
         width: 100%;
       }
     }
@@ -719,7 +639,6 @@ export class ResultsComponent implements OnInit {
     const res = this.data();
     if (!res || !res.results) return [];
 
-    // Deduplicate by recordId defensively
     const seen = new Set<string>();
     const unique = res.results.filter(r => {
       if (seen.has(r.recordId)) return false;
@@ -776,8 +695,8 @@ export class ResultsComponent implements OnInit {
 
   getConicGradient(pct: number): string {
     const validPct = Math.min(100, Math.max(0, pct || 0));
-    const color = validPct >= 75 ? '#173F35' : (validPct >= 50 ? '#D4A373' : '#B84233');
-    return `conic-gradient(${color} 0% ${validPct}%, #E5E4DC ${validPct}% 100%)`;
+    const color = validPct >= 75 ? '#0F766E' : (validPct >= 50 ? '#D4A373' : '#B91C1C');
+    return `conic-gradient(${color} 0% ${validPct}%, #E2E8F0 ${validPct}% 100%)`;
   }
 
   resetFilters(): void {

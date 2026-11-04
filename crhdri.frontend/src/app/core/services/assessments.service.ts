@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import {
   AssessmentsResponse,
   QuizQuestionsResponse,
+  QuizReviewResponse,
   QuizSubmissionRequest,
   QuizSubmissionResult
 } from '../models/student.models';
@@ -37,6 +38,18 @@ export class AssessmentsService {
     return this.http.get<QuizQuestionsResponse>(url).pipe(
       catchError((error: HttpErrorResponse) => {
         const msg = error.error?.message || 'Failed to load quiz questions.';
+        return throwError(() => new Error(msg));
+      })
+    );
+  }
+
+  getQuizReview(assessmentId: string, enrollment?: string): Observable<QuizReviewResponse> {
+    const enroll = enrollment || this.studentService.activeEnrollmentNumber();
+    const url = `${this.baseUrl}/students/${encodeURIComponent(enroll)}/assessments/${assessmentId}/review`;
+
+    return this.http.get<QuizReviewResponse>(url).pipe(
+      catchError((error: HttpErrorResponse) => {
+        const msg = error.error?.message || 'Failed to load quiz review.';
         return throwError(() => new Error(msg));
       })
     );

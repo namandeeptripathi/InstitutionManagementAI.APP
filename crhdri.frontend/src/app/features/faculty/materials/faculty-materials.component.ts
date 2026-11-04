@@ -18,22 +18,25 @@ import { IconComponent } from '../../../shared/components/icon.component';
   template: `
     <div class="materials-page">
       <!-- Header Bar with Class Selector -->
-      <div class="page-header card-tactile">
-        <div class="header-titles">
+      <div class="faculty-page-header">
+        <div class="faculty-header-titles">
           <div class="badge-row">
-            <span class="badge badge-sage">COURSE REPOSITORY</span>
+            <span class="badge badge-teal badge-sm">
+              <app-icon name="badge-check" [size]="12"></app-icon>
+              COURSE REPOSITORY
+            </span>
             <span class="meta-dot">&bull;</span>
-            <span class="meta-year font-mono">AY 2026-2027</span>
+            <span class="meta-year font-mono text-muted">AY 2026-2027</span>
           </div>
-          <h2 class="page-title font-editorial">Learning Materials Repository</h2>
-          <p class="page-subtitle">
+          <h2 class="faculty-page-title">Learning Materials Repository</h2>
+          <p class="faculty-page-subtitle">
             Upload lecture notes, presentations, syllabi, and reference documents for your instructional cohorts.
           </p>
         </div>
 
         <!-- Class Picker Tabs -->
         <div class="class-picker-wrap">
-          <label class="picker-label font-mono">ASSIGNED CLASS:</label>
+          <span class="picker-label font-mono">Assigned Class:</span>
           <div class="class-selector-box">
             @for (cls of assignedClasses(); track cls.facultyAssignmentId) {
               <button
@@ -57,42 +60,42 @@ import { IconComponent } from '../../../shared/components/icon.component';
           <div class="skeleton body-skeleton"></div>
         </div>
       } @else if (classesError()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Assigned Classes</h3>
             <p class="error-desc">{{ classesError() }}</p>
           </div>
-          <button class="btn btn-primary" (click)="loadClasses()">
-            <app-icon name="refresh" [size]="16"></app-icon>
+          <button class="btn btn-primary btn-sm" (click)="loadClasses()">
+            <app-icon name="refresh" [size]="14"></app-icon>
             Retry Connection
           </button>
         </div>
       } @else if (selectedClass()) {
         <!-- Content Panel -->
-        <div class="card-tactile panel-card">
+        <div class="card-modern panel-card">
           <!-- Panel Header & Action Bar -->
           <div class="panel-header">
             <div class="panel-header-title">
               <div class="class-pill">
-                <span class="font-mono font-bold">{{ selectedClass()?.subjectCode }}</span>
-                <span>{{ selectedClass()?.subjectName }}</span>
+                <span class="font-mono font-bold text-teal">{{ selectedClass()?.subjectCode }}</span>
+                <span class="class-subject-title">{{ selectedClass()?.subjectName }}</span>
                 <span class="meta-dot">&bull;</span>
-                <span>{{ selectedClass()?.courseName }} (Sem {{ selectedClass()?.semester }})</span>
+                <span class="text-secondary text-xs">{{ selectedClass()?.courseName }} (Sem {{ selectedClass()?.semester }})</span>
               </div>
-              <h3 class="panel-title font-editorial">Class Resources & Reference Files</h3>
+              <h3 class="panel-title">Class Resources & Reference Files</h3>
             </div>
 
             <div class="panel-actions">
               <button class="btn btn-secondary btn-sm" (click)="loadMaterials(selectedClass()!.facultyAssignmentId)" title="Refresh list">
-                <app-icon name="refresh" [size]="15"></app-icon>
-                Refresh
+                <app-icon name="refresh" [size]="13"></app-icon>
+                <span>Refresh</span>
               </button>
               <button class="btn btn-primary btn-sm" (click)="openUploadModal()" title="Upload new course document">
-                <app-icon name="upload" [size]="15"></app-icon>
-                Upload Resource
+                <app-icon name="upload" [size]="13"></app-icon>
+                <span>Upload Resource</span>
               </button>
             </div>
           </div>
@@ -101,35 +104,35 @@ import { IconComponent } from '../../../shared/components/icon.component';
           <div class="filter-bar">
             <div class="type-filter-group">
               <button
-                class="filter-tab"
+                class="filter-tab-pill"
                 [class.active]="selectedType() === 'ALL'"
                 (click)="selectedType.set('ALL')"
               >
                 All ({{ materials().length }})
               </button>
               <button
-                class="filter-tab"
+                class="filter-tab-pill"
                 [class.active]="selectedType() === 'PDF'"
                 (click)="selectedType.set('PDF')"
               >
                 PDF
               </button>
               <button
-                class="filter-tab"
+                class="filter-tab-pill"
                 [class.active]="selectedType() === 'DOCUMENT'"
                 (click)="selectedType.set('DOCUMENT')"
               >
                 Documents
               </button>
               <button
-                class="filter-tab"
+                class="filter-tab-pill"
                 [class.active]="selectedType() === 'PRESENTATION'"
                 (click)="selectedType.set('PRESENTATION')"
               >
                 Slides
               </button>
               <button
-                class="filter-tab"
+                class="filter-tab-pill"
                 [class.active]="selectedType() === 'OTHER'"
                 (click)="selectedType.set('OTHER')"
               >
@@ -137,7 +140,7 @@ import { IconComponent } from '../../../shared/components/icon.component';
               </button>
             </div>
 
-            <div class="search-wrap">
+            <div class="search-input-wrap">
               <app-icon name="search" [size]="14" class="search-icon"></app-icon>
               <input
                 type="text"
@@ -146,29 +149,32 @@ import { IconComponent } from '../../../shared/components/icon.component';
                 class="search-input"
               />
               @if (searchQuery) {
-                <button class="clear-search-btn" (click)="searchQuery = ''">✕</button>
+                <button class="clear-search-btn" (click)="searchQuery = ''">&times;</button>
               }
             </div>
           </div>
 
           <!-- Materials List / Grid -->
           @if (materialsLoading()) {
-            <div class="loading-state">
-              <div class="spinner"></div>
-              <p>Loading course resources...</p>
+            <div class="materials-skeleton-grid">
+              <div class="skeleton item-card-skeleton"></div>
+              <div class="skeleton item-card-skeleton"></div>
+              <div class="skeleton item-card-skeleton"></div>
             </div>
           } @else if (materialsError()) {
-            <div class="alert-box alert-error">
+            <div class="error-sub-banner">
               <p>{{ materialsError() }}</p>
               <button class="btn btn-secondary btn-sm" (click)="loadMaterials(selectedClass()!.facultyAssignmentId)">
-                Retry
+                Retry Connection
               </button>
             </div>
           } @else if (filteredMaterials().length === 0) {
-            <div class="empty-state card-tactile">
-              <app-icon name="materials" [size]="48"></app-icon>
-              <h4>No Learning Materials Found</h4>
-              <p>
+            <div class="empty-materials-state">
+              <div class="empty-icon-wrap large">
+                <app-icon name="materials" [size]="36"></app-icon>
+              </div>
+              <h4 class="empty-title">No Learning Materials Found</h4>
+              <p class="empty-desc">
                 @if (searchQuery || selectedType() !== 'ALL') {
                   No resources matched your current filter criteria.
                 } @else {
@@ -182,18 +188,18 @@ import { IconComponent } from '../../../shared/components/icon.component';
           } @else {
             <div class="materials-grid">
               @for (item of filteredMaterials(); track item.materialId) {
-                <div class="material-card card-tactile">
+                <div class="material-card">
                   <div class="material-card-top">
-                    <span class="type-pill font-mono" [ngClass]="getTypeBadgeClass(item.materialType)">
+                    <span class="badge badge-sm font-mono" [ngClass]="getTypeBadgeClass(item.materialType)">
                       {{ item.materialType }}
                     </span>
-                    <span class="upload-date font-mono">
+                    <span class="upload-date font-mono text-muted text-xs">
                       {{ item.uploadedAt | date:'mediumDate' }}
                     </span>
                   </div>
 
                   <div class="material-card-body">
-                    <h4 class="material-title font-editorial" [title]="item.title">
+                    <h4 class="material-title" [title]="item.title">
                       {{ item.title }}
                     </h4>
                     @if (item.description) {
@@ -212,7 +218,7 @@ import { IconComponent } from '../../../shared/components/icon.component';
                         class="btn btn-secondary btn-xs action-btn"
                         title="Open external link"
                       >
-                        <app-icon name="external" [size]="13"></app-icon>
+                        <app-icon name="external" [size]="12"></app-icon>
                         <span>Open Link</span>
                       </a>
                     } @else {
@@ -222,21 +228,21 @@ import { IconComponent } from '../../../shared/components/icon.component';
                         class="btn btn-primary btn-xs action-btn"
                         title="Download file"
                       >
-                        <app-icon name="download" [size]="13"></app-icon>
+                        <app-icon name="download" [size]="12"></app-icon>
                         <span>Download</span>
                       </a>
                     }
 
                     <button
-                      class="btn btn-danger-outline btn-xs delete-btn"
+                      class="btn btn-outline btn-xs delete-btn"
                       (click)="confirmDelete(item)"
                       [disabled]="deletingId() === item.materialId"
                       title="Delete material"
                     >
                       @if (deletingId() === item.materialId) {
-                        <span class="btn-spinner"></span>
+                        <span class="spin-icon">&#9696;</span>
                       } @else {
-                        <app-icon name="close" [size]="13"></app-icon>
+                        <app-icon name="close" [size]="12"></app-icon>
                       }
                       <span>Delete</span>
                     </button>
@@ -250,29 +256,29 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
       <!-- UPLOAD MATERIAL MODAL -->
       @if (showUploadModal()) {
-        <div class="modal-backdrop" (click)="closeUploadModal()">
-          <div class="modal-box card-tactile" (click)="$event.stopPropagation()" role="dialog" aria-labelledby="upload-modal-title">
-            <div class="modal-header">
+        <div class="modal-overlay" (click)="closeUploadModal()">
+          <div class="modal-dialog-clean" (click)="$event.stopPropagation()" role="dialog" aria-labelledby="upload-modal-title">
+            <div class="modal-header-clean">
               <div class="modal-title-wrap">
-                <span class="badge badge-sage font-mono">RESOURCE UPLOADER</span>
-                <h3 id="upload-modal-title" class="modal-title font-editorial">Upload Learning Material</h3>
-                <p class="modal-subtitle">Publish study resources for {{ selectedClass()?.subjectCode }} ({{ selectedClass()?.subjectName }})</p>
+                <span class="badge badge-teal badge-sm font-mono">RESOURCE UPLOADER</span>
+                <h3 id="upload-modal-title">Upload Learning Material</h3>
+                <p class="modal-sub">Publish study resources for {{ selectedClass()?.subjectCode }} ({{ selectedClass()?.subjectName }})</p>
               </div>
-              <button class="modal-close-btn" (click)="closeUploadModal()" aria-label="Close dialog">
-                <app-icon name="close" [size]="18"></app-icon>
+              <button class="btn-ghost" (click)="closeUploadModal()" aria-label="Close dialog">
+                <app-icon name="close" [size]="16"></app-icon>
               </button>
             </div>
 
-            <form (ngSubmit)="submitUpload()" class="modal-form">
+            <form (ngSubmit)="submitUpload()" class="modal-body-clean">
               <!-- Title Field -->
               <div class="form-group">
-                <label class="form-label font-mono">RESOURCE TITLE <span class="required">*</span></label>
+                <label class="form-label font-mono">RESOURCE TITLE <span class="text-danger">*</span></label>
                 <input
                   type="text"
                   [(ngModel)]="uploadTitle"
                   name="title"
                   placeholder="e.g. Unit 3 Transformer Attention Mechanisms"
-                  class="form-input"
+                  class="form-control"
                   required
                 />
               </div>
@@ -280,7 +286,7 @@ import { IconComponent } from '../../../shared/components/icon.component';
               <!-- Material Type Dropdown -->
               <div class="form-group">
                 <label class="form-label font-mono">RESOURCE CATEGORY</label>
-                <select [(ngModel)]="uploadType" name="type" class="form-input font-mono">
+                <select [(ngModel)]="uploadType" name="type" class="form-control">
                   <option value="AUTO">Auto Detect from File Extension</option>
                   <option value="PDF">PDF Document (.pdf)</option>
                   <option value="PRESENTATION">Slide Deck / Presentation (.ppt, .pptx)</option>
@@ -297,13 +303,13 @@ import { IconComponent } from '../../../shared/components/icon.component';
                   name="description"
                   rows="3"
                   placeholder="Summary of topics covered, chapter numbers, or reading references..."
-                  class="form-textarea"
+                  class="form-control"
                 ></textarea>
               </div>
 
               <!-- File Selection Input -->
               <div class="form-group">
-                <label class="form-label font-mono">DOCUMENT FILE <span class="required">* (MAX 25 MB)</span></label>
+                <label class="form-label font-mono">DOCUMENT FILE <span class="text-danger">* (MAX 25 MB)</span></label>
                 <div class="file-drop-zone" [class.has-file]="!!selectedFile">
                   <input
                     type="file"
@@ -316,18 +322,18 @@ import { IconComponent } from '../../../shared/components/icon.component';
                   <label for="material-file-upload" class="file-drop-label">
                     @if (selectedFile) {
                       <div class="selected-file-meta">
-                        <app-icon name="check" [size]="20" class="file-ok-icon"></app-icon>
+                        <app-icon name="badge-check" [size]="20" class="file-ok-icon"></app-icon>
                         <div class="file-text">
                           <span class="file-name font-bold">{{ selectedFile.name }}</span>
                           <span class="file-size font-mono text-muted">{{ formatFileSize(selectedFile.size) }}</span>
                         </div>
-                        <span class="change-file-tag">Change</span>
+                        <span class="btn btn-secondary btn-xs">Change</span>
                       </div>
                     } @else {
                       <div class="empty-drop-meta">
                         <app-icon name="upload" [size]="24" class="upload-icon"></app-icon>
-                        <span class="upload-instruction font-bold">Choose a file or drag & drop</span>
-                        <span class="upload-formats font-mono text-muted">Supported: PDF, DOC, DOCX, PPT, PPTX, PNG, JPG</span>
+                        <span class="upload-instruction font-bold">Choose a file or click to browse</span>
+                        <span class="upload-formats font-mono text-muted text-xs">PDF, DOC, DOCX, PPT, PPTX, PNG, JPG (up to 25MB)</span>
                       </div>
                     }
                   </label>
@@ -336,21 +342,20 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
               @if (uploadError()) {
                 <div class="modal-error font-mono">
-                  <app-icon name="alert" [size]="14"></app-icon>
-                  <span>{{ uploadError() }}</span>
+                  {{ uploadError() }}
                 </div>
               }
 
-              <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" (click)="closeUploadModal()" [disabled]="uploading()">
+              <div class="modal-footer-clean">
+                <button type="button" class="btn btn-secondary btn-sm" (click)="closeUploadModal()" [disabled]="uploading()">
                   Cancel
                 </button>
-                <button type="submit" class="btn btn-primary" [disabled]="uploading() || !selectedFile">
+                <button type="submit" class="btn btn-primary btn-sm" [disabled]="uploading() || !selectedFile">
                   @if (uploading()) {
-                    <span class="btn-spinner"></span>
+                    <span class="spin-icon">&#9696;</span>
                     <span>Uploading Document...</span>
                   } @else {
-                    <app-icon name="upload" [size]="15"></app-icon>
+                    <app-icon name="upload" [size]="13"></app-icon>
                     <span>Publish Material</span>
                   }
                 </button>
@@ -362,27 +367,34 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
       <!-- CONFIRM DELETE DIALOG -->
       @if (materialToDelete()) {
-        <div class="modal-backdrop" (click)="cancelDelete()">
-          <div class="modal-box card-tactile confirm-box" (click)="$event.stopPropagation()" role="alertdialog">
-            <div class="modal-header">
+        <div class="modal-overlay" (click)="cancelDelete()">
+          <div class="modal-dialog-clean confirm-box" (click)="$event.stopPropagation()" role="alertdialog">
+            <div class="modal-header-clean">
               <div class="modal-title-wrap">
-                <span class="badge badge-rose font-mono">DELETE CONFIRMATION</span>
-                <h3 class="modal-title font-editorial">Remove Learning Material?</h3>
+                <span class="badge badge-danger badge-sm font-mono">DELETE CONFIRMATION</span>
+                <h3>Remove Learning Material?</h3>
               </div>
             </div>
-            <p class="confirm-message">
-              Are you sure you want to delete <strong>"{{ materialToDelete()?.title }}"</strong>?
-              This will remove the file from storage and enrolled students will no longer be able to download it.
-            </p>
-            <div class="modal-actions">
-              <button class="btn btn-secondary" (click)="cancelDelete()" [disabled]="deletingId() !== null">
+            <div class="modal-body-clean">
+              <p class="confirm-message">
+                Are you sure you want to delete <strong>"{{ materialToDelete()?.title }}"</strong>?
+                This will remove the file from storage and enrolled students will no longer be able to download it.
+              </p>
+            </div>
+            <div class="modal-footer-clean">
+              <button class="btn btn-secondary btn-sm" (click)="cancelDelete()" [disabled]="deletingId() !== null">
                 Cancel
               </button>
-              <button class="btn btn-danger" (click)="executeDelete()" [disabled]="deletingId() !== null">
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="executeDelete()"
+                [disabled]="deletingId() !== null"
+              >
                 @if (deletingId() !== null) {
-                  <span class="btn-spinner"></span>
+                  <span class="spin-icon">&#9696;</span>
                   <span>Deleting...</span>
                 } @else {
+                  <app-icon name="close" [size]="13"></app-icon>
                   <span>Confirm Delete</span>
                 }
               </button>
@@ -394,554 +406,372 @@ import { IconComponent } from '../../../shared/components/icon.component';
   `,
   styles: [`
     .materials-page {
-      padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-      max-width: 1560px;
-      margin: 0 auto;
-    }
-
-    .card-tactile {
-      background: var(--surface, #13171f);
-      border: 1px solid var(--border-tactile, rgba(255, 255, 255, 0.08));
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    /* Page Header */
-    .page-header {
-      padding: 1.5rem 1.75rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1.25rem;
-      background: linear-gradient(135deg, rgba(26, 32, 44, 0.6) 0%, rgba(15, 20, 28, 0.9) 100%);
+      gap: 20px;
+      padding-bottom: 30px;
     }
 
     .badge-row {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.35rem;
+      gap: 8px;
     }
 
     .meta-dot {
-      color: var(--text-muted, #718096);
-      font-size: 0.85rem;
+      color: var(--border-medium);
     }
 
-    .meta-year {
-      font-size: 0.75rem;
-      color: var(--text-muted, #a0aec0);
-      letter-spacing: 0.05em;
+    .text-teal {
+      color: var(--color-teal);
     }
 
-    .page-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #f7fafc;
-      margin: 0;
-      letter-spacing: -0.01em;
+    .text-danger {
+      color: var(--color-danger);
     }
 
-    .page-subtitle {
-      font-size: 0.875rem;
-      color: var(--text-muted, #94a3b8);
-      margin: 0.25rem 0 0 0;
-    }
-
-    /* Class Picker */
-    .class-picker-wrap {
+    /* Skeleton Loading */
+    .skeleton-container {
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 20px;
     }
 
-    .picker-label {
-      font-size: 0.7rem;
-      color: #64748b;
-      letter-spacing: 0.08em;
+    .header-skeleton {
+      height: 90px;
+      border-radius: var(--radius-lg);
     }
 
-    .class-selector-box {
-      display: flex;
-      gap: 0.5rem;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.3rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    .body-skeleton {
+      height: 480px;
+      border-radius: var(--radius-lg);
     }
 
-    .class-tab-btn {
+    /* Error Banner */
+    .error-banner {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem 0.85rem;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      color: #94a3b8;
-      cursor: pointer;
-      font-size: 0.825rem;
-      transition: all 0.2s ease;
+      gap: 16px;
+      padding: 20px 24px;
+      border-left: 4px solid var(--color-danger);
     }
 
-    .class-tab-btn:hover {
-      background: rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
+    .error-icon-wrap {
+      color: var(--color-danger);
     }
 
-    .class-tab-btn.active {
-      background: #2563eb;
-      color: #ffffff;
-      border-color: #3b82f6;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    .error-text {
+      flex: 1;
     }
 
-    .tab-code {
+    .error-title {
+      font-size: 15px;
       font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
     }
 
-    .tab-sec {
-      font-size: 0.75rem;
-      opacity: 0.85;
+    .error-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
     }
 
-    /* Content Panel */
+    /* Panel Card */
     .panel-card {
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      min-height: 520px;
+      overflow: hidden;
     }
 
     .panel-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
+      gap: 16px;
       flex-wrap: wrap;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .panel-header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .class-pill {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 0.3rem 0.65rem;
-      border-radius: 6px;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 0.45rem;
-      margin-bottom: 0.4rem;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .class-subject-title {
+      font-weight: 600;
+      color: var(--text-main);
     }
 
     .panel-title {
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: #f1f5f9;
-      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .panel-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 10px;
     }
 
     /* Filter Bar */
     .filter-bar {
+      padding: 14px 24px;
+      background: var(--bg-surface-subtle);
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       flex-wrap: wrap;
-      gap: 1rem;
     }
 
     .type-filter-group {
       display: flex;
-      gap: 0.35rem;
-      background: rgba(0, 0, 0, 0.25);
-      padding: 0.25rem;
-      border-radius: 6px;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .filter-tab {
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      font-size: 0.775rem;
+    .filter-tab-pill {
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
       font-weight: 600;
-      padding: 0.35rem 0.65rem;
-      border-radius: 4px;
+      color: var(--text-secondary);
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all var(--transition-fast);
     }
 
-    .filter-tab:hover {
-      color: #f1f5f9;
+    .filter-tab-pill:hover {
+      border-color: var(--border-medium);
+      color: var(--text-main);
     }
 
-    .filter-tab.active {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
+    .filter-tab-pill.active {
+      background: var(--color-teal);
+      color: #FFFFFF;
+      border-color: var(--color-teal);
+      box-shadow: var(--shadow-sm);
     }
 
-    .search-wrap {
-      position: relative;
+    .search-input-wrap {
       display: flex;
       align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 5px 12px;
+      min-width: 260px;
     }
 
     .search-icon {
-      position: absolute;
-      left: 0.65rem;
-      color: #64748b;
-      pointer-events: none;
+      color: var(--text-muted);
     }
 
     .search-input {
-      padding: 0.45rem 1.8rem 0.45rem 2rem;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 6px;
-      color: #f8fafc;
-      font-size: 0.825rem;
-      width: 240px;
-    }
-
-    .search-input:focus {
+      border: none;
       outline: none;
-      border-color: #2563eb;
+      background: transparent;
+      font-size: 13px;
+      color: var(--text-main);
+      width: 100%;
     }
 
     .clear-search-btn {
-      position: absolute;
-      right: 0.5rem;
-      background: transparent;
+      background: none;
       border: none;
-      color: #64748b;
+      color: var(--text-muted);
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 14px;
     }
 
     /* Materials Grid */
     .materials-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .materials-skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .item-card-skeleton {
+      height: 180px;
+      border-radius: var(--radius-lg);
     }
 
     .material-card {
-      padding: 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 1rem;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      gap: 12px;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-sm);
     }
 
     .material-card:hover {
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-card-hover);
       transform: translateY(-2px);
-      border-color: rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.035);
     }
 
     .material-card-top {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
 
-    .type-pill {
-      font-size: 0.675rem;
-      font-weight: 700;
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      letter-spacing: 0.04em;
+    .type-pdf {
+      background: var(--color-danger-surface);
+      color: var(--color-danger);
+      border: 1px solid var(--color-danger-border);
     }
 
-    .type-pdf { background: rgba(244, 63, 94, 0.12); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.25); }
-    .type-doc { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
-    .type-ppt { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.25); }
-    .type-other { background: rgba(45, 212, 191, 0.12); color: #2dd4bf; border: 1px solid rgba(45, 212, 191, 0.25); }
+    .type-ppt {
+      background: var(--color-warning-surface);
+      color: var(--color-warning);
+      border: 1px solid var(--color-warning-border);
+    }
 
-    .upload-date {
-      font-size: 0.725rem;
-      color: #64748b;
+    .type-doc {
+      background: var(--color-info-surface);
+      color: var(--color-info);
+      border: 1px solid var(--color-info-border);
+    }
+
+    .type-other {
+      background: var(--bg-surface-subtle);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .material-card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .material-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: #f8fafc;
-      margin: 0.4rem 0 0.35rem 0;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
       line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .material-desc {
-      font-size: 0.825rem;
-      color: #94a3b8;
-      margin: 0;
+      font-size: 12.5px;
+      color: var(--text-secondary);
       line-height: 1.45;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
     .material-card-footer {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
     }
 
-    .action-btn {
-      flex: 1;
-      text-decoration: none;
+    .delete-btn {
+      color: var(--color-danger);
+      border-color: transparent;
     }
 
-    .btn-danger-outline {
-      background: transparent;
-      border: 1px solid rgba(244, 63, 94, 0.3);
-      color: #f43f5e;
+    .delete-btn:hover {
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
     }
 
-    .btn-danger-outline:hover:not(:disabled) {
-      background: rgba(244, 63, 94, 0.15);
-      border-color: #f43f5e;
-    }
-
-    /* Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.2rem 0.55rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    .badge-sage {
-      background: rgba(45, 212, 191, 0.1);
-      color: #2dd4bf;
-      border: 1px solid rgba(45, 212, 191, 0.25);
-    }
-
-    .badge-rose {
-      background: rgba(244, 63, 94, 0.1);
-      color: #f43f5e;
-      border: 1px solid rgba(244, 63, 94, 0.25);
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.45rem;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.8rem;
-    }
-
-    .btn-xs {
-      padding: 0.35rem 0.65rem;
-      font-size: 0.75rem;
-    }
-
-    .btn-primary {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: #1d4ed8;
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #cbd5e1;
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-    }
-
-    .btn-danger {
-      background: #e11d48;
-      color: #ffffff;
-    }
-
-    .btn-danger:hover:not(:disabled) {
-      background: #be123c;
-    }
-
-    .btn-spinner {
-      width: 12px;
-      height: 12px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #ffffff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    /* Modals */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 1.5rem;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 520px;
-      background: #11151e;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 1.75rem;
+    .empty-materials-state {
+      padding: 56px 24px;
+      text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      align-items: center;
+      gap: 12px;
     }
 
-    .confirm-box {
-      max-width: 440px;
-    }
-
-    .confirm-message {
-      font-size: 0.875rem;
-      color: #cbd5e1;
-      line-height: 1.5;
-      margin: 0;
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(8px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-header {
+    .empty-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
     }
 
-    .modal-title {
-      font-size: 1.35rem;
+    .empty-icon-wrap.large {
+      width: 64px;
+      height: 64px;
+    }
+
+    .empty-title {
+      font-size: 16px;
       font-weight: 700;
-      color: #f8fafc;
-      margin: 0.25rem 0 0 0;
+      color: var(--text-main);
     }
 
-    .modal-subtitle {
-      font-size: 0.825rem;
-      color: #94a3b8;
-      margin: 0.2rem 0 0 0;
+    .empty-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      max-width: 420px;
     }
 
-    .modal-close-btn {
-      background: transparent;
-      border: none;
-      color: #64748b;
-      cursor: pointer;
-      padding: 0.25rem;
-      border-radius: 4px;
-      transition: color 0.15s ease;
-    }
-
-    .modal-close-btn:hover {
-      color: #ffffff;
-    }
-
-    .modal-form {
+    .error-sub-banner {
+      padding: 18px 24px;
+      color: var(--color-danger);
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .form-label {
-      font-size: 0.725rem;
-      font-weight: 600;
-      color: #94a3b8;
-      letter-spacing: 0.05em;
-    }
-
-    .required {
-      color: #f43f5e;
-    }
-
-    .form-input, .form-textarea {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      padding: 0.55rem 0.85rem;
-      color: #f8fafc;
-      font-size: 0.875rem;
-      transition: border-color 0.15s ease;
-    }
-
-    .form-input:focus, .form-textarea:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     /* File Drop Zone */
     .file-drop-zone {
-      border: 2px dashed rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.25);
+      border: 2px dashed var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-subtle);
+      transition: all var(--transition-fast);
       cursor: pointer;
-      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
-    .file-drop-zone:hover {
-      border-color: #2563eb;
-      background: rgba(37, 99, 235, 0.04);
-    }
-
+    .file-drop-zone:hover,
     .file-drop-zone.has-file {
-      border-color: #10b981;
-      background: rgba(16, 185, 129, 0.04);
+      border-color: var(--color-teal);
+      background: var(--color-teal-surface);
     }
 
     .file-input-hidden {
@@ -949,129 +779,92 @@ import { IconComponent } from '../../../shared/components/icon.component';
     }
 
     .file-drop-label {
-      cursor: pointer;
+      padding: 24px 20px;
       display: block;
+      cursor: pointer;
+      text-align: center;
     }
 
     .empty-drop-meta {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.35rem;
+      gap: 6px;
     }
 
     .upload-icon {
-      color: #3b82f6;
-      margin-bottom: 0.25rem;
+      color: var(--color-teal);
+      margin-bottom: 2px;
     }
 
     .upload-instruction {
-      font-size: 0.85rem;
-      color: #f1f5f9;
-    }
-
-    .upload-formats {
-      font-size: 0.725rem;
+      font-size: 13.5px;
+      color: var(--text-main);
     }
 
     .selected-file-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0.25rem 0.5rem;
-    }
-
-    .file-ok-icon {
-      color: #10b981;
-    }
-
-    .file-text {
-      display: flex;
-      flex-direction: column;
+      gap: 12px;
       text-align: left;
     }
 
+    .file-ok-icon {
+      color: var(--color-teal);
+    }
+
+    .file-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
     .file-name {
-      font-size: 0.85rem;
-      color: #f8fafc;
-      word-break: break-all;
+      font-size: 13.5px;
+      color: var(--text-main);
     }
 
     .file-size {
-      font-size: 0.725rem;
+      font-size: 11.5px;
     }
 
-    .change-file-tag {
-      font-size: 0.75rem;
-      color: #3b82f6;
-      font-weight: 600;
+    .modal-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .modal-sub {
+      font-size: 12.5px;
+      color: var(--text-secondary);
     }
 
     .modal-error {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: #f43f5e;
-      font-size: 0.8rem;
-      background: rgba(244, 63, 94, 0.1);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
+      padding: 8px 12px;
+      background: var(--color-danger-surface);
+      border: 1px solid var(--color-danger-border);
+      color: var(--color-danger);
+      font-size: 12px;
+      border-radius: var(--radius-sm);
     }
 
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
+    .confirm-box {
+      max-width: 440px;
     }
 
-    /* Empty, Loading, and Skeleton states */
-    .empty-state {
-      padding: 3.5rem 1.5rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      color: #64748b;
-    }
-
-    .empty-state h4 {
-      font-size: 1.15rem;
-      color: #e2e8f0;
-      margin: 0;
-    }
-
-    .empty-state p {
-      font-size: 0.85rem;
-      max-width: 420px;
-      margin: 0;
+    .confirm-message {
+      font-size: 13.5px;
+      color: var(--text-secondary);
       line-height: 1.5;
     }
 
-    .loading-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3.5rem;
-      gap: 0.75rem;
-      color: #94a3b8;
-      font-size: 0.85rem;
-    }
-
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 3px solid rgba(37, 99, 235, 0.2);
-      border-top-color: #2563eb;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .spin-icon {
+      animation: spin 1s linear infinite;
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      100% { transform: rotate(360deg); }
     }
   `]
 })
@@ -1195,7 +988,6 @@ export class FacultyMaterialsComponent implements OnInit {
       this.selectedFile = file;
       this.uploadError.set(null);
 
-      // Auto-populate title if empty
       if (!this.uploadTitle.trim()) {
         const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
         this.uploadTitle = baseName.replace(/[-_]/g, ' ');
@@ -1264,7 +1056,6 @@ export class FacultyMaterialsComponent implements OnInit {
         this.materialToDelete.set(null);
         this.toast.success(`"${item.title}" was deleted.`);
         
-        // Remove locally
         this.materials.update((list) => list.filter((m) => m.materialId !== item.materialId));
       },
       error: (err) => {

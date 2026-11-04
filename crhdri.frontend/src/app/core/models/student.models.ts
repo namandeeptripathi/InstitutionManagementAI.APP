@@ -123,6 +123,8 @@ export interface Assessment {
   marksObtained: number | null;
   feedback: string | null;
   evaluatedAt: string | null;
+  attemptId?: string | null;
+  isCompleted?: boolean;
 }
 
 export interface AssessmentsResponse {
@@ -145,6 +147,42 @@ export interface QuizQuestionsResponse {
   maxMarks: number;
   totalQuestions: number;
   questions: QuizQuestion[];
+}
+
+export interface QuizReviewQuestion {
+  questionId: string;
+  questionNumber: number;
+  questionText: string;
+  options: Record<string, string>;
+  studentAnswer: string | null;
+  studentAnswerText: string | null;
+  correctAnswer: string;
+  correctAnswerText: string | null;
+  isAnswered: boolean;
+  isCorrect: boolean;
+  marks: number;
+  earnedMarks: number;
+  explanation?: string | null;
+}
+
+export interface QuizReviewResponse {
+  assessmentId: string;
+  assessmentName: string;
+  assessmentType: string;
+  subjectCode: string;
+  subjectName: string;
+  maxMarks: number;
+  marksObtained: number;
+  attemptMarks?: number | null;
+  percentage: number;
+  evaluatedAt: string | null;
+  attemptId: string | null;
+  feedback: string | null;
+  totalQuestions: number;
+  correctCount: number;
+  incorrectCount: number;
+  hasAnswerData: boolean;
+  questions: QuizReviewQuestion[];
 }
 
 export interface QuizSubmissionRequest {

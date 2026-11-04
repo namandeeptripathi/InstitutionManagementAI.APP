@@ -14,8 +14,8 @@ import { IconComponent } from '../../../shared/components/icon.component';
     <div class="roster-page">
       <!-- Breadcrumb & Back Bar -->
       <div class="navigation-bar">
-        <a routerLink="/faculty/classes" class="back-link">
-          <app-icon name="chevron-right" [size]="14" class="back-arrow"></app-icon>
+        <a routerLink="/faculty/classes" class="btn btn-secondary btn-sm">
+          <app-icon name="arrow-left" [size]="14"></app-icon>
           <span>Back to Teaching Classes</span>
         </a>
 
@@ -31,52 +31,52 @@ import { IconComponent } from '../../../shared/components/icon.component';
       <!-- Loading State -->
       @if (loading()) {
         <div class="skeleton-container" aria-busy="true" aria-label="Loading student roster">
-          <div class="skeleton header-skeleton"></div>
+          <div class="skeleton hero-skeleton"></div>
           <div class="skeleton table-skeleton"></div>
         </div>
       }
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
-            <app-icon name="alert" [size]="28"></app-icon>
+            <app-icon name="alert" [size]="24"></app-icon>
           </div>
           <div class="error-text">
             <h3 class="error-title">Unable to Load Class Roster</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
           </div>
-          <button class="btn btn-primary" (click)="loadRoster()">
-            <app-icon name="refresh" [size]="16"></app-icon>
-            Retry
+          <button class="btn btn-primary btn-sm" (click)="loadRoster()">
+            <app-icon name="refresh" [size]="14"></app-icon>
+            Retry Connection
           </button>
         </div>
       }
 
       <!-- Loaded Roster Content -->
       @else if (classDetails()) {
-        <!-- Class Overview Banner -->
-        <section class="class-hero-card card-tactile">
+        <!-- Class Overview Hero Card -->
+        <section class="class-hero-card card-modern">
           <div class="hero-left">
             <div class="hero-meta-row">
-              <span class="badge badge-sage">
+              <span class="badge badge-teal">
                 <app-icon name="badge-check" [size]="12"></app-icon>
                 OFFICIAL ROSTER
               </span>
               <span class="meta-dot">&bull;</span>
-              <span class="font-mono">{{ classDetails()?.academicYear }}</span>
+              <span class="font-mono text-muted">{{ classDetails()?.academicYear }}</span>
               <span class="meta-dot">&bull;</span>
-              <span>{{ classDetails()?.departmentName }}</span>
+              <span class="text-secondary">{{ classDetails()?.departmentName }}</span>
             </div>
 
             <div class="hero-subject-row">
               <span class="subject-tag font-mono">{{ classDetails()?.subjectCode }}</span>
-              <h2 class="hero-title font-editorial">{{ classDetails()?.subjectName }}</h2>
+              <h2 class="hero-title">{{ classDetails()?.subjectName }}</h2>
             </div>
 
             <p class="hero-course">
               {{ classDetails()?.courseName }}
-              <span class="font-mono">({{ classDetails()?.courseCode }})</span>
+              <span class="font-mono text-muted">({{ classDetails()?.courseCode }})</span>
             </p>
 
             <div class="cohort-badges-row">
@@ -89,22 +89,22 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
           <div class="hero-right">
             <div class="enrolled-stat-badge">
-              <span class="stat-number font-editorial">{{ totalStudents() }}</span>
+              <span class="stat-number">{{ totalStudents() }}</span>
               <span class="stat-title">{{ totalStudents() === 1 ? 'Enrolled Student' : 'Enrolled Students' }}</span>
               <span class="stat-note font-mono">Section {{ classDetails()?.section }}</span>
             </div>
 
-            <button class="btn btn-outline refresh-btn" (click)="loadRoster()" [disabled]="loading()" title="Refresh Roster">
-              <app-icon name="refresh" [size]="15" [class.spin-icon]="loading()"></app-icon>
+            <button class="btn btn-secondary btn-sm" (click)="loadRoster()" [disabled]="loading()" title="Refresh Roster">
+              <app-icon name="refresh" [size]="14" [class.spin-icon]="loading()"></app-icon>
               <span>Refresh</span>
             </button>
           </div>
         </section>
 
         <!-- Search & Filter Controls -->
-        <div class="card-tactile search-card">
+        <div class="card-modern search-card">
           <div class="search-input-wrap">
-            <app-icon name="search" [size]="16" class="search-icon"></app-icon>
+            <app-icon name="search" [size]="15" class="search-icon"></app-icon>
             <input
               type="text"
               [(ngModel)]="searchQuery"
@@ -124,30 +124,36 @@ import { IconComponent } from '../../../shared/components/icon.component';
         </div>
 
         <!-- Student Roster Table Card -->
-        <div class="card-tactile table-card">
+        <div class="card-modern table-container-clean">
           <div class="table-header-block">
-            <h3 class="table-title font-editorial">Official Enrollment Directory</h3>
-            <span class="badge badge-amber badge-sm">Verified Institutional Records</span>
+            <div class="table-header-left">
+              <h3 class="table-title">Official Enrollment Directory</h3>
+              <p class="table-subtitle">Verified active registrations from PostgreSQL institution database</p>
+            </div>
+            <span class="badge badge-teal badge-sm font-mono">
+              <app-icon name="badge-check" [size]="12"></app-icon>
+              {{ filteredStudents().length }} Records
+            </span>
           </div>
 
           @if (filteredStudents().length > 0) {
             <div class="table-responsive">
-              <table class="roster-table" aria-label="Student Roster">
+              <table class="table-modern" aria-label="Student Roster">
                 <thead>
                   <tr>
-                    <th scope="col" class="th-student">Student Name & Email</th>
-                    <th scope="col" class="th-enrollment">Enrollment Number</th>
-                    <th scope="col" class="th-cohort">Cohort / Section</th>
-                    <th scope="col" class="th-dept">Department & Year</th>
-                    <th scope="col" class="th-attendance">Session Attendance</th>
-                    <th scope="col" class="th-status">Status</th>
+                    <th scope="col" style="width: 280px;">Student Name & Email</th>
+                    <th scope="col" style="width: 170px;">Enrollment Number</th>
+                    <th scope="col" style="width: 150px;">Cohort / Section</th>
+                    <th scope="col">Department & Year</th>
+                    <th scope="col" style="width: 170px;">Session Attendance</th>
+                    <th scope="col" style="width: 120px;">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   @for (student of filteredStudents(); track student.studentId) {
-                    <tr class="roster-row">
+                    <tr>
                       <!-- Student Identity -->
-                      <td class="td-student">
+                      <td>
                         <div class="student-identity-wrap">
                           <div class="student-avatar" [attr.aria-label]="student.fullName">
                             {{ getInitials(student.fullName) }}
@@ -160,45 +166,43 @@ import { IconComponent } from '../../../shared/components/icon.component';
                       </td>
 
                       <!-- Enrollment Number -->
-                      <td class="td-enrollment">
-                        <span class="enrollment-pill font-mono">{{ student.enrollmentNumber }}</span>
+                      <td>
+                        <span class="font-mono text-bold">{{ student.enrollmentNumber }}</span>
                       </td>
 
                       <!-- Cohort -->
-                      <td class="td-cohort">
+                      <td>
                         <span class="cohort-text">Sem {{ student.semester }} &bull; Sec {{ student.section }}</span>
                       </td>
 
                       <!-- Department & Admission Year -->
-                      <td class="td-dept">
+                      <td>
                         <div class="dept-wrap">
                           <span class="dept-name">{{ student.department }}</span>
-                          <span class="admission-year font-mono">Admitted {{ student.admissionYear }}</span>
+                          <span class="admission-year font-mono text-muted">Adm. {{ student.admissionYear }}</span>
                         </div>
                       </td>
 
                       <!-- Attendance Stats -->
-                      <td class="td-attendance">
+                      <td>
                         <div class="attendance-stat-box">
-                          <div class="att-badges">
-                            <span
-                              class="badge"
-                              [class.badge-forest]="student.attendancePercentage >= 75"
-                              [class.badge-danger]="student.attendancePercentage < 75"
-                            >
-                              {{ student.attendancePercentage }}%
-                            </span>
-                            <span class="att-counts font-mono">
-                              {{ student.attendedSessions }}/{{ student.totalSessions }} Sessions
-                            </span>
-                          </div>
+                          <span
+                            class="badge badge-sm"
+                            [class.badge-teal]="student.attendancePercentage >= 75"
+                            [class.badge-danger]="student.attendancePercentage < 75"
+                          >
+                            {{ student.attendancePercentage }}%
+                          </span>
+                          <span class="att-counts font-mono text-muted">
+                            {{ student.attendedSessions }}/{{ student.totalSessions }}
+                          </span>
                         </div>
                       </td>
 
                       <!-- Enrollment Status -->
-                      <td class="td-status">
-                        <span class="badge badge-sage">
-                          <span class="status-dot-active"></span>
+                      <td>
+                        <span class="badge badge-teal badge-sm">
+                          <span class="status-dot"></span>
                           {{ student.enrollmentStatus }}
                         </span>
                       </td>
@@ -209,11 +213,13 @@ import { IconComponent } from '../../../shared/components/icon.component';
             </div>
           } @else {
             <div class="empty-roster">
-              <app-icon name="profile" [size]="32" class="empty-icon"></app-icon>
+              <div class="empty-icon-wrap">
+                <app-icon name="profile" [size]="28"></app-icon>
+              </div>
               <h4 class="empty-title">No Students Found</h4>
               <p class="empty-text">
                 @if (searchQuery) {
-                  No enrolled students match your filter "{{ searchQuery }}".
+                  No enrolled students match your search "{{ searchQuery }}".
                 } @else {
                   No students are currently registered in this section for the active academic term.
                 }
@@ -224,7 +230,7 @@ import { IconComponent } from '../../../shared/components/icon.component';
           <!-- Roster Footer -->
           <div class="table-footer">
             <span class="footer-note">
-              Total class enrollment: <strong>{{ totalStudents() }} student{{ totalStudents() === 1 ? '' : 's' }}</strong> &bull; All records verified through university PostgreSQL database.
+              Total enrollment: <strong>{{ totalStudents() }} student{{ totalStudents() === 1 ? '' : 's' }}</strong> &bull; Authenticated records from university registrar.
             </span>
           </div>
         </div>
@@ -236,10 +242,9 @@ import { IconComponent } from '../../../shared/components/icon.component';
       display: flex;
       flex-direction: column;
       gap: 20px;
-      padding-bottom: 40px;
+      padding-bottom: 30px;
     }
 
-    /* Navigation Bar */
     .navigation-bar {
       display: flex;
       align-items: center;
@@ -248,36 +253,11 @@ import { IconComponent } from '../../../shared/components/icon.component';
       flex-wrap: wrap;
     }
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--color-forest);
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all var(--transition-fast);
-      padding: 6px 10px;
-      border-radius: var(--radius-sm);
-      background: var(--bg-surface-subtle);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .back-link:hover {
-      background: #FFFFFF;
-      border-color: var(--color-forest-border);
-      transform: translateX(-2px);
-    }
-
-    .back-arrow {
-      transform: rotate(180deg);
-    }
-
     .page-breadcrumbs {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 12.5px;
+      font-size: 13px;
     }
 
     .crumb-link {
@@ -287,29 +267,73 @@ import { IconComponent } from '../../../shared/components/icon.component';
     }
 
     .crumb-link:hover {
-      color: var(--color-forest);
+      color: var(--color-teal);
     }
 
     .crumb-sep {
-      color: var(--border-strong);
+      color: var(--border-medium);
     }
 
     .crumb-active {
       color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Skeleton Loading */
+    .skeleton-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .hero-skeleton {
+      height: 160px;
+      border-radius: var(--radius-xl);
+    }
+
+    .table-skeleton {
+      height: 380px;
+      border-radius: var(--radius-lg);
+    }
+
+    /* Error Banner */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      border-left: 4px solid var(--color-danger);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+      flex-shrink: 0;
+    }
+
+    .error-text {
+      flex: 1;
+    }
+
+    .error-title {
+      font-size: 15px;
       font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
     }
 
     /* Class Hero Card */
     .class-hero-card {
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
-      padding: 28px 32px;
+      padding: 24px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      box-shadow: var(--shadow-tactile);
+      flex-wrap: wrap;
     }
 
     .hero-left {
@@ -324,12 +348,11 @@ import { IconComponent } from '../../../shared/components/icon.component';
       align-items: center;
       gap: 8px;
       font-size: 12px;
-      color: var(--text-muted);
       flex-wrap: wrap;
     }
 
     .meta-dot {
-      color: var(--border-strong);
+      color: var(--border-medium);
     }
 
     .hero-subject-row {
@@ -340,27 +363,25 @@ import { IconComponent } from '../../../shared/components/icon.component';
     }
 
     .subject-tag {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      color: var(--color-forest);
-      background: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
-      padding: 4px 12px;
+      color: var(--color-teal);
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
+      padding: 4px 10px;
       border-radius: var(--radius-md);
     }
 
     .hero-title {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--text-main);
-      margin: 0;
-      line-height: 1.2;
+      letter-spacing: -0.02em;
     }
 
     .hero-course {
-      font-size: 13.5px;
+      font-size: 14px;
       color: var(--text-secondary);
-      margin: 0;
     }
 
     .cohort-badges-row {
@@ -368,27 +389,22 @@ import { IconComponent } from '../../../shared/components/icon.component';
       align-items: center;
       gap: 8px;
       margin-top: 4px;
+      flex-wrap: wrap;
     }
 
     .cohort-pill {
       font-size: 12px;
-      color: var(--text-secondary);
       background: var(--bg-surface-subtle);
       border: 1px solid var(--border-subtle);
       padding: 4px 10px;
       border-radius: var(--radius-sm);
-    }
-
-    .cohort-pill strong {
-      color: var(--color-forest);
+      color: var(--text-secondary);
     }
 
     .hero-right {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 14px;
-      flex-shrink: 0;
+      align-items: center;
+      gap: 16px;
     }
 
     .enrolled-stat-badge {
@@ -396,9 +412,9 @@ import { IconComponent } from '../../../shared/components/icon.component';
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 16px 24px;
-      background: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
+      background: var(--color-teal-surface);
+      border: 1px solid var(--color-teal-border);
+      padding: 14px 22px;
       border-radius: var(--radius-lg);
       text-align: center;
       min-width: 140px;
@@ -407,164 +423,110 @@ import { IconComponent } from '../../../shared/components/icon.component';
     .stat-number {
       font-size: 32px;
       font-weight: 800;
-      color: var(--color-forest);
       line-height: 1;
+      color: var(--color-teal);
+      letter-spacing: -0.03em;
     }
 
     .stat-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--color-forest-dark);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-main);
       margin-top: 4px;
     }
 
     .stat-note {
-      font-size: 10px;
+      font-size: 10.5px;
       color: var(--text-muted);
-      margin-top: 2px;
     }
 
-    .refresh-btn {
-      font-size: 12px;
-      padding: 6px 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Search Bar */
+    /* Search Card */
     .search-card {
-      padding: 12px 20px;
-      background: #FFFFFF;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      flex-wrap: wrap;
     }
 
     .search-input-wrap {
-      position: relative;
-      flex: 1;
-      max-width: 480px;
       display: flex;
       align-items: center;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 9px 36px;
-      font-size: 13.5px;
-      color: var(--text-main);
+      gap: 10px;
       background: var(--bg-surface-subtle);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      outline: none;
+      padding: 6px 14px;
+      flex: 1;
+      max-width: 480px;
       transition: all var(--transition-fast);
-      font-family: inherit;
     }
 
-    .search-input:focus {
+    .search-input-wrap:focus-within {
       background: #FFFFFF;
-      border-color: var(--color-forest);
-      box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.08);
+      border-color: var(--color-teal);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+
+    .search-icon {
+      color: var(--text-muted);
+    }
+
+    .search-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13.5px;
+      color: var(--text-main);
+      width: 100%;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
     }
 
     .clear-btn {
-      position: absolute;
-      right: 10px;
       background: none;
       border: none;
-      font-size: 18px;
       color: var(--text-muted);
+      font-size: 16px;
       cursor: pointer;
-      line-height: 1;
+      padding: 0 4px;
     }
 
     .filter-summary {
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--text-muted);
-      background: var(--bg-surface-subtle);
-      padding: 5px 12px;
-      border-radius: var(--radius-full);
-      border: 1px solid var(--border-subtle);
-      white-space: nowrap;
     }
 
     /* Table Card */
-    .table-card {
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
     .table-header-block {
-      padding: 20px 24px;
+      padding: 18px 24px;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     .table-title {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
-      color: var(--color-forest);
-      margin: 0;
+      color: var(--text-main);
+    }
+
+    .table-subtitle {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 2px;
     }
 
     .table-responsive {
       overflow-x: auto;
     }
 
-    .roster-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    .roster-table th {
-      padding: 12px 20px;
-      background: var(--bg-surface-subtle);
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border-subtle);
-      white-space: nowrap;
-    }
-
-    .roster-row {
-      border-bottom: 1px solid var(--border-subtle);
-      transition: background-color var(--transition-fast);
-    }
-
-    .roster-row:hover {
-      background-color: rgba(247, 245, 239, 0.5);
-    }
-
-    .roster-table td {
-      padding: 14px 20px;
-      font-size: 13.5px;
-      vertical-align: middle;
-    }
-
-    /* Student Identity Cell */
     .student-identity-wrap {
       display: flex;
       align-items: center;
@@ -574,26 +536,26 @@ import { IconComponent } from '../../../shared/components/icon.component';
     .student-avatar {
       width: 36px;
       height: 36px;
-      border-radius: 50%;
-      background: var(--color-forest);
-      color: #FFFFFF;
-      font-weight: 700;
-      font-size: 13px;
+      border-radius: var(--radius-full);
+      background: var(--color-teal-surface);
+      color: var(--color-teal);
+      border: 1px solid var(--color-teal-border);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 12.5px;
+      font-weight: 700;
       flex-shrink: 0;
     }
 
     .student-text {
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
 
     .student-fullname {
       font-size: 13.5px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--text-main);
     }
 
@@ -602,160 +564,87 @@ import { IconComponent } from '../../../shared/components/icon.component';
       color: var(--text-muted);
     }
 
-    .enrollment-pill {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--color-forest);
-      background: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-    }
-
     .cohort-text {
-      font-size: 12.5px;
+      font-size: 13px;
       color: var(--text-secondary);
-      font-weight: 600;
     }
 
     .dept-wrap {
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
 
     .dept-name {
-      font-size: 12.5px;
+      font-size: 13px;
       color: var(--text-main);
-      font-weight: 500;
     }
 
     .admission-year {
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 11.5px;
     }
 
     .attendance-stat-box {
-      display: flex;
-      align-items: center;
-    }
-
-    .att-badges {
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .att-counts {
-      font-size: 11.5px;
-      color: var(--text-muted);
+      font-size: 12px;
     }
 
-    .status-dot-active {
+    .status-dot {
       display: inline-block;
       width: 6px;
       height: 6px;
-      border-radius: 50%;
-      background-color: #28a745;
+      border-radius: var(--radius-full);
+      background-color: var(--color-teal);
       margin-right: 4px;
     }
 
-    .table-footer {
-      padding: 14px 24px;
-      background: var(--bg-surface-subtle);
-      border-top: 1px solid var(--border-subtle);
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .table-footer strong {
-      color: var(--color-forest);
-    }
-
-    /* Empty Roster */
     .empty-roster {
-      padding: 40px 20px;
+      padding: 48px 24px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      color: var(--text-muted);
+      gap: 8px;
     }
 
-    .empty-icon {
+    .empty-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--text-muted);
+      margin-bottom: 4px;
     }
 
     .empty-title {
-      font-size: 17px;
+      font-size: 15px;
+      font-weight: 700;
       color: var(--text-main);
-      margin: 0;
     }
 
     .empty-text {
-      font-size: 13px;
-      margin: 0;
-      max-width: 400px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      max-width: 420px;
     }
 
-    /* Error & Skeletons */
-    .error-banner {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 24px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-left: 4px solid #dc2626;
-      border-radius: var(--radius-xl);
+    .table-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface-subtle);
     }
 
-    .error-icon-wrap {
-      color: #dc2626;
-    }
-
-    .error-text {
-      flex: 1;
-    }
-
-    .error-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #991b1b;
-      margin: 0 0 4px 0;
-    }
-
-    .error-desc {
-      font-size: 13px;
-      color: #b91c1c;
-      margin: 0;
-    }
-
-    .skeleton-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .skeleton {
-      background: linear-gradient(90deg, #f0ede4 25%, #f8f6f0 50%, #f0ede4 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: var(--radius-xl);
-    }
-
-    .header-skeleton {
-      height: 180px;
-    }
-
-    .table-skeleton {
-      height: 300px;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    .footer-note {
+      font-size: 12px;
+      color: var(--text-muted);
     }
 
     .spin-icon {
@@ -764,19 +653,6 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
     @keyframes spin {
       100% { transform: rotate(360deg); }
-    }
-
-    @media (max-width: 900px) {
-      .class-hero-card {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .hero-right {
-        align-items: flex-start;
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-between;
-      }
     }
   `]
 })

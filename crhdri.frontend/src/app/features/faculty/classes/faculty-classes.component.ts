@@ -13,22 +13,22 @@ import { IconComponent } from '../../../shared/components/icon.component';
   template: `
     <div class="classes-page">
       <!-- Page Header -->
-      <div class="page-header">
+      <div class="page-header-clean">
         <div class="header-titles">
           <div class="header-badge-row">
-            <span class="badge badge-sage">ACADEMIC WORKLOAD</span>
-            <span class="meta-dot">&bull;</span>
-            <span class="header-meta font-mono">AY 2026-2027</span>
+            <span class="badge badge-teal">ACADEMIC WORKLOAD</span>
+            <span class="meta-separator">&bull;</span>
+            <span class="font-mono text-muted" style="font-size: 11.5px;">AY 2026-2027</span>
           </div>
-          <h2 class="page-title font-editorial">My Teaching Classes</h2>
+          <h2 class="page-title">My Teaching Classes</h2>
           <p class="page-subtitle">
             Manage your assigned subjects, instruction cohorts, and access official student rosters.
           </p>
         </div>
 
         <div class="header-actions">
-          <button class="btn btn-outline" (click)="loadClasses()" [disabled]="loading()" title="Refresh class list">
-            <app-icon name="refresh" [size]="16" [class.spin-icon]="loading()"></app-icon>
+          <button class="btn btn-secondary btn-sm" (click)="loadClasses()" [disabled]="loading()" title="Refresh class list">
+            <app-icon name="refresh" [size]="14" [class.spin-icon]="loading()"></app-icon>
             <span>Refresh</span>
           </button>
         </div>
@@ -36,41 +36,41 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
       <!-- Quick KPI Metric Cards -->
       <div class="stats-row">
-        <div class="card-tactile stat-card">
-          <div class="stat-icon-wrap forest-bg">
+        <div class="card-modern stat-card">
+          <div class="metric-icon-wrap teal">
             <app-icon name="courses" [size]="20"></app-icon>
           </div>
           <div class="stat-content">
-            <span class="stat-value font-editorial">{{ classes().length }}</span>
+            <span class="stat-value">{{ classes().length }}</span>
             <span class="stat-label">Assigned Classes</span>
           </div>
         </div>
 
-        <div class="card-tactile stat-card">
-          <div class="stat-icon-wrap teal-bg">
+        <div class="card-modern stat-card">
+          <div class="metric-icon-wrap blue">
             <app-icon name="profile" [size]="20"></app-icon>
           </div>
           <div class="stat-content">
-            <span class="stat-value font-editorial">{{ totalStudentsCount() }}</span>
+            <span class="stat-value">{{ totalStudentsCount() }}</span>
             <span class="stat-label">Total Enrolled Students</span>
           </div>
         </div>
 
-        <div class="card-tactile stat-card">
-          <div class="stat-icon-wrap amber-bg">
+        <div class="card-modern stat-card">
+          <div class="metric-icon-wrap amber">
             <app-icon name="badge-check" [size]="20"></app-icon>
           </div>
           <div class="stat-content">
-            <span class="stat-value font-editorial">{{ totalCredits() }}</span>
-            <span class="stat-label">Total Teaching Credits</span>
+            <span class="stat-value">{{ totalCredits() }}</span>
+            <span class="stat-label">Teaching Credits</span>
           </div>
         </div>
       </div>
 
       <!-- Search & Controls Bar -->
-      <div class="card-tactile controls-card">
-        <div class="search-input-wrap">
-          <app-icon name="search" [size]="16" class="search-icon"></app-icon>
+      <div class="card-modern controls-bar">
+        <div class="search-box-clean">
+          <app-icon name="search" [size]="15" class="search-icon"></app-icon>
           <input
             type="text"
             [(ngModel)]="searchQuery"
@@ -100,7 +100,7 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
       <!-- Error State -->
       @else if (errorMessage()) {
-        <div class="error-banner card-tactile" role="alert">
+        <div class="error-banner card-modern" role="alert">
           <div class="error-icon-wrap">
             <app-icon name="alert" [size]="24"></app-icon>
           </div>
@@ -108,9 +108,8 @@ import { IconComponent } from '../../../shared/components/icon.component';
             <h3 class="error-title">Unable to Load Assigned Classes</h3>
             <p class="error-desc">{{ errorMessage() }}</p>
           </div>
-          <button class="btn btn-primary" (click)="loadClasses()">
-            <app-icon name="refresh" [size]="16"></app-icon>
-            Retry
+          <button class="btn btn-primary btn-sm" (click)="loadClasses()">
+            <app-icon name="refresh" [size]="14"></app-icon> Retry
           </button>
         </div>
       }
@@ -119,41 +118,40 @@ import { IconComponent } from '../../../shared/components/icon.component';
       @else if (filteredClasses().length > 0) {
         <div class="classes-grid">
           @for (cls of filteredClasses(); track cls.facultyAssignmentId) {
-            <div class="card-tactile class-card">
-              <!-- Card Top Header -->
+            <div class="card-modern class-card">
+              <!-- Top -->
               <div class="card-top">
-                <div class="subject-badge font-mono">{{ cls.subjectCode }}</div>
-                <div class="credits-badge font-mono">{{ cls.credits }} Credits</div>
+                <span class="subject-badge font-mono">{{ cls.subjectCode }}</span>
+                <span class="badge badge-teal font-mono">{{ cls.credits }} Credits</span>
               </div>
 
-              <!-- Card Body Info -->
+              <!-- Body -->
               <div class="card-middle">
                 <h3 class="subject-title">{{ cls.subjectName }}</h3>
                 <p class="course-subtitle">{{ cls.courseName }}</p>
 
                 <div class="cohort-tags-row">
-                  <span class="tag-badge">
+                  <span class="cohort-tag">
                     <strong>Sem {{ cls.semester }}</strong> &bull; Sec {{ cls.section }}
                   </span>
-                  <span class="tag-badge font-mono">{{ cls.academicYear }}</span>
+                  <span class="cohort-tag font-mono">{{ cls.academicYear }}</span>
                 </div>
               </div>
 
-              <!-- Card Footer Action -->
+              <!-- Footer -->
               <div class="card-bottom">
-                <div class="students-count-badge">
-                  <app-icon name="profile" [size]="15" class="student-icon"></app-icon>
-                  <span class="student-num">{{ cls.enrolledStudentsCount }}</span>
-                  <span class="student-lbl">{{ cls.enrolledStudentsCount === 1 ? 'Student' : 'Students' }}</span>
+                <div class="students-count-badge font-mono">
+                  <app-icon name="profile" [size]="13"></app-icon>
+                  <span>{{ cls.enrolledStudentsCount }} {{ cls.enrolledStudentsCount === 1 ? 'Student' : 'Students' }}</span>
                 </div>
 
                 <a
                   [routerLink]="['/faculty/classes', cls.facultyAssignmentId]"
-                  class="btn btn-primary view-btn"
+                  class="btn btn-primary btn-sm"
                   [attr.aria-label]="'View student roster for ' + cls.subjectName"
                 >
-                  <span>View Class</span>
-                  <app-icon name="chevron-right" [size]="14"></app-icon>
+                  <span>View Roster</span>
+                  <app-icon name="chevron-right" [size]="12"></app-icon>
                 </a>
               </div>
             </div>
@@ -163,11 +161,9 @@ import { IconComponent } from '../../../shared/components/icon.component';
 
       <!-- Empty State -->
       @else {
-        <div class="card-tactile empty-card">
-          <div class="empty-icon-box">
-            <app-icon name="courses" [size]="36"></app-icon>
-          </div>
-          <h3 class="empty-title font-editorial">No Classes Found</h3>
+        <div class="card-modern empty-state-box">
+          <app-icon name="courses" [size]="40" class="empty-icon"></app-icon>
+          <h3 class="empty-title">No Classes Found</h3>
           <p class="empty-desc">
             @if (searchQuery) {
               No assigned classes match your search query "{{ searchQuery }}". Try clearing the filter.
@@ -176,7 +172,7 @@ import { IconComponent } from '../../../shared/components/icon.component';
             }
           </p>
           @if (searchQuery) {
-            <button class="btn btn-outline" (click)="searchQuery = ''">
+            <button class="btn btn-secondary btn-sm" (click)="searchQuery = ''">
               Clear Search Filter
             </button>
           }
@@ -188,51 +184,43 @@ import { IconComponent } from '../../../shared/components/icon.component';
     .classes-page {
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      padding-bottom: 36px;
+      gap: 20px;
     }
 
-    /* Page Header */
-    .page-header {
+    .page-header-clean {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
     .header-titles {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .header-badge-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .meta-dot {
-      color: var(--text-muted);
-    }
-
-    .header-meta {
-      font-size: 12px;
-      color: var(--text-muted);
+    .meta-separator {
+      color: var(--border-medium);
     }
 
     .page-title {
-      font-size: 26px;
+      font-size: 20px;
       font-weight: 700;
-      color: var(--color-forest);
-      margin: 0;
-      line-height: 1.2;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
     }
 
     .page-subtitle {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--text-secondary);
-      margin: 0;
       max-width: 600px;
     }
 
@@ -244,149 +232,106 @@ import { IconComponent } from '../../../shared/components/icon.component';
     }
 
     .stat-card {
-      padding: 18px 20px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      background: #FFFFFF;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .stat-icon-wrap {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .forest-bg {
-      background: var(--color-forest-surface);
-      color: var(--color-forest);
-    }
-
-    .teal-bg {
-      background: rgba(13, 148, 136, 0.1);
-      color: #0f766e;
-    }
-
-    .amber-bg {
-      background: rgba(217, 119, 6, 0.1);
-      color: var(--color-amber-dark);
+      gap: 14px;
     }
 
     .stat-content {
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
 
     .stat-value {
-      font-size: 26px;
-      font-weight: 700;
+      font-size: 22px;
+      font-weight: 800;
       color: var(--text-main);
-      line-height: 1;
+      line-height: 1.15;
     }
 
     .stat-label {
       font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 600;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-top: 2px;
     }
 
     /* Controls Bar */
-    .controls-card {
-      padding: 12px 18px;
-      background: #FFFFFF;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
+    .controls-bar {
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .search-input-wrap {
+    .search-box-clean {
       position: relative;
-      flex: 1;
-      max-width: 460px;
       display: flex;
       align-items: center;
+      flex: 1;
+      max-width: 360px;
     }
 
     .search-icon {
       position: absolute;
-      left: 12px;
+      left: 11px;
       color: var(--text-muted);
       pointer-events: none;
     }
 
     .search-input {
       width: 100%;
-      padding: 9px 36px 9px 36px;
-      font-size: 13.5px;
-      color: var(--text-main);
-      background: var(--bg-surface-subtle);
+      padding: 8px 30px 8px 34px;
+      font-size: 13px;
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
       outline: none;
       transition: all var(--transition-fast);
-      font-family: inherit;
     }
 
     .search-input:focus {
-      background: #FFFFFF;
-      border-color: var(--color-forest);
-      box-shadow: 0 0 0 3px rgba(23, 63, 53, 0.08);
+      border-color: var(--color-teal);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
     }
 
     .clear-search-btn {
       position: absolute;
-      right: 10px;
-      background: none;
+      right: 9px;
+      background: transparent;
       border: none;
-      font-size: 18px;
       color: var(--text-muted);
       cursor: pointer;
-      line-height: 1;
+      font-size: 14px;
     }
 
     .results-count-pill {
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 11.5px;
+      color: var(--text-secondary);
       background: var(--bg-surface-subtle);
-      padding: 5px 12px;
-      border-radius: var(--radius-full);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
-      white-space: nowrap;
     }
 
     /* Classes Grid */
     .classes-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
     }
 
     .class-card {
-      padding: 22px;
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      transition: all var(--transition-fast);
-      position: relative;
-    }
-
-    .class-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-tactile-hover);
-      border-color: var(--color-forest-border);
+      justify-content: space-between;
+      gap: 14px;
     }
 
     .card-top {
@@ -396,194 +341,78 @@ import { IconComponent } from '../../../shared/components/icon.component';
     }
 
     .subject-badge {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--color-forest);
-      background: var(--color-forest-surface);
-      border: 1px solid var(--color-forest-border);
-      padding: 4px 10px;
+      display: inline-block;
+      padding: 3px 8px;
+      background: var(--color-teal-surface);
+      color: var(--color-teal);
+      border: 1px solid var(--color-teal-border);
       border-radius: var(--radius-sm);
-    }
-
-    .credits-badge {
       font-size: 11.5px;
       font-weight: 700;
-      color: var(--color-amber-dark);
-      background: rgba(217, 119, 6, 0.1);
-      padding: 3px 8px;
-      border-radius: var(--radius-full);
     }
 
     .card-middle {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      flex: 1;
+      gap: 4px;
     }
 
     .subject-title {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-main);
-      margin: 0;
-      line-height: 1.25;
+      line-height: 1.3;
     }
 
     .course-subtitle {
       font-size: 12.5px;
       color: var(--text-secondary);
-      margin: 0;
-      line-height: 1.35;
     }
 
     .cohort-tags-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       margin-top: 6px;
       flex-wrap: wrap;
     }
 
-    .tag-badge {
+    .cohort-tag {
       font-size: 11.5px;
       color: var(--text-secondary);
       background: var(--bg-surface-subtle);
+      padding: 2px 7px;
+      border-radius: var(--radius-xs);
       border: 1px solid var(--border-subtle);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-    }
-
-    .tag-badge strong {
-      color: var(--color-forest);
     }
 
     .card-bottom {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding-top: 14px;
       border-top: 1px solid var(--border-subtle);
-      margin-top: auto;
+      padding-top: 12px;
+      gap: 8px;
     }
 
     .students-count-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
-    }
-
-    .student-icon {
-      color: var(--color-forest);
-    }
-
-    .student-num {
-      font-weight: 700;
-      color: var(--color-forest);
-    }
-
-    .student-lbl {
+      gap: 4px;
+      font-size: 11.5px;
       color: var(--text-secondary);
     }
 
-    .view-btn {
-      padding: 7px 14px;
-      font-size: 12.5px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Error & Empty States */
-    .error-banner {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 20px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-left: 4px solid #dc2626;
-      border-radius: var(--radius-lg);
-    }
-
-    .error-icon-wrap {
-      color: #dc2626;
-    }
-
-    .error-text {
-      flex: 1;
-    }
-
-    .error-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #991b1b;
-      margin: 0 0 4px 0;
-    }
-
-    .error-desc {
-      font-size: 13px;
-      color: #b91c1c;
-      margin: 0;
-    }
-
-    .empty-card {
-      padding: 48px 24px;
-      background: #FFFFFF;
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 12px;
-    }
-
-    .empty-icon-box {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: var(--bg-surface-subtle);
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .empty-title {
-      font-size: 20px;
-      color: var(--color-forest);
-      margin: 0;
-    }
-
-    .empty-desc {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      max-width: 420px;
-      margin: 0;
-      line-height: 1.45;
-    }
-
-    /* Skeletons */
+    /* Skeleton */
     .skeleton-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
     }
 
     .card-skeleton {
-      height: 200px;
-      border-radius: var(--radius-xl);
-      background: linear-gradient(90deg, #f0ede4 25%, #f8f6f0 50%, #f0ede4 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      height: 160px;
+      border-radius: var(--radius-lg);
     }
 
     .spin-icon {
@@ -594,13 +423,64 @@ import { IconComponent } from '../../../shared/components/icon.component';
       100% { transform: rotate(360deg); }
     }
 
+    /* Error and Empty */
+    .error-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: var(--color-danger-surface);
+      border-color: var(--color-danger-border);
+    }
+
+    .error-icon-wrap {
+      color: var(--color-danger);
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-danger);
+      margin-bottom: 2px;
+    }
+
+    .error-desc {
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .empty-state-box {
+      padding: 48px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-icon {
+      color: var(--text-muted);
+    }
+
+    .empty-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 400px;
+      line-height: 1.45;
+    }
+
     @media (max-width: 800px) {
       .stats-row {
         grid-template-columns: 1fr;
       }
-      .page-header {
-        flex-direction: column;
-        align-items: flex-start;
+      .skeleton-grid {
+        grid-template-columns: 1fr;
       }
     }
   `]
